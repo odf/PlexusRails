@@ -1,0 +1,43 @@
+@import definitions
+
+table
+  :margin 0
+  :padding 0
+  :empty-cells show
+  :border 1px solid
+  :border-color = !tint1_text_alternate
+  :border-collapse collapse
+  :font-size 90%
+  :line-height 135%
+  :text-align center
+  :width 100%
+  a:link, a:visited, a:hover, a:active
+    :line-height 150%
+
+th
+  :border-style solid
+  :border-width 0 0 1px 0
+  :padding 5px 12px
+  :vertical-align middle
+  :font-weight bold
+  :color = !tint2_text
+  :background-color = !tint2_background_medium
+  :border-color #ccc
+  :border-bottom-color = !tint2_text
+  a:link, a:visited
+    :color inherit
+    :text-decoration underline
+    :padding 0
+    :border none
+  a:hover
+    :color = !standard_text_color
+
+td
+  :border-style solid
+  :border-width 1px 0 0 0
+  :padding 5px 12px
+  :vertical-align middle
+  :font-weight normal
+  :color = !standard_text_color
+  :background-color = !tint1_background_light
+  :border-color #ccc

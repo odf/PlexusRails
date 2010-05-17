@@ -1,0 +1,80 @@
+@import definitions
+@import reset
+@import basics
+@import layout
+
+.clear
+  :content "."
+  :display block
+  :height 0
+  :margin 0
+  :padding 0
+  :clear both
+  :visibility hidden
+
+h1
+  :clear both
+  :font-size 140%
+  :line-height 100%
+  :font-weight bolder
+  :margin 0 0 2em 0
+  :padding 0 0 4px 0
+  :border-bottom 1px solid
+  :color = !tint1_text
+  :border-color #aaa
+  em
+    :padding 0 0.5em
+    :font-size 120%
+    :font-style normal
+    :font-weight normal
+    :color = !tint2_text
+
+h1:first-letter
+  :font-size 200%
+  :line-height 70%
+  :font-weight normal
+  :color = !tint1_text_alternate
+
+a:link
+  :outline none
+  :text-decoration none
+  :border-style solid
+  :padding 3px 4px 2px 4px
+  :border-width 0 0 1px 0
+  :line-height 160%
+  :color = !tint1_text
+  img
+    :border-style solid
+    :padding 4px
+    :border-width 0
+
+a:visited
+  :outline none
+  :text-decoration none
+  :border-style solid
+  :padding 3px 4px 2px 4px
+  :border-width 0 0 1px 0
+  :line-height 160%
+  :color = !tint1_text
+  img
+    :border-style solid
+    :padding 4px
+    :border-width 0
+
+a:hover
+  :outline none
+  :border-style solid
+  :padding 1px 2px
+  :border-width 2px
+  :border-color = !tint1_text
+  img
+    :border-style solid
+    :padding 2px
+    :border-width 2px
+    :border-color = !tint1_text
+
+a:active
+  :outline none
+  :border-color = !tint1_text
+  img
+    :border-color = !tint1_text

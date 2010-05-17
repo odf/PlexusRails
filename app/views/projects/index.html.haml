@@ -1,0 +1,21 @@
+- stylesheet :tables
+- title 'Projects'
+
+%table
+  %thead
+    %tr
+      %th Name
+      %th Organization
+      %th{ :colspan => 3 }
+  
+  %tbody
+    - for project in @projects
+      %tr{ :class => cycle(:odd, :even) }
+        %td= project.name
+        %td= project.organization
+        %td= link_to 'Show', project
+        %td= link_to 'Edit', edit_project_path(project)
+        %td= link_to 'Destroy', project, :confirm => 'Are you sure?', :method => :delete
+
+%br
+= link_to 'New project', new_project_path

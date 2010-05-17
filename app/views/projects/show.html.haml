@@ -1,0 +1,8 @@
+%p
+  %strong Name:
+  = @project.name
+%p
+  %strong Organization:
+  = @project.organization
+
+== #{ link_to 'Edit', edit_project_path(@project) } | #{ link_to 'Back', projects_path }

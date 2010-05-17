@@ -1,0 +1,14 @@
+- form_for(@project) do |f|
+  = f.error_messages
+  
+  .field
+    = f.label :name
+    %br
+    = f.text_field :name
+  .field
+    = f.label :organization
+    %br
+    = f.text_field :organization
+
+  .actions
+    = f.submit
