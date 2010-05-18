@@ -1,0 +1,35 @@
+@import definitions
+
+fieldset
+  :display inline
+  :margin 0 0 1em 0
+  :border 2px solid
+  :padding 1em 0 0.5em 0
+  :background-color = !tint1_background_light
+  :border-color = !tint2_background_darker
+
+form
+  p, .form-field
+    :text-align left
+    :margin 0.7em 3em
+    :clear both
+  label
+    :width 12em
+    :float left
+    :display block
+    :margin-right 0.5em
+    :font-weight bolder
+    em, .error
+      :font-weight normal
+      :color = !signal_color
+  input
+    :float left
+    :display block
+  input[type='hidden']
+    :display none
+  .with_error input
+    :outline solid 1px
+      :color = !signal_color
+
+.submit input
+  :margin-right 0.5em
