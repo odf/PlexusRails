@@ -1,6 +1,5 @@
-%p
-  %strong Name:
-  = @project.name
+- title "Project <em>#{h @project.name}</em>".html_safe
+
 %p
   %strong Organization:
   = @project.organization

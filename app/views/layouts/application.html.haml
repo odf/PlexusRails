@@ -4,7 +4,7 @@
 
   %head
     %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}/
-    %title== Plexus - #{strip_html(yield(:title) || "Untitled")}
+    %title== Plexus - #{strip_html(yield(:title))}
     = csrf_meta_tag
     - unless stripped
       = stylesheet_link_tag 'application'
