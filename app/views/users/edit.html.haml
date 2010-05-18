@@ -1,0 +1,5 @@
+- title "Editing user <em>#{@user.login_name}</em>".html_safe
+
+= render 'form'
+
+== #{ link_to 'Show', @user } | #{ link_to 'Back', users_path }
