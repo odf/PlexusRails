@@ -1,4 +1,22 @@
 class UsersController < ApplicationController
+  before_authorization_filter :find_user, :except => [:index, :new, :create]
+
+  permit :index
+  permit :new, :create,         :if => :logged_in
+  permit :show, :edit, :update, :if => :is_current_user
+
+  private
+
+  def find_user
+    @user = User.find(params[:id])
+  end
+
+  def is_current_user
+    @user == current_user
+  end
+
+  public
+
   # GET /users
   # GET /users.xml
   def index
@@ -13,8 +31,6 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
-    @user = User.find(params[:id])
-
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @user }
@@ -30,11 +46,6 @@ class UsersController < ApplicationController
       format.html # new.html.erb
       format.xml  { render :xml => @user }
     end
-  end
-
-  # GET /users/1/edit
-  def edit
-    @user = User.find(params[:id])
   end
 
   # POST /users
@@ -53,11 +64,13 @@ class UsersController < ApplicationController
     end
   end
 
+  # GET /users/1/edit
+  def edit
+  end
+
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    @user = User.find(params[:id])
-
     respond_to do |format|
       if @user.update_attributes(params[:user])
         format.html { redirect_to(@user, :notice => 'User was successfully updated.') }
@@ -72,7 +85,6 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.xml
   def destroy
-    @user = User.find(params[:id])
     @user.destroy
 
     respond_to do |format|

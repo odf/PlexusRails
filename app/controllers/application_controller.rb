@@ -3,11 +3,14 @@ class ApplicationController < ActionController::Base
 
   layout 'application'
 
+  # -- methods that will be accessible to templates
   helper_method :current_date, :current_time, :current_user
 
   # -- this handles session expiration, invalid IP addresses, etc.
   around_filter :validate_session
 
+  # -- manage authorization via the 'verboten' gem
+  forbid_everything
   
   private
 

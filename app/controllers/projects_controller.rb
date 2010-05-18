@@ -1,4 +1,7 @@
 class ProjectsController < ApplicationController
+  permit :index
+  permit :show, :new, :edit, :create, :update, :destroy, :if => :logged_in
+
   # GET /projects
   # GET /projects.xml
   def index

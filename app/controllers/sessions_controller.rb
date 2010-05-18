@@ -1,4 +1,7 @@
 class SessionsController < ApplicationController
+  permit :new, :create, :if => :logged_out
+  permit :destroy
+
   def new
     new_session
     
