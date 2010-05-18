@@ -36,6 +36,10 @@ class ApplicationController < ActionController::Base
     session[:ip] = request.remote_ip
   end
 
+  def local_request?
+    request.remote_ip == '127.0.0.1'
+  end
+
   # This is called as an around filter for all controller actions and
   # handles session expiration, invalid IP addresses, etc.
   def validate_session

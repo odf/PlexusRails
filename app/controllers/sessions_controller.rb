@@ -2,23 +2,22 @@ class SessionsController < ApplicationController
   permit :new, :create, :if => :logged_out
   permit :destroy
 
+  before_filter :new_session
+  before_filter :redirect_to_ssl, :except => :destroy
+
+  private
+  
+  def redirect_to_ssl
+    redirect_to :protocol => 'https://' unless request.ssl? or local_request?
+  end
+
+  public
+
   def new
-    new_session
-    
-    unless request.ssl? or Rails.env != 'production'
-      redirect_to new_session_url.sub(/^http:/, 'https:')
-    end
-    
     @user = User.new
   end
     
   def create
-    new_session
-
-    unless request.ssl? or Rails.env != 'production'
-      redirect_to new_session_url.sub(/^http:/, 'https:')
-    end
-    
     values = params[:user]
     user = User.authenticate(values[:name], values[:password])
     if user
@@ -32,7 +31,6 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    new_session
     flash[:notice] = "Logged out"
     redirect_to new_session_url
   end
