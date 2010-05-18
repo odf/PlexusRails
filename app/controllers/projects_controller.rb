@@ -44,12 +44,20 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.save
-        format.html { redirect_to(@project, :notice => 'Project was <em>successfully</em> created.') }
-        format.xml  { render :xml => @project, :status => :created, :location => @project }
+        format.html {
+          redirect_to(@project, :notice => 'Project was successfully  created.')
+        }
+        format.xml  {
+          render :xml => @project, :status => :created, :location => @project
+        }
       else
-        flash.now[:error] =  'Could not create project.'
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @project.errors, :status => :unprocessable_entity }
+        format.html {
+          flash.now[:error] =  'Could not create project.'
+          render :action => "new"
+        }
+        format.xml  {
+          render :xml => @project.errors, :status => :unprocessable_entity
+        }
       end
     end
   end
@@ -61,11 +69,18 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.update_attributes(params[:project])
-        format.html { redirect_to(@project, :notice => 'Project was successfully updated.') }
+        format.html {
+          redirect_to(@project, :notice => 'Project was successfully updated.')
+        }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @project.errors, :status => :unprocessable_entity }
+        format.html {
+          flash.now[:error] =  'Could not update project.'
+          render :action => "edit"
+        }
+        format.xml  {
+          render :xml => @project.errors, :status => :unprocessable_entity
+        }
       end
     end
   end
