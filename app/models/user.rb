@@ -12,20 +12,26 @@ class User
 
   attr_accessor :password, :password_confirmation
 
-  validates_uniqueness_of :login_name, :case_sensitive => false
-  validates_length_of   :login_name,   :within => 3..40
-  validates_format_of   :login_name,   :with => /\A([A-Z0-9.-]*)?\Z/i,
-    :message => "may only contain letters, digits, hyphens and dots"
+  validates :login_name,
+    :uniqueness => true,
+    :format => {
+      :with => /\A([a-z0-9.-]*)?\Z/,
+      :message => 'may only contain lowercase letters, digits, hyphens and dots'
+    },
+    :length => { :minimum => 3, :maximum => 40 }
   
-  validates_presence_of :first_name
-  validates_presence_of :last_name
+  validates :first_name, :presence => true
+  validates :last_name, :presence => true
   
-  validates_presence_of :email
-  validates_format_of   :email,
-    :with => /\A([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})?\Z/i
+  validates :email, :presence => true, :format => {
+    :with => /\A([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})?\Z/i,
+    :message => 'does not look like an email address'
+  }
 
-  validates_format_of   :homepage,
-    :with => /\A(http:\/\/[A-Z0-9.-]+\.[A-Z]{2,4}(\/[A-Z0-9.-~]*)*)?\Z/i
+  validates :homepage, :format => {
+    :with => /\A(http:\/\/[A-Z0-9.-]+\.[A-Z]{2,4}(\/[A-Z0-9.-~]*)*)?\Z/i,
+    :message => 'does not look like a URL'
+  }
 
   validates_presence_of :password,                   :if => :password_required?
   validates_presence_of :password_confirmation,      :if => :password_given?
