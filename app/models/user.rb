@@ -35,7 +35,7 @@ class User
   before_save :encrypt_password
 
   def self.authenticate(login_name, password)
-    user = self.find_by_login_name(login_name)
+    user = self.where(:login_name => login_name).first
     user if user and user.check_password(password)
   end
   
