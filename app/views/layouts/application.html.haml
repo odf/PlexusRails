@@ -4,11 +4,12 @@
 
   %head
     %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}/
-    %title= h(yield(:title) || "Untitled")
+    %title= yield(:title) || "Untitled"
     = csrf_meta_tag
     - unless stripped
       = stylesheet_link_tag 'application'
-    = yield(:head)
+      = javascript_include_tag 'jquery', 'jquery.djtch', 'rails', 'application'
+      = yield(:head)
   %body
     #page
       - unless stripped
@@ -26,21 +27,19 @@
           = Time.now
         #notice.dj-replace.dj-anchor
           - if flash[:notice]
-            = h(flash[:notice]).gsub(/(.)\n(.)/, '\1<br />\2')
+            %pre= flash[:notice]
             - flash[:notice] = nil
       .clear
   
       #content
         - if show_title? and not stripped
-          %h1= h(yield(:title) || "Untitled")
+          %h1= yield(:title) || "Untitled"
   
         #errors.dj-replace.dj-anchor
           - if flash[:error]
             #flash_error
-              %pre= h(flash[:error])
+              %pre= flash[:error]
               - flash[:error] = nil
-          - elsif flash[:object_with_errors]
-            = error_messages_for(flash[:object_with_errors])
   
         #raw-content.dj-context= yield
       .clear

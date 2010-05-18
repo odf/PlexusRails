@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
     @projects = Project.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html # index.html.haml
       format.xml  { render :xml => @projects }
     end
   end
@@ -16,7 +16,7 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html # show.html.haml
       format.xml  { render :xml => @project }
     end
   end
@@ -27,7 +27,7 @@ class ProjectsController < ApplicationController
     @project = Project.new
 
     respond_to do |format|
-      format.html # new.html.erb
+      format.html # new.html.haml
       format.xml  { render :xml => @project }
     end
   end
@@ -44,9 +44,10 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.save
-        format.html { redirect_to(@project, :notice => 'Project was successfully created.') }
+        format.html { redirect_to(@project, :notice => 'Project was <em>successfully</em> created.') }
         format.xml  { render :xml => @project, :status => :created, :location => @project }
       else
+        flash.now[:error] =  'Could not create project.'
         format.html { render :action => "new" }
         format.xml  { render :xml => @project.errors, :status => :unprocessable_entity }
       end
