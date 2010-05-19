@@ -6,12 +6,16 @@ class ApplicationController < ActionController::Base
   # -- methods that will be accessible to templates
   helper_method :current_date, :current_time, :current_user
 
+  # -- we need to make some session info available to models
+  before_filter :store_info
+
   # -- this handles session expiration, invalid IP addresses, etc.
   around_filter :validate_session
 
   # -- manage authorization via the 'verboten' gem
   forbid_everything
   
+
   private
 
   # Returns the current date as a nicely formatted string
@@ -40,36 +44,41 @@ class ApplicationController < ActionController::Base
     request.remote_ip == '127.0.0.1'
   end
 
+  # Thise stores some session info so that models can access it.
+  def store_info
+    Rails.logger.info 'Storing session info.'
+    SessionInfo.current_user = current_user
+    SessionInfo.request_host = request.host_with_port
+  end
+
   # This is called as an around filter for all controller actions and
   # handles session expiration, invalid IP addresses, etc.
   def validate_session
-    if current_user
-      # -- if someone is logged in, check some things
-      begin
-        SessionInfo.current_user = current_user
-        SessionInfo.request_host = request.host_with_port
-        # -- terminate session if expired or the IP address has changed
-        if request.remote_ip != session[:ip]
-          error = "Your network connection seems to have changed."
-        elsif !session[:expires_at] or session[:expires_at] < Time.now
-          error = "Your session has expired."
-        end
-      rescue ActiveRecord::RecordNotFound
-        # -- handle stale session cookies
-        error = "You seem to have a stale session cookie."
-      end
-    end
+    # -- if someone is logged in, make sure the session is still valid
+    error = current_user && check_session
 
-    # -- report an error or call the controller action
     if error
+      # -- close the current session and report the error
       new_session
       flash.now['error'] = error
       render :text => '', :layout => true
     else
+      # -- no error: call the intended controller action
       yield
     end
 
     # -- make session expire after an hour of inactivity
     session[:expires_at] = 1.hour.since
+  end
+
+  # Performs some tests to see if a login session is still valid.
+  def check_session
+    if request.remote_ip != session[:ip]
+      'Your network connection seems to have changed.'
+    elsif !session[:expires_at] or session[:expires_at] < Time.now
+      'Your session has expired.'
+    end
+  rescue ActiveRecord::RecordNotFound
+    'You seem to have a stale session cookie.'
   end
 end
