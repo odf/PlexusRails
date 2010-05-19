@@ -46,7 +46,6 @@ class ApplicationController < ActionController::Base
 
   # Thise stores some session info so that models can access it.
   def store_info
-    Rails.logger.info 'Storing session info.'
     SessionInfo.current_user = current_user
     SessionInfo.request_host = request.host_with_port
   end
