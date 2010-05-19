@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
     request.remote_ip == '127.0.0.1'
   end
 
-  # Thise stores some session info so that models can access it.
+  # This stores some session info so that models can access it.
   def store_info
     SessionInfo.current_user = current_user
     SessionInfo.request_host = request.host_with_port
