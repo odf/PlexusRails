@@ -18,7 +18,7 @@ class UsersController < ApplicationController
   public
 
   def index
-    @users = User.all.sort
+    @users = User.order_by [[:last_name, :asc], [:first_name, :asc]]
   end
 
   def show

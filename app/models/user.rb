@@ -68,11 +68,4 @@ class User
   def name
     "#{first_name} #{last_name}"
   end
-  
-  # Users are sorted by last name, then first name.
-  def <=>(other)
-    if other.is_a? User
-      [self.last_name, self.first_name] <=> [other.last_name, other.first_name]
-    end
-  end
 end
