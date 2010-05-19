@@ -11,6 +11,7 @@ class User
   field :crypt_strength, :type => Integer, :default => 4, :accessible => false
   field :organization, :type => String
   field :homepage, :type => String
+  key :login_name
 
   # -- these fields are used in forms but not stored
   attr_accessor :password, :password_confirmation

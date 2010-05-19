@@ -40,6 +40,10 @@ class ApplicationController < ActionController::Base
     session[:ip] = request.remote_ip
   end
 
+  def bootstrapping?
+    User.count == 0
+  end
+
   def local_request?
     request.remote_ip == '127.0.0.1'
   end

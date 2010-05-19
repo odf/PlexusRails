@@ -2,10 +2,14 @@ class UsersController < ApplicationController
   before_authorization_filter :find_user, :except => [:index, :new, :create]
 
   permit :index
-  permit :new, :create,         :if => :logged_in
+  permit :new, :create,         :if => :may_create_user
   permit :show, :edit, :update, :if => :is_current_user
 
   private
+
+  def may_create_user
+    bootstrapping? or current_user
+  end
 
   def find_user
     @user = User.find(params[:id])
@@ -29,9 +33,11 @@ class UsersController < ApplicationController
   end
 
   def create
+    in_bootstrap = bootstrapping?
     @user = User.new(params[:user])
 
     if @user.save
+      new_session(@user) if in_bootstrap
       redirect_to(@user, :notice => 'User was successfully created.')
     else
       flash.now[:error] =  'Could not create user.'

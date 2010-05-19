@@ -2,6 +2,9 @@ class SessionsController < ApplicationController
   permit :new, :create, :if => :logged_out
   permit :destroy
 
+  before_filter :if => :bootstrapping? do
+    redirect_to new_user_url, :notice => 'Please create a first user account.'
+  end
   before_filter :new_session
   before_filter :redirect_to_ssl, :except => :destroy
 
@@ -19,7 +22,7 @@ class SessionsController < ApplicationController
     
   def create
     values = params[:user]
-    user = User.authenticate(values[:name], values[:password])
+    user = User.authenticate(values[:login_name], values[:password])
     if user
       new_session(user)
       flash[:notice] = "Welcome #{user.name}!"
