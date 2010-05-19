@@ -1,5 +1,5 @@
 - title 'New User'
 
-= render 'form'
+= render :partial => 'form', :locals => { :create => true }
 
 = link_to 'Back', users_path

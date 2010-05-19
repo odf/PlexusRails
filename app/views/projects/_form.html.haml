@@ -2,7 +2,7 @@
 
 %fieldset
   = make_form_for(@project) do |f|
-    = f.text_field :name, :required => true
+    = f.text_field :name, :required => true if create
     = f.text_field :organization
     = f.result_buttons
 .clear

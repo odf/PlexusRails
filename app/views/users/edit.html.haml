@@ -1,5 +1,5 @@
 - title "Editing user <em>#{@user.login_name}</em>".html_safe
 
-= render 'form'
+= render :partial => 'form', :locals => { :create => false }
 
 == #{ link_to 'Show', @user } | #{ link_to 'Back', users_path }

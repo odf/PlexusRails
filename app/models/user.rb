@@ -3,7 +3,7 @@ class User
   include Mongoid::Document
 
   # -- declaration of persistent fields
-  field :login_name, :type => String
+  field :login_name, :type => String, :accessible => false
   field :hashed_password, :type => String, :accessible => false
   field :first_name, :type => String
   field :last_name, :type => String
@@ -18,10 +18,10 @@ class User
 
   # -- the validations for this model
   validates :login_name,
-    :uniqueness => true,
+    :strong_uniqueness => true,
     :format => {
-      :with => /\A([a-z0-9.-]*)?\Z/,
-      :message => 'may only contain lowercase letters, digits, hyphens and dots'
+      :with => /\A([a-z0-9.-]*)?\Z/i,
+      :message => 'may only contain letters, digits, hyphens and dots'
     },
     :length => { :minimum => 3, :maximum => 40 }
   
