@@ -18,10 +18,6 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def normalize_key(text)
-    text.strip.gsub(/\s+/, ' ') unless text.blank?
-  end
-
   # Returns the current date as a nicely formatted string
   def current_date
     Date.today.strftime("%d %B %Y")

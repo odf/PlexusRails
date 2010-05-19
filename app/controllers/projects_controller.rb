@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new(params[:project])
-    @project.name = normalize_key(params[:project][:name])
+    @project.name = params[:project][:name]
 
     if @project.save
       redirect_to(@project, :notice => 'Project was successfully  created.')

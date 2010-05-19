@@ -35,7 +35,7 @@ class UsersController < ApplicationController
   def create
     in_bootstrap = bootstrapping?
     @user = User.new(params[:user])
-    @user.login_name = normalize_key(params[:user][:login_name])
+    @user.login_name = params[:user][:login_name]
 
     if @user.save
       new_session(@user) if in_bootstrap
