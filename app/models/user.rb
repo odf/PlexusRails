@@ -1,6 +1,8 @@
 class User
+  # -- we use MongoDB via the Mongoid gem to store this model
   include Mongoid::Document
 
+  # -- declaration of persistent fields
   field :login_name, :type => String
   field :hashed_password, :type => String, :accessible => false
   field :first_name, :type => String
@@ -10,8 +12,10 @@ class User
   field :organization, :type => String
   field :homepage, :type => String
 
+  # -- these fields are used in forms but not stored
   attr_accessor :password, :password_confirmation
 
+  # -- the validations for this model
   validates :login_name,
     :uniqueness => true,
     :format => {
@@ -33,53 +37,42 @@ class User
     :message => 'does not look like a URL'
   }
 
-  validates_presence_of :password,                   :if => :password_required?
-  validates_presence_of :password_confirmation,      :if => :password_given?
-  validates_length_of   :password, :within => 6..40, :if => :password_given?
-  validates_confirmation_of :password,               :if => :password_given?
+  validates_each :password do |user, attr, value|
+    if value.blank?
+      user.errors[attr] << "can't be blank" if user.hashed_password.blank?
+    elsif value.size < 6
+      user.errors[attr] << "must have at least 6 characters"
+    elsif value.size > 20
+      user.errors[attr] << "may have at most 20 characters"
+    elsif user.password_confirmation != value
+      user.errors[:password_confirmation] << "does not match"
+    end
+  end
 
-  before_save :encrypt_password
+  # -- this produces the encrypted password for persistent storage
+  before_save do |user|
+    unless user.password.blank?
+      user.hashed_password =
+        Crypt::crypt(user.password, :strength => user.crypt_strength)
+    end
+  end
 
+  # Finds the user with the given login name and password, if any.
   def self.authenticate(login_name, password)
     user = self.where(:login_name => login_name).first
-    user if user and user.check_password(password)
+    user if user and Crypt::check(password, user.hashed_password,
+                                  :strength => user.crypt_strength)
   end
   
-  def check_password(password)
-    Crypt::check(password, hashed_password, :strength => crypt_strength)
-  end
-  
+  # The displayed name for this user.
   def name
-    if first_name.blank? or last_name.blank?
-      login_name
-    else
-      [first_name, last_name].join(" ")
-    end
+    "#{first_name} #{last_name}"
   end
   
+  # Users are sorted by last name, then first name.
   def <=>(other)
     if other.is_a? User
-      d = (self.last_name || "") <=> (other.last_name || "")
-      if d == 0 then self.name <=> other.name else d end
+      [self.last_name, self.first_name] <=> [other.last_name, other.first_name]
     end
-  end
-
-  protected
-  
-  def self.encrypted_password(password, strength)
-    Crypt::crypt(password, :strength => strength)
-  end
-  
-  def encrypt_password
-    return if password.blank?
-    self.hashed_password = User.encrypted_password(password, crypt_strength)
-  end
-  
-  def password_required?
-    hashed_password.blank?
-  end
-  
-  def password_given?
-    not password.blank?
   end
 end
