@@ -45,7 +45,7 @@ class NiftyFormBuilder < ActionView::Helpers::FormBuilder
   def radio_button(column, value, options = {})
     ident = "#{object_ident}_#{column}"
     name  = "#{@object_name}[#{column}]"
-    msg   = @object.errors.on(column)
+    msg   = @object.errors[column]
     check = (@object.send(column) == value)
     label = options.delete(:label) || value
     haml { '
@@ -146,7 +146,7 @@ class NiftyFormBuilder < ActionView::Helpers::FormBuilder
   end
 
   def errors_on(column)
-    msg = @object.errors.on(column)
+    msg = @object.errors[column]
     msg = msg.join(" ") unless msg.nil? or msg.is_a? String
     if msg.blank?
       ''
@@ -196,7 +196,7 @@ class NiftyFormBuilder < ActionView::Helpers::FormBuilder
 
     ident = "#{object_ident}_#{column}"
     name  = "#{@object_name}[#{column}]"
-    msg   = @object.errors.on(column)
+    msg   = @object.errors[column]
     klass = "input" + (msg.blank? ? "" : " with_error")
 
     content = haml { '

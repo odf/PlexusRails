@@ -1,7 +1,7 @@
 - stylesheet :forms
 
 %fieldset
-  - make_form_for(@user) do |f|
+  = make_form_for(@user) do |f|
     = f.text_field :login_name, :required => true
     = f.text_field :first_name, :required => true
     = f.text_field :last_name, :required => true
