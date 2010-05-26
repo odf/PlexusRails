@@ -18,6 +18,6 @@ group :test do
   gem 'cucumber-rails'
   gem 'spork'
   gem 'launchy'    # So you can do Then show me the page
-  gem 'machinist_mongo', :require => 'machinist/mongoid', :git => 'git@github.com:odf/machinist_mongo.git'
+  gem 'machinist_mongo', :require => 'machinist/mongoid', :git => 'git://github.com/odf/machinist_mongo.git'
   gem 'faker'
 end
