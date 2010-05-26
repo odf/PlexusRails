@@ -40,10 +40,12 @@ class ApplicationController < ActionController::Base
     session[:ip] = request.remote_ip
   end
 
+  # If this returns true, we have a new installation that needs setup.
   def bootstrapping?
     User.count == 0
   end
 
+  # Returns true if the request is from localhost.
   def local_request?
     request.remote_ip == '127.0.0.1'
   end
@@ -70,7 +72,7 @@ class ApplicationController < ActionController::Base
       yield
     end
 
-    # -- make session expire after an hour of inactivity
+    # -- the session will expire after an hour of inactivity
     session[:expires_at] = 1.hour.since
   end
 
