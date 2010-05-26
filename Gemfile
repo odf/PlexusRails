@@ -13,7 +13,11 @@ gem 'json_pure', :require => 'json'
 gem 'verboten'
 
 group :test do
-  gem "rspec"
-  gem "rspec-rails"
-  gem "machinist"
+  gem 'rspec-rails', '2.0.0.beta.8'
+  gem 'capybara'
+  gem 'cucumber-rails'
+  gem 'spork'
+  gem 'launchy'    # So you can do Then show me the page
+  gem 'machinist_mongo', :require => 'machinist/mongoid'
+  gem 'faker'
 end

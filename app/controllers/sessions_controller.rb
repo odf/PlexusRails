@@ -5,7 +5,6 @@ class SessionsController < ApplicationController
   before_filter :if => :bootstrapping? do
     redirect_to new_user_url, :notice => 'Please create a first user account.'
   end
-  before_filter :new_session
   before_filter :redirect_to_ssl, :except => :destroy
 
   private
@@ -25,16 +24,14 @@ class SessionsController < ApplicationController
     user = User.authenticate(values[:login_name], values[:password])
     if user
       new_session(user)
-      flash[:notice] = "Welcome #{user.name}!"
-      redirect_to projects_url
+      redirect_to projects_url, :notice => "Welcome #{user.name}!"
     else
-      flash[:error] = "Invalid user or password"
-      redirect_to new_session_url
+      redirect_to login_url, :alert => 'Invalid user or password'
     end
   end
 
   def destroy
-    flash[:notice] = "Logged out"
-    redirect_to new_session_url
+    new_session
+    redirect_to new_session_url, :notice => 'Logged out'
   end
 end

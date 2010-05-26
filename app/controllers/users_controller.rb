@@ -39,10 +39,9 @@ class UsersController < ApplicationController
 
     if @user.save
       new_session(@user) if in_bootstrap
-      redirect_to(@user, :notice => 'User was successfully created.')
+      redirect_to @user, :notice => 'User was successfully created.'
     else
-      flash.now[:error] =  'Could not create user.'
-      render :action => "new"
+      render :action => 'new', :alert => 'Could not create user.'
     end
   end
 
@@ -51,10 +50,9 @@ class UsersController < ApplicationController
 
   def update
     if @user.update_attributes(params[:user])
-      redirect_to(@user, :notice => 'User was successfully updated.')
+      redirect_to @user, :notice => 'User was successfully updated.'
     else
-      flash.now[:error] =  'Could not update user.'
-      render :action => "edit"
+      render :action => 'edit', :alert => 'Could not update user.'
     end
   end
 

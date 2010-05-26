@@ -23,10 +23,9 @@ class ProjectsController < ApplicationController
     @project.name = params[:project][:name]
 
     if @project.save
-      redirect_to(@project, :notice => 'Project was successfully  created.')
+      redirect_to @project, :notice => 'Project was successfully  created.'
     else
-      flash.now[:error] =  'Could not create project.'
-      render :action => "new"
+      render :action => 'new', :alert => 'Could not create project.'
     end
   end
 
@@ -34,10 +33,9 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
 
     if @project.update_attributes(params[:project])
-      redirect_to(@project, :notice => 'Project was successfully updated.')
+      redirect_to @project, :notice => 'Project was successfully updated.'
     else
-      flash.now[:error] =  'Could not update project.'
-      render :action => "edit"
+      render :action => 'edit', :alert => 'Could not update project.'
     end
   end
 
