@@ -1,3 +1,7 @@
+Given /^no users exist$/ do
+  User.destroy_all
+end
+
 Given /^a user "([a-z0-9.-]+)" exists with password "(.+)"$/ do |name, passwd|
   User.make :login_name => name, :password => passwd
 end
