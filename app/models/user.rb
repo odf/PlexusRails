@@ -1,9 +1,9 @@
 class User
-  READER_FU = [ 'login', 'view' ]
-  EDITOR_FU = READER_FU + [ 'edit' ]
-  ADMIN_FU  = EDITOR_FU + [ 'authorize' ]
-  WIZARD_FU = ADMIN_FU + [ 'impersonate' ]
-  ABILITIES = WIZARD_FU
+  READER_TASKS = [ 'login', 'view' ]
+  EDITOR_TASKS = READER_TASKS + [ 'edit' ]
+  ADMIN_TASKS  = EDITOR_TASKS + [ 'authorize' ]
+  WIZARD_TASKS = ADMIN_TASKS + [ 'impersonate' ]
+  ABILITIES    = WIZARD_TASKS
 
   # -- we use MongoDB via the Mongoid gem to store this model
   include Mongoid::Document
@@ -17,17 +17,17 @@ class User
   field :crypt_strength, :type => Integer, :default => 4, :accessible => false
   field :organization, :type => String
   field :homepage, :type => String
-  field :abilities, :type => Array, :default => READER_FU
+  field :abilities, :type => Array, :default => READER_TASKS
   key :login_name
 
   # -- these fields are used in forms but not stored
   attr_accessor :password, :password_confirmation
 
   # -- we define some roles as named scopes
-  named_scope :reader, :where => { :abilities.all => READER_FU }
-  named_scope :editor, :where => { :abilities.all => EDITOR_FU }
-  named_scope :admin,  :where => { :abilities.all => ADMIN_FU }
-  named_scope :wizard, :where => { :abilities.all => WIZARD_FU }
+  named_scope :reader, :where => { :abilities.all => READER_TASKS }
+  named_scope :editor, :where => { :abilities.all => EDITOR_TASKS }
+  named_scope :admin,  :where => { :abilities.all => ADMIN_TASKS }
+  named_scope :wizard, :where => { :abilities.all => WIZARD_TASKS }
 
   # -- the validations for this model
   validates :login_name,
@@ -83,13 +83,25 @@ class User
     "#{first_name} #{last_name}"
   end
 
+  def self.ability_getter(a)
+    "may_#{a}".to_sym
+  end
+
+  def self.ability_setter(a)
+    "may_#{a}=".to_sym
+  end
+
   ABILITIES.each do |a|
-    define_method("may_#{a}") do
+    define_method(ability_getter(a)) do
       abilities.include? a
     end
 
-    define_method("may_#{a}=") do |val|
+    define_method(ability_setter(a)) do |val|
       self.abilities = (val and val != '0') ? abilities | [a] : abilities - [a]
     end
+  end
+
+  def can_authorize?(user, a)
+    user != self and may_authorize and (abilities | ADMIN_TASKS).include?(a)
   end
 end

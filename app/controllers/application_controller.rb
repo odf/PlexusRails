@@ -4,7 +4,8 @@ class ApplicationController < ActionController::Base
   layout 'application'
 
   # -- methods that will be accessible to templates
-  helper_method :current_date, :current_time, :current_user
+  helper_method (:current_date, :current_time, :current_user, :can_authorize?,
+                 *User::ABILITIES.map(&User.method(:ability_getter)))
 
   # -- we need to make some session info available to models
   before_filter :store_info
@@ -15,6 +16,14 @@ class ApplicationController < ActionController::Base
   # -- manage authorization via the 'verboten' gem
   forbid_everything
   
+  User::ABILITIES.each do |a|
+    name = User.ability_getter(a)
+    define_method(name) { current_user and current_user.send(name) }
+  end
+
+  def can_authorize?(user, a)
+    current_user and current_user.can_authorize?(user, a)
+  end
 
   private
 
