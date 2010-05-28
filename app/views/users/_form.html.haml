@@ -11,6 +11,8 @@
     = f.password_field :password, :required => true
     = f.password_field :password_confirmation, :label => "Confirm password", |
                                                :required => true |
-
+    - if current_user.may_authorize
+      - current_user.abilities.each do |a|
+        = f.check_box "may_#{a}"
     = f.result_buttons
 .clear

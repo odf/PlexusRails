@@ -1,4 +1,10 @@
 class User
+  READER_FU = [ 'login', 'view' ]
+  EDITOR_FU = READER_FU + [ 'edit' ]
+  ADMIN_FU  = EDITOR_FU + [ 'authorize' ]
+  WIZARD_FU = ADMIN_FU + [ 'impersonate' ]
+  ABILITIES = WIZARD_FU
+
   # -- we use MongoDB via the Mongoid gem to store this model
   include Mongoid::Document
 
@@ -11,10 +17,17 @@ class User
   field :crypt_strength, :type => Integer, :default => 4, :accessible => false
   field :organization, :type => String
   field :homepage, :type => String
+  field :abilities, :type => Array, :default => READER_FU
   key :login_name
 
   # -- these fields are used in forms but not stored
   attr_accessor :password, :password_confirmation
+
+  # -- we define some roles as named scopes
+  named_scope :reader, :where => { :abilities.all => READER_FU }
+  named_scope :editor, :where => { :abilities.all => EDITOR_FU }
+  named_scope :admin,  :where => { :abilities.all => ADMIN_FU }
+  named_scope :wizard, :where => { :abilities.all => WIZARD_FU }
 
   # -- the validations for this model
   validates :login_name,
@@ -68,5 +81,15 @@ class User
   # The displayed name for this user.
   def name
     "#{first_name} #{last_name}"
+  end
+
+  ABILITIES.each do |a|
+    define_method("may_#{a}") do
+      abilities.include? a
+    end
+
+    define_method("may_#{a}=") do |val|
+      self.abilities = (val and val != '0') ? abilities | [a] : abilities - [a]
+    end
   end
 end
