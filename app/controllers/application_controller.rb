@@ -4,8 +4,8 @@ class ApplicationController < ActionController::Base
   layout 'application'
 
   # -- methods that will be accessible to templates
-  helper_method (:current_date, :current_time, :current_user, :can_authorize?,
-                 *User::ABILITIES.map(&User.method(:ability_getter)))
+  helper_method(:current_date, :current_time, :current_user, :can_authorize?,
+                *User::ABILITIES.map(&User.method(:ability_getter)))
 
   # -- we need to make some session info available to models
   before_filter :store_info
