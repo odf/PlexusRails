@@ -65,7 +65,7 @@ class ApplicationController < ActionController::Base
     if error
       # -- close the current session and report the error
       new_session
-      flash.now['error'] = error
+      flash.now[:error] = error
       render :text => '', :layout => true
     else
       # -- no error: call the intended controller action
