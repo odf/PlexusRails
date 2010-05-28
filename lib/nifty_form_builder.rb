@@ -28,17 +28,14 @@ class NiftyFormBuilder < ActionView::Helpers::FormBuilder
   create_tagged_field("select")
   create_tagged_field("text_area", :rows => 4, :cols => 60)
   
-  # The new check_box helper uses a layout different from our generic one.
+  # The check_box helper needs slightly different treatment.
   def check_box(column, options = {})
-    label = options.delete(:label) || try(:label_for, column) || column
     selections = try(:selections, column) || []
     unchecked_value = options.delete(:unchecked_value) || selections[0] || "0"
     checked_value = options.delete(:checked_value) || selections[1] || "1"
-    haml { '
-%span
-  = super(column, options, checked_value, unchecked_value)
-  = label
-' }
+    create_field(column, {}, [], options) do |f|
+      super(column, f.options, checked_value, unchecked_value)
+    end
   end
 
   # The new radio_button helper uses a layout different from our generic one.
