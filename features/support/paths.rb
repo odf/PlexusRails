@@ -5,8 +5,8 @@ module NavigationHelpers
     when /the home\s?page/
       '/'
 
-    when /the user's profile editing page/
-      "/users/#{@user.id}/edit"
+    when /"(.*)"/
+      $1
 
     else
       begin

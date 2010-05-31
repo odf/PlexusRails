@@ -8,12 +8,7 @@ Feature: Administrator
     And the user may login and authorize
     And the user is logged in
 
-  Scenario: The administrator has access to the "new user" page
-    When I go to the new user page
-    Then I should see "New User"
-    And I should see "May login"
-
-  Scenario: The administrator can create accounts
+  Scenario: An administrator can create accounts
     When I go to the new user page
     And I fill in the following:
       |Login name       |testuser             |
@@ -27,12 +22,16 @@ Feature: Administrator
     And a user "testuser" should exist
     And the user should be able to log in with password "secret"
 
-  Scenario: The administrator can assign rights
-    Given a user "manager" exists
-    And the user may login, view and authorize
-    When I go to the user's profile editing page
-    And I check "May edit"
-    And I uncheck "May authorize"
+  Scenario: An administrator can assign rights to other users
+    Given a user "staff" exists
+    And the user may login, view and edit
+    When I go to "/users/staff/edit"
+    And I check "May authorize"
+    And I uncheck "May edit"
     And I press "Save"
-    Then the user should be allowed to login, view and edit
-    But the user should not be allowed to authorize
+    Then the user should be allowed to login, view and authorize
+    But the user should not be allowed to edit
+
+  Scenario: An administrator cannot assign rights to themself
+    When I go to "/users/admin/edit"
+    Then I should not see "May login"

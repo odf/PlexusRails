@@ -23,14 +23,19 @@ Given /^a user "([a-z0-9.-]+)" exists with password "(.+)"$/ do |name, passwd|
 end
 
 Given /^the user may (.+)$/ do |activities|
-  parse_list(activities).each do |name|
-    @user.send(User.ability_setter(name), true)
+  allowed = parse_list(activities)
+  User::ABILITIES.each do |name|
+    @user.send(User.ability_setter(name), allowed.include?(name))
   end
   @user.save
 end
 
 Given /^the user is logged in$/ do
   login @user.login_name, @user.password
+end
+
+Given /^I am logged in as "(.+)" with password "(.+)"$/ do |user, password|
+  login user, password
 end
 
 When /^I log in as "(.+)" with password "(.+)"$/ do |user, password|
