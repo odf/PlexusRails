@@ -1,0 +1,82 @@
+Framework
+---------
+
+This web application is based on the Ruby on Rails Version 3 framework
+- see http://rubyonrails.org/.  Note that Rails 3 is quite different
+from previous versions, so be sure to look at the appropriate
+documents.
+
+
+Persistence
+-----------
+
+We use the document-oriented database MongoDB for data persistence -
+see http://www.mongodb.org/. The Mongoid gem - see http://mongoid.org/
+- provides our integration layer between the database driver and the
+Rails framework.
+
+
+Testing
+-------
+
+Our testing framework is rspec/cucumber - see http://rspec.info/ and
+http://cukes.info/. Data for tests is created using the machinist gem
+- see http://github.com/notahat/machinist. The capybara gem - see
+http://github.com/jnicklas/capybara - is used to simulate or drive a
+web browser for integration testing.
+
+
+Authentication
+--------------
+
+We use a one-way password hashing scheme based on the FreeBSD crypt
+algorithm.  Only the encrypted version of a password is ever stored in
+the database.  There is no self-registration.  Users have to be added
+by an administrator.
+
+
+Authorization
+-------------
+
+A white-list approach is used for authorization via the in-house
+verboten gem.  Any page access is forbidden for any user unless
+explicitly allowed.  Each controller must contains a section defining
+access conditions for its actions via the 'permit' method.  An
+additional method 'before_authorization_filter' is provided for
+gathering information required by the respective authorization tests.
+
+
+Roles and Abilities
+-------------------
+
+There is a pre-defined collection of potential abilities - currently
+login, view, edit, authorize and impersonate - which can be added
+(authorized) or removed (prohibited) for each individual user.  There
+is no explicit assignment of 'roles' to users - a role is simply the
+sum of a particular user's abilities.
+
+
+Templating and Stylesheets
+--------------------------
+
+Haml - see http://haml-lang.com/ - is used as the template engine.
+Stylesheets are defined using Sass - see http://sass-lang.com/ -
+rather than straight CSS.
+
+
+Forms
+-----
+
+HTML markup for web forms in this application is generated via a
+custom form builder - see lib/nifty_form_builder.rb - which is called
+via 'make_form_for()' instead of 'form_for()'.  The main difference to
+Rails' default generator is the automatic generation of labels and
+usage hints.
+
+
+Javascript
+----------
+
+We adhere to the principles of unobtrusive Javascript - see
+http://en.wikipedia.org/wiki/Unobtrusive_JavaScript - and make
+extensive use of the jQuery library - see http://jquery.com/.

@@ -16,16 +16,16 @@ class ApplicationController < ActionController::Base
   # -- manage authorization via the 'verboten' gem
   forbid_everything
   
+  # -- define methods for inquiring the abilities of the current user
   User::ABILITIES.each do |a|
     name = User.ability_getter(a)
     define_method(name) { current_user and current_user.send(name) }
   end
 
+  # Checks whether the given user can authorize the given ability.
   def can_authorize?(user, a)
     current_user and current_user.can_authorize?(user, a)
   end
-
-  private
 
   # Returns the current date as a nicely formatted string
   def current_date
@@ -41,6 +41,8 @@ class ApplicationController < ActionController::Base
   def current_user
     User.where(:login_name => session[:user]).first
   end
+
+  private
 
   # Starts a new session in which the given user is logged in.
   def new_session(user = nil)
