@@ -1,10 +1,12 @@
 class UsersController < ApplicationController
   before_authorization_filter :find_user, :except => [:index, :new, :create]
 
-  permit :index,         :if => :may_edit
-  permit :new, :create,  :if => :may_create_user
-  permit :show,          :if => :may_view_user
-  permit :edit, :update, :if => :may_edit_user
+  permit :index,        :if => :may_edit
+  permit :new, :create, :if => :may_create_user
+  permit :show          do may_view_user(@user) end
+  permit :edit, :update do may_edit_user(@user) end
+
+  helper_method :may_view_user, :may_edit_user
 
   private
 
@@ -12,12 +14,12 @@ class UsersController < ApplicationController
     may_authorize or bootstrapping?
   end
 
-  def may_view_user
-    may_edit or @user == current_user
+  def may_view_user(user)
+    may_edit or user == current_user
   end
 
-  def may_edit_user
-    may_authorize or @user == current_user
+  def may_edit_user(user)
+    may_authorize or user == current_user
   end
 
   def find_user
@@ -65,11 +67,5 @@ class UsersController < ApplicationController
     else
       render :action => 'edit', :alert => 'Could not update user.'
     end
-  end
-
-  def destroy
-    @user.destroy
-
-    redirect_to(users_url)
   end
 end

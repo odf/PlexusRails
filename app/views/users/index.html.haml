@@ -5,25 +5,22 @@
   %thead
     %tr
       %th Login name
-      %th First name
-      %th Last name
+      %th Name
       %th Email
       %th Organization
       %th Homepage
-      %th{ :colspan => 3 }
+      %th{ :colspan => 2 }
   
   %tbody
-    - for user in @users
+    - @users.select(&self.method(:may_view_user)).each do |user|
       %tr{ :class => cycle(:odd, :even) }
         %td= user.login_name
-        %td= user.first_name
-        %td= user.last_name
+        %td= user.name
         %td= user.email
         %td= user.organization
         %td= user.homepage
-        %td= link_to 'Show', user
-        %td= link_to 'Edit', edit_user_path(user)
-        %td= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete
+        %td= link_to('Show', user)
+        %td= link_to('Edit', edit_user_path(user)) if may_edit_user(user)
 
 %br
-= link_to 'New user', new_user_path
+= link_to('New user', new_user_path) if may_authorize
