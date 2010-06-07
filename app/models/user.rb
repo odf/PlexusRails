@@ -1,4 +1,5 @@
 class User
+  # -- define sets of abilities for certain roles
   READER_TASKS = [ 'login', 'view' ]
   EDITOR_TASKS = READER_TASKS + [ 'edit' ]
   ADMIN_TASKS  = EDITOR_TASKS + [ 'authorize' ]
@@ -83,14 +84,17 @@ class User
     "#{first_name} #{last_name}"
   end
 
+  # The name of the method that checks the given ability for a user.
   def self.ability_getter(a)
     "may_#{a}".to_sym
   end
 
+  # The name of the method that adds or removes the given ability.
   def self.ability_setter(a)
     "may_#{a}=".to_sym
   end
 
+  # -- define the getters and setters for all supported abilities
   ABILITIES.each do |a|
     define_method(ability_getter(a)) do
       abilities.include? a
@@ -101,6 +105,7 @@ class User
     end
   end
 
+  # Checks whether this user can add or remove ability <a> for user <user>.
   def can_authorize?(user, a)
     user != self and may_authorize and (abilities | ADMIN_TASKS).include?(a)
   end

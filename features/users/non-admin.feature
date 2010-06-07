@@ -1,6 +1,6 @@
 Feature: Non-administrator
   A user without the "authorize" privilege should not be able to
-  create account or assign permissions.
+  create accounts or assign permissions.
 
   Background:
     Given a user "staff" exists
