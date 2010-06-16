@@ -1,5 +1,3 @@
 - title "Editing Project <em>#{h @project.name}</em>".html_safe
 
 = render :partial => 'form', :locals => { :create => false }
-
-== #{ link_to 'Show', @project } | #{ link_to 'Back', projects_path }

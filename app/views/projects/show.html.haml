@@ -3,5 +3,10 @@
 %p
   %strong Organization:
   = @project.organization
+%p
+  %strong Members:
+%ul
+  - for membership in @project.memberships
+    %li== #{membership.user.name} (#{membership.role})
 
-== #{ link_to 'Edit', edit_project_path(@project) } | #{ link_to 'Back', projects_path }
+= link_to 'Edit', edit_project_path(@project)

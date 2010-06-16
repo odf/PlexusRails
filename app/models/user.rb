@@ -19,7 +19,12 @@ class User
   field :organization, :type => String
   field :homepage, :type => String
   field :abilities, :type => Array, :default => READER_TASKS
+
+  # -- what to use as the document key
   key :login_name
+
+  # -- embedded and related documents
+  has_many_related :memberships
 
   # -- these fields are used in forms but not stored
   attr_accessor :password, :password_confirmation

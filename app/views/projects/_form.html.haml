@@ -1,8 +1,28 @@
 - stylesheet :forms
+- stylesheet :tables
 
 %fieldset
-  = make_form_for(@project) do |f|
-    = f.text_field :name, :required => true if create
-    = f.text_field :organization
-    = f.result_buttons
+  = make_form_for(@project) do |form|
+    = form.text_field :name, :required => true if create
+    = form.text_field :organization
+
+    %table
+      %thead
+        %tr
+          %th Name
+          %th No Access
+          %th Read Only
+          %th Read/Write
+          %th Manager
+      %tbody
+        - form.fields_for :memberships do |fields|
+          - user = fields.object.user
+          %tr
+            %td= user.name
+            %td= fields.radio_button :role, '', :label => ''
+            %td= fields.radio_button :role, 'client', :label => ''
+            %td= fields.radio_button :role, 'contributor', :label => ''
+            %td= fields.radio_button :role, 'manager', :label => ''
+
+    = form.result_buttons
 .clear
