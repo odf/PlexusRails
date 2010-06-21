@@ -9,4 +9,4 @@
   - for membership in @project.memberships.sorted
     %li== #{membership.user.name} (as #{membership.role})
 
-= link_to 'Edit', edit_project_path(@project)
+= link_to('Edit', edit_project_path(@project)) if may_manage_project(@project)

@@ -12,7 +12,7 @@
       %th{ :colspan => 2 }
   
   %tbody
-    - @users.select(&self.method(:may_view_user)).each do |user|
+    - @users.each do |user|
       %tr{ :class => cycle(:odd, :even) }
         %td= user.login_name
         %td= user.name

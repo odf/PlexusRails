@@ -29,7 +29,7 @@ class UsersController < ApplicationController
   public
 
   def index
-    @users = User.sorted
+    @users = User.sorted.select(&self.method(:may_view_user))
   end
 
   def show

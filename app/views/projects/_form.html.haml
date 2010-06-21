@@ -4,7 +4,7 @@
 = formular_for(@project) do |form|
   = form.text_field :name, :required => true if create
   = form.text_field :organization
-  
+ 
   %p
     %label Members:
   %table
@@ -25,6 +25,6 @@
           %td= fields.radio_button :role, 'contributor', :label => ''
           %td= fields.radio_button :role, 'manager', :label => ''
 
-  = form.result_buttons
+  %p= form.result_buttons
   .clear
 .clear

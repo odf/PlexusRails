@@ -26,10 +26,29 @@ class Project
     memberships.map &:user
   end
 
+  def membership_of(user)
+    memberships.where(:user_id => user.id).first
+  end
+
+  def role_of(user)
+    (m = membership_of(user)) && m.role
+  end
+
+  def can_be_viewed_by(user)
+    %w{client contributor manager}.include? role_of(user)
+  end
+
+  def can_be_edited_by(user)
+    %w{contributor manager}.include? role_of(user)
+  end
+
+  def can_be_managed_by(user)
+    role_of(user) == 'manager'
+  end
+
   def roles
     User.sorted.map do |user|
-      found = memberships.where :user_id => user.id
-      found.size > 0 ? found.first : Membership.new(:user => user, :role => '')
+      membership_of(user) || Membership.new(:user => user, :role => '')
     end
   end
 
