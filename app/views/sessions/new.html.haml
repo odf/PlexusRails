@@ -2,7 +2,7 @@
 - stylesheet :forms
 
 %fieldset
-  = make_form_for @user, :url => sessions_url do |form|
+  = formular_for @user, :url => sessions_url do |form|
     = form.text_field :login_name, :required => true
     = form.password_field :password, :required => true
     = form.result_buttons "Login"

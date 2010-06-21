@@ -2,7 +2,7 @@
 - stylesheet :tables
 
 %fieldset
-  = make_form_for(@project) do |form|
+  = formular_for(@project) do |form|
     = form.text_field :name, :required => true if create
     = form.text_field :organization
 

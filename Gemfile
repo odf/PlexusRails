@@ -11,6 +11,7 @@ gem 'mongoid', '2.0.0.beta6'
 gem 'json_pure', :require => 'json'
 
 gem 'verboten'
+gem 'formular'
 
 group :test do
   gem 'rspec-rails', '2.0.0.beta.8'
