@@ -22,12 +22,9 @@ class Project
   # -- make sure project names are unique (case-insensitive)
   validates :name, :presence => true, :strong_uniqueness => true
 
+  # -- methods to inquire project memberships and user permissions
   def members
     memberships.map &:user
-  end
-
-  def membership_of(user)
-    memberships.where(:user_id => user.id).first
   end
 
   def role_of(user)
@@ -46,6 +43,7 @@ class Project
     role_of(user) == 'manager'
   end
 
+  # -- pseudo-attribute for editing memberships and roles
   def roles
     User.sorted.map do |user|
       membership_of(user) || Membership.new(:user => user, :role => '')
@@ -56,7 +54,9 @@ class Project
     data.each { |key, value| set_role(User.find(value[:user_id]), value[:role]) }
   end
 
+  # -- private methods start here
   private
+
   def set_role(user, role)
     membership = user && memberships.where(:user_id => user.id).first
 
@@ -69,5 +69,9 @@ class Project
     elsif user and not role.blank?
       memberships.create(:user_id => user.id, :role => role)
     end
+  end
+
+  def membership_of(user)
+    memberships.where(:user_id => user.id).first
   end
 end
