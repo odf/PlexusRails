@@ -1,17 +1,18 @@
 @import definitions
 
-fieldset
-  :display inline
-  :margin 0 0 1em 0
+form
+  :display inline-block
+  :width auto
+  :margin 0
+    :bottom 1em
   :border 2px solid
-  :padding 1em 0 0.5em 0
+  :padding 1em 3em
   :background-color = !tint1_background_light
   :border-color = !tint2_background_darker
-
-form
-  p, .form-field
+  p, table, .form-field, .submit
+    :display block
     :text-align left
-    :margin 0.7em 3em
+    :padding 0.3em 0
     :clear both
   label
     :width 12em
@@ -35,3 +36,21 @@ form
 
 .submit input
   :margin-right 0.5em
+
+form table
+  :border none
+  :padding 1em 0
+  thead
+    :background-color = !tint1_background_dark
+    :border 1px solid
+      :color = !tint2_background_darker
+  th
+    :color black
+    :background-color inherit
+    :font
+      :size 100%
+      :weight normal
+      :style italic
+  th, td
+    :padding 0.2em 0.7em
+    :border none

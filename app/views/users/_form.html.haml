@@ -1,18 +1,18 @@
 - stylesheet :forms
 
-%fieldset
-  = formular_for(@user) do |f|
-    = f.text_field :login_name, :required => true if create
-    = f.text_field :first_name, :required => true
-    = f.text_field :last_name, :required => true
-    = f.text_field :organization
-    = f.text_field :email, :required => true
-    = f.text_field :homepage
-    = f.password_field :password, :required => true
-    = f.password_field :password_confirmation, :label => "Confirm password", |
-                                               :required => true |
-    - User::ABILITIES.each do |a|
-      - if can_authorize?(@user, a)
-        = f.check_box User.ability_getter(a)
-    = f.result_buttons
+= formular_for(@user) do |f|
+  = f.text_field :login_name, :required => true if create
+  = f.text_field :first_name, :required => true
+  = f.text_field :last_name, :required => true
+  = f.text_field :organization
+  = f.text_field :email, :required => true
+  = f.text_field :homepage
+  = f.password_field :password, :required => true
+  = f.password_field :password_confirmation, :label => "Confirm password", |
+                                             :required => true |
+  - User::ABILITIES.each do |a|
+    - if can_authorize?(@user, a)
+      = f.check_box User.ability_getter(a)
+  = f.result_buttons
+  .clear
 .clear

@@ -1,8 +1,9 @@
 - title 'Login'
 - stylesheet :forms
 
-%fieldset
-  = formular_for @user, :url => sessions_url do |form|
-    = form.text_field :login_name, :required => true
-    = form.password_field :password, :required => true
-    = form.result_buttons "Login"
+= formular_for @user, :url => sessions_url do |form|
+  = form.text_field :login_name, :required => true
+  = form.password_field :password, :required => true
+  = form.result_buttons "Login"
+  .clear
+.clear
