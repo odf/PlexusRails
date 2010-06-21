@@ -20,14 +20,23 @@ class Project
   # -- make sure project names are unique (case-insensitive)
   validates :name, :presence => true, :strong_uniqueness => true
 
-  # -- allows for nicer forms
-  accepts_nested_attributes_for :memberships
-
 
   def members
     memberships.map &:user
   end
 
+  def roles
+    User.sorted.map do |user|
+      found = memberships.where :user_id => user.id
+      found.size > 0 ? found.first : Membership.new(:user => user, :role => '')
+    end
+  end
+
+  def roles_attributes=(data)
+    data.each { |key, value| set_role(User.find(value[:user_id]), value[:role]) }
+  end
+
+  private
   def set_role(user, role)
     membership = user && memberships.where(:user_id => user.id).first
 

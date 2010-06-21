@@ -5,6 +5,8 @@
   = form.text_field :name, :required => true if create
   = form.text_field :organization
   
+  %p
+    %label Members:
   %table
     %thead
       %tr
@@ -14,10 +16,10 @@
         %th Read/Write
         %th Manager
     %tbody
-      - form.fields_for :memberships do |fields|
+      - form.fields_for :roles do |fields|
         - user = fields.object.user
         %tr
-          %td= user.name
+          %td= fields.hidden_field :user_id, :label => user.name
           %td= fields.radio_button :role, '', :label => ''
           %td= fields.radio_button :role, 'client', :label => ''
           %td= fields.radio_button :role, 'contributor', :label => ''

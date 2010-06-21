@@ -29,11 +29,13 @@ class User
   # -- these fields are used in forms but not stored
   attr_accessor :password, :password_confirmation
 
-  # -- we define some roles as named scopes
+  # -- named scopes for selecting by role and for sorting
   named_scope :reader, :where => { :abilities.all => READER_TASKS }
   named_scope :editor, :where => { :abilities.all => EDITOR_TASKS }
   named_scope :admin,  :where => { :abilities.all => ADMIN_TASKS }
   named_scope :wizard, :where => { :abilities.all => WIZARD_TASKS }
+
+  named_scope :sorted, :order_by => [[:last_name, :asc], [:first_name, :asc]]
 
   # -- the validations for this model
   validates :login_name,
