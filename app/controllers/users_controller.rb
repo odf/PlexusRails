@@ -8,7 +8,25 @@ class UsersController < ApplicationController
 
   helper_method :may_view_user, :may_edit_user
 
+  before_filter :only => :update, :if => :edit_cancelled do
+    redirect_to @user, :notice => 'User update was cancelled.'
+  end
+
+  before_filter :only => :create, :if => :edit_cancelled do
+    redirect_to users_url, :notice => 'User creation was cancelled.'
+  end
+
+  helper_method :may_view_user, :may_edit_user
+
   private
+
+  def find_user
+    @user = User.find(params[:id])
+  end
+
+  def edit_cancelled
+    params[:result] == 'Cancel'
+  end
 
   def may_create_user
     may_authorize or bootstrapping?
@@ -20,10 +38,6 @@ class UsersController < ApplicationController
 
   def may_edit_user(user)
     may_authorize or user == current_user
-  end
-
-  def find_user
-    @user = User.find(params[:id])
   end
 
   public

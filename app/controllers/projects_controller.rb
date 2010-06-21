@@ -6,12 +6,24 @@ class ProjectsController < ApplicationController
   permit :show                    do may_view_project(@project)   end
   permit :edit, :update, :destroy do may_manage_project(@project) end
 
+  before_filter :only => :update, :if => :edit_cancelled do
+    redirect_to @project, :notice => 'Project update was cancelled.'
+  end
+
+  before_filter :only => :create, :if => :edit_cancelled do
+    redirect_to projects_url, :notice => 'Project creation was cancelled.'
+  end
+
   helper_method :may_view_project, :may_manage_project
 
   private
 
   def find_project
     @project = Project.find(params[:id])
+  end
+
+  def edit_cancelled
+    params[:result] == 'Cancel'
   end
 
   def may_view_project(project)
@@ -25,7 +37,7 @@ class ProjectsController < ApplicationController
   public
 
   def index
-    @projects = Project.all.select(&self.method(:may_view_project))
+    @projects = Project.order_by(:name).select(&self.method(:may_view_project))
   end
 
   def show

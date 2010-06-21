@@ -12,7 +12,7 @@
                                              :required => true |
   - User::ABILITIES.each do |a|
     - if can_authorize?(@user, a)
-      = f.check_box User.ability_getter(a)
-  = f.result_buttons
+      %p= f.check_box User.ability_getter(a)
+  %p= f.result_buttons
   .clear
 .clear
