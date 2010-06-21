@@ -12,6 +12,8 @@ class Project
   # -- embedded and related documents
   embeds_many :memberships
 
+  index 'memberships.role'
+
   # -- whitespace in the project name is normalized to single spaces
   before_validate do |project|
     project.name = project.name.strip.gsub(/\s+/, ' ')
@@ -19,7 +21,6 @@ class Project
   
   # -- make sure project names are unique (case-insensitive)
   validates :name, :presence => true, :strong_uniqueness => true
-
 
   def members
     memberships.map &:user
@@ -46,7 +47,7 @@ class Project
       else
         membership.update_attributes(:role => role)
       end
-    elsif user
+    elsif user and not role.blank?
       memberships.create(:user_id => user.id, :role => role)
     end
   end

@@ -6,7 +6,7 @@
 %p
   %strong Members:
 %ul
-  - for membership in @project.memberships
-    %li== #{membership.user.name} (#{membership.role})
+  - for membership in @project.memberships.sorted
+    %li== #{membership.user.name} (as #{membership.role})
 
 = link_to 'Edit', edit_project_path(@project)

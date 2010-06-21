@@ -37,6 +37,9 @@ class User
 
   named_scope :sorted, :order_by => [[:last_name, :asc], [:first_name, :asc]]
 
+  # -- doco says fields we sort by should be indexed
+  index [[:last_name, Mongo::ASCENDING], [:first_name, Mongo::ASCENDING]]
+
   # -- the validations for this model
   validates :login_name,
     :strong_uniqueness => true,
