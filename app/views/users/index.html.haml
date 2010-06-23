@@ -20,7 +20,7 @@
         %td= user.organization
         %td= user.homepage
         %td= link_to('Show', user)
-        %td= link_to('Edit', edit_user_path(user)) if may_edit_user(user)
+        %td= link_to('Edit', edit_user_path(user)) if may_edit(user)
 
 %br
 = link_to('New user', new_user_path) if may_authorize

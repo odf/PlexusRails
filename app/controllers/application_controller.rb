@@ -16,10 +16,22 @@ class ApplicationController < ActionController::Base
   # -- manage authorization via the 'verboten' gem
   forbid_everything
   
-  # -- define methods for inquiring the abilities of the current user
-  User::ABILITIES.each do |a|
-    name = User.ability_getter(a)
-    define_method(name) { current_user and current_user.send(name) }
+  # -- define methods for inquiring the permissions of the current user
+  def method_missing(name, *args)
+    if name.to_s.starts_with?('may_')
+      resource = args[0]
+      if resource.respond_to?(:allows?)
+        resource.send(:allows?, name.to_s.sub(/may_/, '').to_sym, current_user)
+      elsif current_user.respond_to?(name)
+        current_user.send(name)
+      end
+    else
+      super
+    end
+  end
+
+  def respond_to?(name)
+    name.to_s.starts_with?('may_') or super
   end
 
   # Checks whether the given user can authorize the given ability.
@@ -43,6 +55,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def edit_cancelled?
+    params[:result] == 'Cancel'
+  end
 
   # Starts a new session in which the given user is logged in.
   def new_session(user = nil)

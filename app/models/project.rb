@@ -31,16 +31,18 @@ class Project
     (m = membership_of(user)) && m.role
   end
 
-  def can_be_viewed_by(user)
-    %w{client contributor manager}.include? role_of(user)
-  end
-
-  def can_be_edited_by(user)
-    %w{contributor manager}.include? role_of(user)
-  end
-
-  def can_be_managed_by(user)
-    role_of(user) == 'manager'
+  def allows?(action, user)
+    role = role_of(user)
+    case action.to_sym
+    when :view
+      user and user.may_view and not role.nil?
+    when :edit
+      user and user.may_edit and %w{contributor manager}.include? role
+    when :manage
+      user and user.may_edit and (user.may_authorize or role == 'manager')
+    else
+      false
+    end
   end
 
   # -- pseudo-attribute for editing memberships and roles
@@ -72,6 +74,6 @@ class Project
   end
 
   def membership_of(user)
-    memberships.where(:user_id => user.id).first
+    user && memberships.where(:user_id => user.id).first
   end
 end

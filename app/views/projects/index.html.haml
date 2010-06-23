@@ -14,10 +14,12 @@
         %td= project.name
         %td= project.organization
         %td= link_to('Show', project)
-        - if may_manage_project(project)
+        - if may_manage(project)
           %td= link_to('Edit', edit_project_path(project))
           %td= link_to 'Destroy', project, :confirm => 'Are you sure?', |
                                            :method => :delete |
+        - else
+          %td{ :colspan => 2 }
 
 %br
 = link_to('New project', new_project_path) if may_edit

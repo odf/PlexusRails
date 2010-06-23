@@ -93,7 +93,7 @@ class User
   def name
     "#{first_name} #{last_name}"
   end
-
+  
   # The name of the method that checks the given ability for a user.
   def self.ability_getter(a)
     "may_#{a}".to_sym
@@ -112,6 +112,15 @@ class User
 
     define_method(ability_setter(a)) do |val|
       self.abilities = (val and val != '0') ? abilities | [a] : abilities - [a]
+    end
+  end
+
+  # Checks whether the given user can perform the given action on this instance
+  def allows?(action, user)
+    case action.to_sym
+    when :view then user.may_edit or user == self
+    when :edit then user.may_authorize or user == self
+    else            false
     end
   end
 

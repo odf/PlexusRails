@@ -26,7 +26,7 @@
   %strong Abilities:
   = (@user.abilities || []).join(', ')
 
-- if may_edit_user(@user)
+- if may_edit(@user)
   = link_to 'Edit', edit_user_path(@user)
   |
 = link_to 'Index', users_path

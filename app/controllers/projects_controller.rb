@@ -3,18 +3,18 @@ class ProjectsController < ApplicationController
 
   permit :index
   permit :new, :create,           :if => :may_edit
-  permit :show                    do may_view_project(@project)   end
-  permit :edit, :update, :destroy do may_manage_project(@project) end
+  permit :show                    do may_view(@project)   end
+  permit :edit, :update, :destroy do may_manage(@project) end
 
-  before_filter :only => :update, :if => :edit_cancelled do
+  before_filter :only => :update, :if => :edit_cancelled? do
     redirect_to @project, :notice => 'Project update was cancelled.'
   end
 
-  before_filter :only => :create, :if => :edit_cancelled do
+  before_filter :only => :create, :if => :edit_cancelled? do
     redirect_to projects_url, :notice => 'Project creation was cancelled.'
   end
 
-  helper_method :may_view_project, :may_manage_project
+  helper_method :may_manage
 
   private
 
@@ -22,22 +22,11 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
   end
 
-  def edit_cancelled
-    params[:result] == 'Cancel'
-  end
-
-  def may_view_project(project)
-    may_view and project.can_be_viewed_by current_user
-  end
-
-  def may_manage_project(project)
-    may_edit and project.can_be_managed_by current_user
-  end
 
   public
 
   def index
-    @projects = Project.order_by(:name).select(&self.method(:may_view_project))
+    @projects = Project.order_by(:name).select { |p| may_view(p) }
   end
 
   def show
@@ -45,6 +34,7 @@ class ProjectsController < ApplicationController
 
   def new
     @project = Project.new
+    @project.memberships.build(:user => current_user, :role => 'manager')
   end
 
   def edit

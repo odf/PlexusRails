@@ -2,21 +2,17 @@ class UsersController < ApplicationController
   before_authorization_filter :find_user, :except => [:index, :new, :create]
 
   permit :index,        :if => :may_edit
-  permit :new, :create, :if => :may_create_user
-  permit :show          do may_view_user(@user) end
-  permit :edit, :update do may_edit_user(@user) end
+  permit :new, :create  do may_authorize or bootstrapping? end
+  permit :show          do may_view(@user) end
+  permit :edit, :update do may_edit(@user) end
 
-  helper_method :may_view_user, :may_edit_user
-
-  before_filter :only => :update, :if => :edit_cancelled do
+  before_filter :only => :update, :if => :edit_cancelled? do
     redirect_to @user, :notice => 'User update was cancelled.'
   end
 
-  before_filter :only => :create, :if => :edit_cancelled do
+  before_filter :only => :create, :if => :edit_cancelled? do
     redirect_to users_url, :notice => 'User creation was cancelled.'
   end
-
-  helper_method :may_view_user, :may_edit_user
 
   private
 
@@ -24,26 +20,11 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
-  def edit_cancelled
-    params[:result] == 'Cancel'
-  end
-
-  def may_create_user
-    may_authorize or bootstrapping?
-  end
-
-  def may_view_user(user)
-    may_edit or user == current_user
-  end
-
-  def may_edit_user(user)
-    may_authorize or user == current_user
-  end
 
   public
 
   def index
-    @users = User.sorted.select(&self.method(:may_view_user))
+    @users = User.sorted.select { |u| may_view(u) }
   end
 
   def show
