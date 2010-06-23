@@ -15,7 +15,7 @@ class Project
   index 'memberships.role'
 
   # -- whitespace in the project name is normalized to single spaces
-  before_validate do |project|
+  before_validation do |project|
     project.name = project.name.strip.gsub(/\s+/, ' ')
   end
   
