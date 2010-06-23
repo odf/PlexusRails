@@ -1,0 +1,10 @@
+.dj-replace.dj-anchor
+  - if comment and comment.allows_to_view(current_user)
+    .comment= format_text(comment.value)
+    .clear
+    = show_version comment
+    - if comment.is_editable_by_any_of current_user, real_user
+      %p.note
+        %span.action-links
+          %a.dj-link{ :href => edit_comment_url(comment) } Edit
+          %a.dj-delete{ :href => comment_url(comment) } Delete

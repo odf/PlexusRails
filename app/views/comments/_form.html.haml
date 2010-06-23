@@ -1,0 +1,13 @@
+- if @comment.asset or @asset
+  %form.dj-form{ :action => @url, :method => "post" }
+    %input{ :name => "_method", :type => "hidden", :value => @method }
+    %textarea{ :cols => 80, :rows => 10, :id => "comment_value", |
+               :name => "comment[value]" }= @comment.value |
+    %br
+    %input{ :name => "result", :type => "submit", :value => @mode }
+    %input{ :name => "result", :type => "submit", :value => "Cancel" }
+  .note
+    (See
+    %a{ :href => "http://redcloth.org/" } http://redcloth.org/
+    for markup options.)
+  .clear

@@ -11,7 +11,9 @@ class Project
 
   # -- embedded and related documents
   embeds_many :memberships
+  embeds_many :comments
 
+  # -- indexes on this model
   index 'memberships.role'
 
   # -- whitespace in the project name is normalized to single spaces

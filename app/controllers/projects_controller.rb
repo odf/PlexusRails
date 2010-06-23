@@ -47,6 +47,6 @@ class ProjectsController < ApplicationController
 
   def destroy
     @project.destroy
-    redirect_to(projects_url)
+    redirect_to projects_url, :notice => 'Project successfully deleted.'
   end
 end

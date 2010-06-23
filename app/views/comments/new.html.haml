@@ -1,0 +1,8 @@
+- @title  = "Adding a comment"
+- @mode   = "Create"
+- @url    = comments_url(:asset => "#{@asset.class.to_s}_#{@asset.id}")
+- @method = :post
+
+.dj-prepend.dj-children#comments
+  .comment.dj-anchor
+    = render :partial => 'comments/form'

@@ -25,6 +25,7 @@ class User
 
   # -- embedded and related documents
   has_many_related :memberships
+  has_many_related :comments
 
   # -- these fields are used in forms but not stored
   attr_accessor :password, :password_confirmation

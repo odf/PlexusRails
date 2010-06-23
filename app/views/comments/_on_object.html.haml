@@ -1,0 +1,15 @@
+- url = new_comment_url(:asset => "#{on_object.class.to_s}_#{on_object.id}")
+- empty = on_object.comments.empty?
+
+.dj-context
+  %h2
+    = if empty then "No Comments." else "Comments:" end
+    - if show_edit_links
+      %span.action-links
+        %a.dj-link{ :href => url }
+          Add one
+
+  .dj-anchor#comments
+    = render(:partial => "comments/comment", |
+             :collection => on_object.comments_by_date.reverse) |
+.clear

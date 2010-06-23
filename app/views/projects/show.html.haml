@@ -8,5 +8,7 @@
 %ul
   - for membership in @project.memberships.sorted
     %li== #{membership.user.name} (as #{membership.role})
+%p
+  %strong Comments:
 
 = link_to('Edit', edit_project_path(@project)) if may_manage(@project)
