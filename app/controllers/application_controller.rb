@@ -56,8 +56,28 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def edit_cancelled?
-    params[:result] == 'Cancel'
+  # Sets a properly named instance variable with the resource given.
+  def find_resource
+    model_name = self.class.name.sub(/Controller$/, '').singularize
+    instance_variable_set("@#{model_name.downcase}",
+                          model_name.constantize.find(params[:id]))
+  end
+
+  # A unified way to abort an action if the 'Cancel' button was pressed.
+  def self.redirect_if_cancelled
+    before_filter :only => :update do
+      if params[:result] == 'Cancel'
+        flash[:notice] = 'Update was cancelled.'
+        redirect_to :action => :show
+      end
+    end
+
+    before_filter :only => :create do
+      if params[:result] == 'Cancel'
+        flash[:notice] = 'Creation was cancelled.'
+        redirect_to :action => :index
+      end
+    end
   end
 
   # Starts a new session in which the given user is logged in.

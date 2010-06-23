@@ -1,29 +1,15 @@
 class ProjectsController < ApplicationController
-  before_authorization_filter :find_project, :except => [:index, :new, :create]
+  before_authorization_filter :find_resource, :except => [:index, :new, :create]
 
   permit :index
   permit :new, :create,           :if => :may_edit
   permit :show                    do may_view(@project)   end
   permit :edit, :update, :destroy do may_manage(@project) end
 
-  before_filter :only => :update, :if => :edit_cancelled? do
-    redirect_to @project, :notice => 'Project update was cancelled.'
-  end
-
-  before_filter :only => :create, :if => :edit_cancelled? do
-    redirect_to projects_url, :notice => 'Project creation was cancelled.'
-  end
+  redirect_if_cancelled
 
   helper_method :may_manage
 
-  private
-
-  def find_project
-    @project = Project.find(params[:id])
-  end
-
-
-  public
 
   def index
     @projects = Project.order_by(:name).select { |p| may_view(p) }
