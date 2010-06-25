@@ -1,7 +1,10 @@
-@import definitions
 @import reset
+@import definitions
+
 @import basics
 @import layout
+@import comments
+@import links
 
 .clear
   :content "."
@@ -35,46 +38,33 @@ h1:first-letter
   :font-weight normal
   :color = !tint1_text_alternate
 
-a:link
-  :outline none
-  :text-decoration none
-  :border-style solid
-  :padding 3px 4px 2px 4px
-  :border-width 0 0 1px 0
-  :line-height 160%
-  :color = !tint1_text
-  img
-    :border-style solid
-    :padding 4px
-    :border-width 0
+h2
+  :font-size 105%
+  :line-height 150%
+  :font-weight bolder
+  :margin 1.7em 0 0.7em 0
+  :clear both
+  em
+    :font-weight normal
 
-a:visited
-  :outline none
-  :text-decoration none
-  :border-style solid
-  :padding 3px 4px 2px 4px
-  :border-width 0 0 1px 0
-  :line-height 160%
-  :color = !tint1_text
-  img
-    :border-style solid
-    :padding 4px
-    :border-width 0
+h3
+  :margin 1em 0 0.5em 0
+  :font-weight bolder
 
-a:hover
-  :outline none
-  :border-style solid
-  :padding 1px 2px
-  :border-width 2px
-  :border-color = !tint1_text
-  img
-    :border-style solid
-    :padding 2px
-    :border-width 2px
-    :border-color = !tint1_text
+h4
+  :margin 1em 0 0.5em 0
+  :font-style italic
 
-a:active
-  :outline none
-  :border-color = !tint1_text
-  img
-    :border-color = !tint1_text
+.action-links
+  :display inline
+  :font-weight normal
+  a
+    :font-size 85%
+    :margin 0 0.5em
+
+.note
+  :font-size smaller
+  :text-align right
+  :width 60%
+  :margin-left 4em
+  :color #666
