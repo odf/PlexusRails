@@ -1,6 +1,6 @@
 - @title  = "Adding a comment"
 - @mode   = "Create"
-- @url    = comments_url(:asset => "#{@asset.class.to_s}_#{@asset.id}")
+- @url = comments_url(:type => @commentable.class.to_s, :id => @commentable.id)
 - @method = :post
 
 .dj-prepend.dj-children#comments

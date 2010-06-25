@@ -1,13 +1,16 @@
-- if @comment.asset or @asset
-  %form.dj-form{ :action => @url, :method => "post" }
-    %input{ :name => "_method", :type => "hidden", :value => @method }
-    %textarea{ :cols => 80, :rows => 10, :id => "comment_value", |
-               :name => "comment[value]" }= @comment.value |
+- stylesheet :forms
+
+.dj-form
+  = formular_for(@comment) do |form|
+    = form.hidden_field :on_class
+    = form.hidden_field :on_id
+    = form.hidden_field :author_id
+    = form.text_area :text, :cols => 80, :rows => 10, :label => ''
     %br
-    %input{ :name => "result", :type => "submit", :value => @mode }
-    %input{ :name => "result", :type => "submit", :value => "Cancel" }
-  .note
-    (See
-    %a{ :href => "http://redcloth.org/" } http://redcloth.org/
-    for markup options.)
-  .clear
+    = form.result_buttons
+
+.note
+  (See
+  %a{ :href => "http://redcloth.org/" } http://redcloth.org/
+  for markup options.)
+.clear

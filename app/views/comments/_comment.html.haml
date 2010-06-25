@@ -1,9 +1,8 @@
 .dj-replace.dj-anchor
-  - if comment and comment.allows_to_view(current_user)
-    .comment= format_text(comment.value)
+  - if comment and may_view(comment)
+    .comment= format_text(comment.text)
     .clear
-    = show_version comment
-    - if comment.is_editable_by_any_of current_user, real_user
+    - if may_edit(comment)
       %p.note
         %span.action-links
           %a.dj-link{ :href => edit_comment_url(comment) } Edit
