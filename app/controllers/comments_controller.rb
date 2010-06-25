@@ -9,10 +9,6 @@ class CommentsController < ApplicationController
 
   private
 
-  def find_comment
-    @comment = @commentable.comments.find(params[:id])
-  end
-
   def find_commentable
     ids = params.select { |k, v| k.ends_with? '_id' }
     if ids.length == 1
@@ -24,10 +20,15 @@ class CommentsController < ApplicationController
     end
   end
 
+  def find_comment
+    @comment = @commentable.comments.find(params[:id])
+  end
+
   public
 
   def new
-    @comment = Comment.new(:commentable => @commentable, :author => current_user)
+    @comment = Comment.new(:commentable => @commentable,
+                           :author => current_user)
   end
   
   def edit
@@ -52,6 +53,7 @@ class CommentsController < ApplicationController
 
   def destroy
     @comment.destroy
+    @comment = nil
     flash[:notice] = "Successfully deleted comment."
   end
 end

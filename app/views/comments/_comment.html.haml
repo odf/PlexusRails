@@ -1,7 +1,6 @@
-- base_url = "#{url_for(comment.commentable)}/comments/#{comment.id}"
-
 .dj-replace.dj-anchor
   - if comment and may_view(comment)
+    - base_url = "#{url_for(comment.commentable)}/comments/#{comment.id}"
     .comment= format_text(comment.text)
     .clear
     - if may_edit(comment)
