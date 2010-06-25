@@ -5,7 +5,12 @@ class CommentsController < ApplicationController
   permit :new, :create            do may_edit(@commentable) end
   permit :edit, :update, :destroy do may_edit(@comment)     end
 
-  redirect_if_cancelled
+  before_filter :only => [:create, :update] do
+    if params[:result] == 'Cancel'
+      flash[:notice] = "#{action_name.humanize} was cancelled."
+      render :action => action_name
+    end
+  end
 
   private
 
