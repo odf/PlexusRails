@@ -1,8 +1,8 @@
 /**
  * jquery.djtch.js - Dynamic Javascript Templating in Client-side HTML
- * 
+ *
  * Requires jquery (>= 1.3) and jquery.forms
- * 
+ *
  * @author olaf.delgado-friedrichs@anu.edu.au
  */
 jQuery.djtch = {
@@ -129,7 +129,7 @@ jQuery.fn.extend(
 	},
 	djtchForm: function() {
 	    return this.find('input[type=submit]')
-		.click(jQuery.djtch.handlers.formSubmitted).end();
+	        .click(jQuery.djtch.handlers.formSubmitted).end();
 	},
 	djtchEnable: function() {
 	    return this
