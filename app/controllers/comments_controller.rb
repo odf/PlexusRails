@@ -1,13 +1,32 @@
 class CommentsController < ApplicationController
-  before_authorization_filter :find_resource, :except => [:new, :create]
+  before_authorization_filter :find_commentable
+  before_authorization_filter :find_comment, :except => [:new, :create]
 
   permit :new, :create            do may_edit(@commentable) end
   permit :edit, :update, :destroy do may_edit(@comment)     end
 
   redirect_if_cancelled
 
+  private
+
+  def find_comment
+    @comment = @commentable.comments.find(params[:id])
+  end
+
+  def find_commentable
+    ids = params.select { |k, v| k.ends_with? '_id' }
+    if ids.length == 1
+      key, val = ids[0]
+      model = key.sub(/_id$/, '').classify.constantize
+      @commentable = model && model.find(val)
+    else
+      raise 'Missing or ambiguous commentable.'
+    end
+  end
+
+  public
+
   def new
-    @commentable = commentable(params)
     @comment = Comment.new(:commentable => @commentable, :author => current_user)
   end
   
@@ -15,34 +34,24 @@ class CommentsController < ApplicationController
   end
   
   def create
-    @commentable = commentable(params[:comment])
     @comment = @commentable.comments.build(params[:comment])
     if @commentable.save
-      redirect_to(@commentable, :notice => 'Comment was successfully added.')
+      flash[:notice] = 'Comment was successfully added.'
     else
-      render :action => :new, :alert => 'Could not create comment.'
+      flash[:alert] = 'Could not create comment.'
     end
   end
 
   def update
     if @comment.update_attributes(params[:comment])
-      redirect_to(@comment.commentable,
-                  :notice => 'Comment was successfully updated.')
+      flash[:notice] = 'Comment was successfully updated.'
     else
-      render :action => :edit, :alert => 'Could not update comment.'
+      flash[:alert] = 'Could not update comment.'
     end
   end
 
   def destroy
     @comment.destroy
-    redirect_to @comment.commentable, :notice => "Successfully deleted comment."
-  end
-
-  private
-  def commentable(params)
-    if params[:on_class]
-      model = params[:on_class].classify.constantize
-      model.find(params[:on_id])
-    end
+    flash[:notice] = "Successfully deleted comment."
   end
 end

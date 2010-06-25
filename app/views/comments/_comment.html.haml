@@ -1,3 +1,5 @@
+- base_url = "#{url_for(comment.commentable)}/comments/#{comment.id}"
+
 .dj-replace.dj-anchor
   - if comment and may_view(comment)
     .comment= format_text(comment.text)
@@ -5,5 +7,5 @@
     - if may_edit(comment)
       %p.note
         %span.action-links
-          %a.dj-link{ :href => edit_comment_url(comment) } Edit
-          %a.dj-delete{ :href => comment_url(comment) } Delete
+          %a.dj-link{ :href => "#{base_url}/edit" } Edit
+          %a.dj-delete{ :href => base_url } Delete

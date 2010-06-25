@@ -1,10 +1,9 @@
 - stylesheet :forms
 
 .dj-form
-  = formular_for(@comment) do |form|
-    = form.hidden_field :on_class
-    = form.hidden_field :on_id
-    = form.hidden_field :author_id
+  = formular_for [@commentable, @comment] do |form|
+    - if create
+      = form.hidden_field :author_id
     = form.text_area :text, :cols => 80, :rows => 10, :label => ''
     %br
     = form.result_buttons

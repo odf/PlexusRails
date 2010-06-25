@@ -1,7 +1,4 @@
-- @title  = "Changing a comment"
-- @mode   = "Update"
-- @url    = comment_url(@comment)
-- @method = :put
+- title "Editing comment"
 
 .comment.dj-replace.dj-anchor
-  = render :partial => 'comments/form'
+  = render :partial => 'comments/form', :locals => { :create => false }

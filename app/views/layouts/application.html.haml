@@ -8,7 +8,8 @@
     = csrf_meta_tag
     - unless stripped
       = stylesheet_link_tag 'application'
-      = javascript_include_tag 'jquery', 'jquery.djtch', 'rails', 'application'
+      = javascript_include_tag 'jquery', 'rails', 'application'
+      /= javascript_include_tag 'jquery.djtch'
       = yield(:head)
   %body
     #page
