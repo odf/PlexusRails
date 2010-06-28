@@ -1,32 +1,28 @@
-%p
-  %strong Login name:
-  = @user.login_name
-%p
-  %strong Hashed password:
-  = @user.hashed_password
-%p
-  %strong First name:
-  = @user.first_name
-%p
-  %strong Last name:
-  = @user.last_name
-%p
-  %strong Email:
-  = @user.email
-%p
-  %strong Crypt strength:
-  = @user.crypt_strength
-%p
-  %strong Organization:
-  = @user.organization
-%p
-  %strong Homepage:
-  = @user.homepage
-%p
-  %strong Abilities:
-  = (@user.abilities || []).join(', ')
+- title "User <em>#{h @user.login_name}</em>".html_safe
+- stylesheet :properties
 
-- if may_edit(@user)
-  = link_to 'Edit', edit_user_path(@user)
-  |
-= link_to 'Index', users_path
+%h2
+  Details:
+  %span.action-links
+    - if may_edit(@user)
+      =link_to 'Edit', edit_user_url(@user)
+
+.properties
+  %ul
+    %li
+      %dfn Full name:
+      = @user.name
+    %li
+      %dfn Email:
+      = @user.email
+    - unless @user.organization.blank?
+      %li
+        %dfn Organization:
+        = @user.organization
+    - unless @user.homepage.blank?
+      %li
+        %dfn Homepage:
+        = @user.homepage
+    %li
+      %dfn Abilities:
+      = (@user.abilities || []).join(', ')
