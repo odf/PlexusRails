@@ -22,10 +22,11 @@
         %li
           %dfn Organization
           = h(@project.organization)
-        %li
-          %dfn Members
-          %ul
-            - for user in @project.members
-              %li
-                = link_to user.name, user
-                == (as #{@project.role_of(user)})
+      %li
+        %dfn Members
+        %ul
+          - for user in @project.members
+            %li
+              = link_to user.name, user
+              == (as #{@project.role_of(user)})
+  = timestamps(@project)

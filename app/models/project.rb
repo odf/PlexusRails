@@ -2,6 +2,9 @@ class Project
   # -- we use MongoDB via the Mongoid gem to store this model
   include Mongoid::Document
 
+  # -- add timestamps with user ids
+  include Timestamps
+
   # -- declaration of persistent fields
   field :name, :type => String, :accessible => false
   field :organization, :type => String

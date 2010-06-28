@@ -41,7 +41,7 @@ class CommentsController < ApplicationController
   
   def create
     @comment = @commentable.comments.build(params[:comment])
-    if @commentable.save
+    if @comment.save
       flash[:notice] = 'Comment was successfully added.'
     else
       flash[:alert] = 'Could not create comment.'

@@ -6,8 +6,12 @@ class User
   WIZARD_TASKS = ADMIN_TASKS + [ 'impersonate' ]
   ABILITIES    = WIZARD_TASKS
 
-  # -- we use MongoDB via the Mongoid gem to store this model
+  # -- use MongoDB via Mongoid for storage and cache all queries
   include Mongoid::Document
+  cache
+
+  # -- add timestamps with user ids
+  include Timestamps
 
   # -- declaration of persistent fields
   field :login_name, :type => String, :accessible => false

@@ -1,5 +1,6 @@
 class Comment
   include Mongoid::Document
+  include Timestamps
 
   field :text, :type => String
 
