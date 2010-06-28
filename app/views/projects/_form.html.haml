@@ -10,16 +10,18 @@
   %table
     %thead
       %tr
-        %th Name
+        %th User
         %th No Access
         %th Read Only
         %th Read/Write
-        %th Manager
+        %th Manage
     %tbody
       - form.fields_for :roles do |fields|
         - user = fields.object.user
         %tr
-          %td= fields.hidden_field :user_id, :label => user.name
+          %td
+            = fields.hidden_field :user_id
+            = link_to user.name, user
           %td= fields.radio_button :role, '', :label => ''
           %td= fields.radio_button :role, 'client', :label => ''
           %td= fields.radio_button :role, 'contributor', :label => ''

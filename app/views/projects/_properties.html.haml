@@ -9,7 +9,7 @@
     %p= access_modes_for @project
 
   %h2
-    Properties:
+    Details:
     %span.action-links
       - if may_manage(@project)
         %a.dj-link{ :href => edit_project_url(@project) } Edit
@@ -23,7 +23,9 @@
           %dfn Organization
           = h(@project.organization)
         %li
-          %dfn Members:
+          %dfn Members
           %ul
-            - for membership in @project.memberships.sorted
-              %li== #{membership.user.name} (as #{membership.role})
+            - for user in @project.members
+              %li
+                = link_to user.name, user
+                == (as #{@project.role_of(user)})

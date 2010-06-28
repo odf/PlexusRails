@@ -26,7 +26,7 @@ class Project
 
   # -- methods to inquire project memberships and user permissions
   def members
-    memberships.map &:user
+    memberships.sorted.map &:user
   end
 
   def role_of(user)
