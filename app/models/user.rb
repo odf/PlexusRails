@@ -23,9 +23,9 @@ class User
   # -- what to use as the document key
   key :login_name
 
-  # -- embedded and related documents
-  has_many_related :memberships
-  has_many_related :comments
+  # -- we can't link back to embedded documents, so these do not work
+  #has_many_related :memberships
+  #has_many_related :comments
 
   # -- these fields are used in forms but not stored
   attr_accessor :password, :password_confirmation
@@ -128,5 +128,10 @@ class User
   # Checks whether this user can add or remove ability <a> for user <user>.
   def can_authorize?(user, a)
     user != self and may_authorize and (abilities | ADMIN_TASKS).include?(a)
+  end
+
+  # List of projects this user is a member of.
+  def projects
+    Project.all.select { |p| !p.role_of(self).blank? }
   end
 end

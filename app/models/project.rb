@@ -62,7 +62,7 @@ class Project
   private
 
   def set_role(user, role)
-    membership = user && memberships.where(:user_id => user.id).first
+    membership = membership_of(user)
 
     if membership
       if role.blank?

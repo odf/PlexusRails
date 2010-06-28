@@ -26,3 +26,6 @@
     %li
       %dfn Abilities:
       = (@user.abilities || []).join(', ')
+
+%h2 Projects:
+= @user.projects.map { |p| link_to(h(p.name), p) }.join(', ').html_safe
