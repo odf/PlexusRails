@@ -1,14 +1,4 @@
 - title "Project <em>#{h @project.name}</em>".html_safe
 
-%p
-  %strong Organization:
-  = @project.organization
-%p
-  %strong Members:
-%ul
-  - for membership in @project.memberships.sorted
-    %li== #{membership.user.name} (as #{membership.role})
-
-= link_to('Edit', edit_project_path(@project)) if may_manage(@project)
-
+= render :partial => "properties", :object => @project
 = render :partial => "comments/on_object", :object => @project

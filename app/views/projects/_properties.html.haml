@@ -1,0 +1,29 @@
+- stylesheet :properties
+- stylesheet :forms
+- stylesheet :tables
+
+- @project = properties
+
+.dj-anchor.dj-replace
+  -#
+    %p= access_modes_for @project
+
+  %h2
+    Properties:
+    %span.action-links
+      - if may_manage(@project)
+        %a.dj-link{ :href => edit_project_url(@project) } Edit
+        = link_to "Delete", project_url(@project), :method => :delete, |
+                  :confirm => "Destroy project #{h @project.name}?" |
+
+  .properties
+    %ul.dj-anchor
+      - unless @project.organization.blank?
+        %li
+          %dfn Organization
+          = h(@project.organization)
+        %li
+          %dfn Members:
+          %ul
+            - for membership in @project.memberships.sorted
+              %li== #{membership.user.name} (as #{membership.role})

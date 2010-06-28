@@ -29,6 +29,19 @@
   function onload(context) {
     fixPage();
 
+    // -- some text cosmetics:
+    jQuery('.properties dfn,.attachments dfn', context).each(function(i) {
+      var s = jQuery(this).text();
+      if (s[s.length - 1] != ':') s = s + ':';
+      jQuery(this).text(s);
+    });
+    jQuery('.action-links a', context).each(function(i) {
+      var s = jQuery(this).text();
+      if (s[0] != '[') s = '[' + s;
+      if (s[s.length - 1] != ']') s = s + ']';
+      jQuery(this).text(s);
+    });
+
     // -- deals with collapsible page content
     jQuery('.collapsible', context).wrap("<div/>").each(function() {
       var content = jQuery(this);
