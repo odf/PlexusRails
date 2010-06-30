@@ -1,0 +1,21 @@
+- title 'Imports'
+- stylesheet :tables
+
+%table.zebra
+  %thead
+    %tr
+      %th User
+      %th Project
+      %th Sample
+      %th Source date
+      %th Import date
+      %th
+  %tbody
+    - @imports.select(&method(:may_view)).each do |import|
+      %tr
+        %td= import.user.name
+        %td= import.project.name
+        %td= import.sample_name
+        %td= import.source_timestamp
+        %td= '' || import.created_at
+        %td= link_to('Details', [import.project, import])

@@ -62,8 +62,8 @@ class ApplicationController < ActionController::Base
   # Sets a properly named instance variable with the resource given.
   def find_resource
     model_name = self.class.name.sub(/Controller$/, '').singularize
-    instance_variable_set("@#{model_name.downcase}",
-                          model_name.constantize.find(params[:id]))
+    found = model_name.constantize.where(:_id => params[:id]).first
+    instance_variable_set("@#{model_name.downcase}", found)
   end
 
   # A unified way to abort an action if the 'Cancel' button was pressed.

@@ -1,0 +1,24 @@
+- title 'New Import'
+- stylesheet :forms
+
+#import-link.dj-replace.dj-anchor
+
+%fieldset#import.dj-replace.dj-form.dj-anchor
+  = formular_for [@project, @import], :html => {:multipart => true} do |form|
+    %p= form.file_field :data, :label => 'JSON Data'
+    = form.text_area :description, :rows => 5, :cols => 80
+    %p= form.result_buttons
+
+-#
+  %form{ :enctype => 'multipart/form-data', :method => :post, |
+         :action => project_imports_url(@project) } |
+    %p
+      JSON Data:
+      %br
+      %input{ :name => 'data', :type => 'file', :size => 40 }
+      %input{ :name => "result", :type => "submit", :value => "Import" }
+      %input{ :name => "result", :type => "submit", :value => "Cancel" }
+    %p
+      Description:
+      %br
+      %textarea{ :name => 'description', :rows => 5, :cols => 80 }

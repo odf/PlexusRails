@@ -2,6 +2,7 @@ PlexusR3::Application.routes.draw do |map|
   resources :users
   resources :projects do
     resources :comments
+    resources :imports
   end
   resources :sessions
 

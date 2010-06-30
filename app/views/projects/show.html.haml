@@ -2,3 +2,10 @@
 
 = render :partial => "properties", :object => @project
 = render :partial => "comments/on_object", :object => @project
+
+- if may_edit(@project)
+  %p
+    %span#import-link.dj-replace.dj-anchor.action-links
+      %a.dj-link{ :href => new_project_import_url(@project) }
+        Import data
+  #import.dj-replace.dj-anchor

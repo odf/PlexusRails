@@ -1,0 +1,39 @@
+- title 'Import'
+- stylesheet :properties
+
+.properties
+  %ul
+    %li
+      %dfn Uploaded by
+      = @import.user.name if @import.user
+    %li
+      %dfn Project
+      = @import.project.name
+    %li
+      %dfn Sample
+      = @import.sample_name
+    %li
+      %dfn Source Date
+      = @import.source_timestamp
+.clear
+%h2 Description:
+.comment= format_text(@import.description)
+
+- if @import.import_log.blank?
+  %p Import log is empty.
+- else
+  %h2 Import Log:
+  .collapsible
+    %tt
+      %small
+        %pre.comment= @import.import_log.to_yaml
+.clear
+- if @import.content.blank?
+  %p Source is empty.
+- else
+  %h2 Full Source:
+  .collapsible
+    %tt
+      %small
+        %pre.comment= @import.content.to_yaml
+.clear

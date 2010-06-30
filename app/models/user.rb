@@ -27,8 +27,9 @@ class User
   # -- what to use as the document key
   key :login_name
 
-  # -- because this model has timestamps, we can't embed this
+  # -- associations
   referenced_in :activity_log
+  references_many :imports
 
   # -- we can't link back to embedded documents, so these do not work
   #has_many_related :memberships

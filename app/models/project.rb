@@ -12,9 +12,10 @@ class Project
   # -- what to use as the document key
   key :name
 
-  # -- embedded and related documents
+  # -- associations
   embeds_many :memberships
   embeds_many :comments
+  references_many :imports
 
   # -- indexes on this model
   index 'memberships.role'
