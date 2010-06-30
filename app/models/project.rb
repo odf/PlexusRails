@@ -15,7 +15,7 @@ class Project
   # -- associations
   embeds_many :memberships
   embeds_many :comments
-  references_many :imports
+  embeds_many :imports
 
   # -- indexes on this model
   index 'memberships.role'

@@ -14,10 +14,12 @@ class Import
   # -- make 'pluralize' and such available (for logging)
   include ActionView::Helpers::TextHelper
 
-  # -- persistent fields
+  # -- add timestamps with user ids
+  include Timestamps
+
+  # -- simple persistent attributes
   field :source_timestamp, :type => Time
   field :sample_name,      :type => String
-  field :replace,          :type => Boolean
   field :content,          :type => Hash
   field :source_log,       :type => String
   field :import_log,       :type => Hash
@@ -25,10 +27,24 @@ class Import
 
   # -- associations
   referenced_in :user
-  referenced_in :project
+  embedded_in :project, :inverse_of => :imports
 
   # -- perform the actions prescribed by this import after its creation
   after_create :run_this_import
+
+  # -- pseudo-attributes for use with Rails-generated forms
+  def data=(value)
+    self.content = JSON::load(value.read)
+  end
+
+  def time=(value)
+    time_args = ParseDate::parsedate(value) unless value.blank?
+    self.source_timestamp = (time_args ? Time.local(*time_args) : Time.now).utc
+  end
+
+  def sample=(value)
+    self.sample_name = value
+  end
 
   # -- permissions are as in the project this import belongs to
   def allows?(action, user)

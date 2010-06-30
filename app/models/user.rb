@@ -29,11 +29,11 @@ class User
 
   # -- associations
   referenced_in :activity_log
-  references_many :imports
 
   # -- we can't link back to embedded documents, so these do not work
-  #has_many_related :memberships
-  #has_many_related :comments
+  #references_many :memberships
+  #references_many :comments
+  #references_many :imports
 
   # -- these fields are used in forms but not stored
   attr_accessor :password, :password_confirmation

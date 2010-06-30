@@ -1,7 +1,7 @@
 class ImportsController < ApplicationController
-  before_authorization_filter :find_resource, :only => :show
   before_authorization_filter :find_project
-  before_authorization_filter :find_user,     :only => :create
+  before_authorization_filter :find_import, :only => :show
+  before_authorization_filter :find_user,   :only => :create
 
   permit :index  do may_edit end
   permit :show   do may_view(@import) end
@@ -12,6 +12,10 @@ class ImportsController < ApplicationController
 
   def find_project
     @project = Project.where(:_id => params[:project_id]).first
+  end
+
+  def find_import
+    @import = @project.imports.where(:_id => params[:id]).first
   end
 
   def find_user
@@ -37,9 +41,11 @@ class ImportsController < ApplicationController
   end
   
   def create
-    params.merge!(params[:import] || {})
+    [:data, :description, :time, :sample, :source_log].each do |key|
+      params[:import][key] = params[key] if params[:import][key].blank?
+    end
 
-    if params[:result] == "Cancel" or params[:data].blank?
+    if params[:result] == "Cancel" or params[:import][:data].blank?
       respond_to do |format|
         format.html { redirect_to @project, :notice => "Data import cancelled." }
         format.json { render :json => { 'Status' => 'Cancelled' } }
@@ -55,23 +61,19 @@ class ImportsController < ApplicationController
       @project.save!
     end
 
-    replace = params[:replace] == "True"
-    
-    time_args = ParseDate::parsedate(params[:time]) unless params[:time].blank?
-    time = (time_args ? Time.local(*time_args) : Time.now).getutc
-    
-    attached = params[:data].read
+    @import = @project.imports.build(params[:import])
+    @import.user = @user
 
-    @import = @project.imports.create!(:sample_name => params[:sample],
-                                       :user_id => @user.id,
-                                       :source_timestamp => time,
-                                       :replace => replace,
-                                       :content => attached,
-                                       :description => params[:description])
-                                     
-    respond_to do |format|
-      format.html { redirect_to @project, :notice => "Data import successful." }
-      format.json { render :json => @import.import_log }
+    if @import.save
+      respond_to do |format|
+        format.html { redirect_to @project, :notice => "Import successful." }
+        format.json { render :json => @import.import_log }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to @project, :notice => "Import failed." }
+        format.json { render :json => @import.import_log }
+      end
     end
   end
 end
