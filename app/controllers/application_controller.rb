@@ -10,6 +10,9 @@ class ApplicationController < ActionController::Base
   # -- we need to make some session info available to models
   before_filter :store_info
 
+  # -- log a user's activity
+  before_filter :log_activity
+
   # -- this handles session expiration, invalid IP addresses, etc.
   around_filter :validate_session
 
@@ -101,6 +104,14 @@ class ApplicationController < ActionController::Base
   def store_info
     SessionInfo.current_user = current_user
     SessionInfo.request_host = request.host_with_port
+  end
+
+  # Update the current user's activity log
+  def log_activity
+    if current_user
+      current_user.last_active = Time.now.utc
+      current_user.save
+    end
   end
 
   # This is called as an around filter for all controller actions and

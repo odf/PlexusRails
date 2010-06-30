@@ -9,6 +9,7 @@
       %th Email
       %th Organization
       %th Homepage
+      %th Last active
   
   %tbody
     - @users.select(&method(:may_view)).each do |user|
@@ -18,6 +19,7 @@
         %td= user.email
         %td= user.organization
         %td= user.homepage
+        %td= user.last_active && user.last_active.strftime("%d-%B-%Y %H:%M:%S")
 
 %br
 = link_to('New user', new_user_path) if may_authorize

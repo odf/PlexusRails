@@ -23,6 +23,7 @@ class User
   field :organization, :type => String
   field :homepage, :type => String
   field :abilities, :type => Array, :default => READER_TASKS
+  field :last_active, :type => Time
 
   # -- what to use as the document key
   key :login_name

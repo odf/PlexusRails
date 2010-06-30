@@ -26,6 +26,9 @@
     %li
       %dfn Abilities:
       = (@user.abilities || []).join(', ')
+    %li
+      %dfn Last active:
+      = @user.last_active && @user.last_active.strftime("%d-%B-%Y %H:%M:%S")
 = timestamps(@user)
 
 %h2 Projects:
