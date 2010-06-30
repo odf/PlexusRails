@@ -23,10 +23,12 @@ class User
   field :organization, :type => String
   field :homepage, :type => String
   field :abilities, :type => Array, :default => READER_TASKS
-  field :last_active, :type => Time
 
   # -- what to use as the document key
   key :login_name
+
+  # -- because this model has timestamps, we can't embed this
+  referenced_in :activity_log
 
   # -- we can't link back to embedded documents, so these do not work
   #has_many_related :memberships
@@ -138,5 +140,18 @@ class User
   # List of projects this user is a member of.
   def projects
     Project.all.select { |p| !p.role_of(self).blank? }
+  end
+
+  # Logs an action (page view) for this user
+  def log_activity(at, action = nil)
+    unless activity_log
+      update_attributes(:activity_log => ActivityLog.create(:user => self))
+    end
+    activity_log.add(at, action)
+  end
+
+  # Get the time of the last time the user was active
+  def last_active
+    activity_log && activity_log.last_time
   end
 end

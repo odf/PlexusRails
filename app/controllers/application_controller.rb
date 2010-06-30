@@ -108,10 +108,7 @@ class ApplicationController < ActionController::Base
 
   # Update the current user's activity log
   def log_activity
-    if current_user
-      current_user.last_active = Time.now.utc
-      current_user.save
-    end
+    current_user.log_activity(Time.now.utc) if current_user
   end
 
   # This is called as an around filter for all controller actions and
