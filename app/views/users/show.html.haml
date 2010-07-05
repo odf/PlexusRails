@@ -29,6 +29,7 @@
     %li
       %dfn Last active:
       = @user.last_active && @user.last_active.strftime("%d-%B-%Y %H:%M:%S")
+      .clear
 = timestamps(@user)
 
 %h2 Projects:
