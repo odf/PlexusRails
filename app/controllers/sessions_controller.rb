@@ -20,8 +20,7 @@ class SessionsController < ApplicationController
   end
     
   def create
-    values = params[:user]
-    user = User.authenticate(values[:login_name], values[:password])
+    user = User.authenticate(params[:user] || {})
     if user
       new_session(user)
       redirect_to projects_url, :notice => "Welcome #{user.name}!"

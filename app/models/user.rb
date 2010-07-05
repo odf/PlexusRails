@@ -92,7 +92,9 @@ class User
   end
 
   # Finds the user with the given login name and password, if any.
-  def self.authenticate(login_name, password)
+  def self.authenticate(params)
+    login_name = params[:login_name] || params[:name]
+    password = params[:password]
     user = self.where(:login_name => login_name).first
     user if user and Crypt::check(password, user.hashed_password,
                                   :strength => user.crypt_strength)

@@ -19,12 +19,13 @@ class ImportsController < ApplicationController
   end
 
   def find_user
-    @user = current_user ||
-      if request.ssl? or ENV['RAILS_ENV'] != 'production'
-        name   = params[:user] && params[:user][:name]
-        passwd = params[:user] && params[:user][:password]
-        User.authenticate(name, passwd)
-      end
+    @user = current_user || authenticated_user
+  end
+
+  def authenticated_user
+    if request.ssl? or Rails.env != 'production'
+      User.authenticate(params[:user] || {})
+    end
   end
 
   public
@@ -53,27 +54,28 @@ class ImportsController < ApplicationController
       return
     end
 
+    create_project_if_missing
+
+    @import = @project.imports.build(params[:import])
+    @import.user = @user
+
+    flash[:notice] = @import.save ? "Import successful." : "Import failed."
+
+    respond_to do |format|
+      format.html { redirect_to @project }
+      format.json { render :json => @import.import_log }
+    end
+  end
+
+  private
+
+  def create_project_if_missing
     unless @project
       manager = User.where(:login_name => params[:manager]).first || @user
       @project = Project.new
       @project.name = params[:project]
       @project.set_role(manager, 'manager')
       @project.save!
-    end
-
-    @import = @project.imports.build(params[:import])
-    @import.user = @user
-
-    if @import.save
-      respond_to do |format|
-        format.html { redirect_to @project, :notice => "Import successful." }
-        format.json { render :json => @import.import_log }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to @project, :notice => "Import failed." }
-        format.json { render :json => @import.import_log }
-      end
     end
   end
 end
