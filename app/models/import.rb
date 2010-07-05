@@ -60,7 +60,7 @@ class Import
   # with this instance.
   def run_this_import
     if import_log.blank?
-      self.import_log = { :status => 'Unsupported' }
+      self.import_log = { :Status => 'Unsupported' }
     end
   end
 end

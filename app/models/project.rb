@@ -62,9 +62,7 @@ class Project
     data.each { |key, value| set_role(User.find(value[:user_id]), value[:role]) }
   end
 
-  # -- private methods start here
-  private
-
+  # Assigns the given user the given role.
   def set_role(user, role)
     membership = membership_of(user)
 
@@ -78,6 +76,9 @@ class Project
       memberships.create(:user_id => user.id, :role => role)
     end
   end
+
+  # -- private methods start here
+  private
 
   def membership_of(user)
     user && memberships.where(:user_id => user.id).first
