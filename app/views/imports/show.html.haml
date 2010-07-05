@@ -16,11 +16,15 @@
       %dfn Source Date
       = @import.source_timestamp
 .clear
-%h2 Description:
-.comment= format_text(@import.description)
+
+- if @import.description.blank?
+  %h2 No description.
+- else
+  %h2 Description:
+  .comment= format_text(@import.description)
 
 - if @import.import_log.blank?
-  %p Import log is empty.
+  %h2 Import log is empty.
 - else
   %h2 Import Log:
   .collapsible

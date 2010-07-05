@@ -29,8 +29,8 @@ class Import
   referenced_in :user
   embedded_in :project, :inverse_of => :imports
 
-  # -- perform the actions prescribed by this import after its creation
-  after_create :run_this_import
+  # -- before saving, perform the actions prescribed by this import
+  before_save :run_this_import
 
   # -- pseudo-attributes for use with Rails-generated forms
   def data=(value)
@@ -59,6 +59,8 @@ class Import
   # is saved to the database as a part of the table row associated
   # with this instance.
   def run_this_import
-    update_attributes(:import_log => { :status => 'Unsupported' })
+    if import_log.blank?
+      self.import_log = { :status => 'Unsupported' }
+    end
   end
 end

@@ -23,7 +23,7 @@ class ImportsController < ApplicationController
   end
 
   def authenticated_user
-    if request.ssl? or Rails.env != 'production'
+    if request.ssl? or Rails.env.production?
       User.authenticate(params[:user] || {})
     end
   end
@@ -47,23 +47,21 @@ class ImportsController < ApplicationController
     end
 
     if params[:result] == "Cancel" or params[:import][:data].blank?
-      respond_to do |format|
-        format.html { redirect_to @project, :notice => "Data import cancelled." }
-        format.json { render :json => { 'Status' => 'Cancelled' } }
-      end
-      return
+      notice = "Data import cancelled."
+      import_log = { 'Status' => 'Cancelled' }
+    else
+      create_project_if_missing
+
+      @import = @project.imports.build(params[:import])
+      @import.user = @user
+
+      notice = @import.save ? "Import successful." : "Import failed."
+      import_log = @import.import_log
     end
 
-    create_project_if_missing
-
-    @import = @project.imports.build(params[:import])
-    @import.user = @user
-
-    flash[:notice] = @import.save ? "Import successful." : "Import failed."
-
     respond_to do |format|
-      format.html { redirect_to @project }
-      format.json { render :json => @import.import_log }
+      format.html { redirect_to @project, :notice => notice }
+      format.json { render :json => import_log }
     end
   end
 

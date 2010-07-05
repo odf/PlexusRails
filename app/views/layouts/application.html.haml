@@ -9,7 +9,7 @@
     - unless stripped
       = stylesheet_link_tag 'application'
       = javascript_include_tag 'jquery'
-      = javascript_include_tag 'jquery.form' #, 'jquery.djtch'
+      = javascript_include_tag 'jquery.form', 'jquery.djtch'
       = javascript_include_tag 'rails', 'application'
       = yield(:head)
   %body
@@ -54,7 +54,7 @@
 
       - unless stripped
         #footer
-          - if Rails.env == 'production'
+          - if Rails.env.production?
             All rights reserved.
           - else
             Experimental version using Rails3 and MongoDB.
