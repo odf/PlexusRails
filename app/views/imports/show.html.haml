@@ -5,10 +5,10 @@
   %ul
     %li
       %dfn Uploaded by
-      = @import.user.name if @import.user
+      = link_to (@import.user.name, @import.user) if @import.user
     %li
       %dfn Project
-      = @import.project.name
+      = link_to @import.project.name, @project
     %li
       %dfn Sample
       = @import.sample_name
