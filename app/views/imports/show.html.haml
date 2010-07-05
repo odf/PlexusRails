@@ -11,11 +11,11 @@
       = link_to @import.project.name, @project
     %li
       %dfn Sample
-      = @import.sample_name
+      = @import.sample_name || dash
     %li
       %dfn Source Date
-      = @import.source_timestamp
-.clear
+      = @import.source_timestamp || dash
+= timestamps(@import)
 
 - if @import.description.blank?
   %h2 No description.
@@ -27,17 +27,16 @@
   %h2 Import log is empty.
 - else
   %h2 Import Log:
-  .collapsible
+  .collapsible.comment
     %tt
       %small
-        %pre.comment= @import.import_log.to_yaml
-.clear
+        %pre= @import.import_log.to_yaml
+
 - if @import.content.blank?
   %p Source is empty.
 - else
   %h2 Full Source:
-  .collapsible
+  .collapsible.comment
     %tt
       %small
-        %pre.comment= @import.content.to_yaml
-.clear
+        %pre= @import.content.to_yaml

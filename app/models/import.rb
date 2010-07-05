@@ -39,7 +39,7 @@ class Import
 
   def time=(value)
     time_args = ParseDate::parsedate(value) unless value.blank?
-    self.source_timestamp = (time_args ? Time.local(*time_args) : Time.now).utc
+    self.source_timestamp = time_args ? Time.local(*time_args).utc : nil
   end
 
   def sample=(value)

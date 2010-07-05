@@ -5,6 +5,10 @@ module ApplicationHelper
     sanitize(RedCloth.new(text).to_html)
   end
 
+  def dash
+    '&mdash;'.html_safe
+  end
+
   def timestamps(object)
     stamp = lambda do |type, time, user|
       if time
