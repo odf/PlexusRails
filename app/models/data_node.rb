@@ -5,14 +5,16 @@ class DataNode
   include Mongoid::Document
 
   # -- simple persistent attributes
-  field :sample,     :type => String
-  field :name,       :type => String
-  field :date,       :type => Time
-  field :data_type,  :type => String
-  field :identifier, :type => String
-  field :messages,   :type => String
-  field :status,     :type => String
-  field :hidden,     :type => Boolean
+  field :sample,          :type => String
+  field :name,            :type => String
+  field :date,            :type => Time
+  field :data_type,       :type => String
+  field :identifier,      :type => String
+  field :messages,        :type => String
+  field :status,          :type => String
+  field :hidden,          :type => Boolean
+  field :filename,        :type => String
+  field :synchronized_at, :type => Time
 
   # -- associations
   embedded_in :project, :inverse_of => :data_nodes

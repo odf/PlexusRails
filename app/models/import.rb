@@ -228,6 +228,53 @@ class Import
     node
   end
 
+  # Updates an existing DataNode instance with the given information.
+  #
+  # *Arguments*:
+  # _node_:: the data node to update
+  # _entry_:: a hash containing the new information
+  def add_missing_info(node, entry)
+    # -- prepare a return value
+    info = {
+      :messages => [],
+      :is_main => false
+    }
+
+    #TODO - create a domain model
+
+    # -- update the data domain if necessary
+    #if entry["domain"] && !node.domain
+    #  node.domain = Domain.create(entry["domain"])
+    #  node.save!
+    #  info[:messages] << "Domain entry added."
+    #end
+
+    # -- update information on the source file for this entry
+    if entry["data_file"]
+      name = entry["data_file"]["name"]
+      date = parse_timestamp(entry["data_file"])
+      info[:is_main] = true
+
+      # -- set the filename if missing
+      if node.filename.nil?
+        node.filename = name
+        info[:messages] << "Filename set."
+      end
+
+      # -- update the synchronization date
+      if node.synchronized_at.nil? or node.synchronized_at < date
+        node.synchronized_at = date
+        info[:messages] << "File synchronization timestamp updated."
+      end
+    end
+
+    # -- save the node if necessary
+    node.save! unless info[:messages].empty?
+
+    # -- return some info on what's been done
+    info
+  end
+
   # Utility method. Creates a Time instance from a string attribute
   # contained in a hash.
   #
@@ -245,13 +292,6 @@ class Import
 
   def resolve_if_pending(node)
     0
-  end
-
-  def add_missing_info(node, entry)
-    {
-      :messages => [],
-      :is_main => false
-    }
   end
 
   def link_predecessors(predecessors)
