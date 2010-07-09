@@ -5,6 +5,10 @@ module ApplicationHelper
     sanitize(RedCloth.new(text).to_html)
   end
 
+  def format_time(time)
+    time.strftime("%d-%B-%Y %H:%M:%S") unless time.nil?
+  end
+
   def dash
     '&mdash;'.html_safe
   end

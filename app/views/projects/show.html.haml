@@ -20,6 +20,7 @@
       %tr
         %th In Sample
         %th Name
+        %th Date
         %th Data Type
         %th Identifier
         %th Status
@@ -28,6 +29,7 @@
         %tr
           %td= node.sample
           %td= node.name
+          %td= format_time node.date
           %td= node.data_type
           %td= node.identifier
           %td= node.status

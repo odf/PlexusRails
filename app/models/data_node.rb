@@ -7,6 +7,7 @@ class DataNode
   # -- simple persistent attributes
   field :sample,     :type => String
   field :name,       :type => String
+  field :date,       :type => Time
   field :data_type,  :type => String
   field :identifier, :type => String
   field :messages,   :type => String

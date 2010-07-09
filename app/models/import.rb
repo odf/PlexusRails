@@ -163,25 +163,82 @@ class Import
     }
   end
 
+  # Looks for existing data node entries in the database which match
+  # the given attributes. This procedes in a number of steps which are
+  # tried in order. The first step that produces a non-empty list of
+  # results returns those results. If no valid nodes are found, the
+  # same sequence of steps is performed on the invalid nodes.
+  #
+  # *Arguments*:
+  # _entry_:: a hash containing data node attributes.
+  def find_nodes_like(entry)
+    # -- some preparation
+    names = [entry["name"]]
+    names << entry["data_file"]["name"] unless entry["data_file"].blank?
+    ident = entry["identifier"]
+
+    # -- search valid nodes first, then invalid ones
+    for status in %w{valid error}
+      # -- look for matching identifiers
+      unless ident.blank?
+        nodes = project.data_nodes.where :identifier => ident, :status => status
+        return nodes unless nodes.empty?
+      end
+
+      # -- the timestamp must always match precisely
+      date = parse_timestamp(entry)
+      candidates = project.data_nodes.where :date => date, :status => status
+
+      # -- match given node name, then file name, with existing node names
+      for field in [:name, :filename]
+        for name in names
+          nodes = candidates.where field => name
+          return nodes unless nodes.empty?
+        end
+      end
+    end
+
+    # -- if this point is reached, nothing was found
+    return []
+  end
+
+  # Creates a DataNode instance in the database with the given
+  # attributes.
+  #
+  # *Arguments*:
+  # _entry_:: a hash containing the attributes for the new node
+  # _valid_:: a boolean indicating whether the node is valid
+  # _messages_:: string of error and warning messages for this node
   def create_node(entry, valid, messages)
     status = valid ? 'valid' : 'error'
+
+    #TODO store filenames with data nodes
     node = project.data_nodes.build(:name       => entry["name"],
+                                    :sample     => sample_name,
+                                    :date       => entry["date"],
                                     :data_type  => entry["data_type"],
                                     :identifier => entry["identifier"],
                                     :messages   => messages,
                                     :status     => status,
                                     :hidden     => false)
-    node.save!
-    node
 
     #TODO - create the associated process node
+
+    node.save!
+    node
   end
+
+  # Utility method. Creates a Time instance from a string attribute
+  # contained in a hash.
+  #
+  # *Arguments*:
+  # _entry_:: a hash containing data node attributes
+  def parse_timestamp(entry)
+    Time.parse(entry["date"]).getutc unless entry["date"].blank?
+  end
+
 
   #TODO - Placeholder methods to be fleshed out later
-  def find_nodes_like(entry)
-    []
-  end
-
   def check_conflicts(entry, nodes)
     []
   end
