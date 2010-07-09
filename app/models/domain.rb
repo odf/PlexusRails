@@ -14,7 +14,7 @@ class Domain
   embedded_in :data_node, :inverse_of => :domain
 
   # -- pseudo-attributes for easier access
-  for axis_name, axis_index in %w{x y z}.each_with_index
+  %w{x y z}.each_with_index do |axis_name, axis_index|
     define_method "domain_origin_#{axis_name}" do
       origin[axis_index]
     end
