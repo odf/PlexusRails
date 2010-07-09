@@ -212,7 +212,6 @@ class Import
   def create_node(entry, valid, messages)
     status = valid ? 'valid' : 'error'
 
-    #TODO store filenames with data nodes
     node = project.data_nodes.build(:name       => entry["name"],
                                     :sample     => sample_name,
                                     :date       => entry["date"],
@@ -240,14 +239,11 @@ class Import
       :is_main => false
     }
 
-    #TODO - create a domain model
-
     # -- update the data domain if necessary
-    #if entry["domain"] && !node.domain
-    #  node.domain = Domain.create(entry["domain"])
-    #  node.save!
-    #  info[:messages] << "Domain entry added."
-    #end
+    if entry["domain"] && !node.domain
+      node.build_domain(entry["domain"])
+      info[:messages] << "Domain entry added."
+    end
 
     # -- update information on the source file for this entry
     if entry["data_file"]
@@ -269,7 +265,7 @@ class Import
     end
 
     # -- save the node if necessary
-    node.save! unless info[:messages].empty?
+    node.save!
 
     # -- return some info on what's been done
     info
