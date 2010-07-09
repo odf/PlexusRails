@@ -151,10 +151,6 @@ class Import
     messages = entry["parse_errors"].map { |s| "(PARSE ERROR) #{s}" } +
       messages + problems
     
-    #TODO implement data logs
-    #data_logs.create(:data_node_id => node.id,
-    #                 :status => status, :messages => messages)
-
     # -- return some information to the caller
     {
       "Name" => entry["name"],

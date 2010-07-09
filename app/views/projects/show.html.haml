@@ -1,4 +1,5 @@
 - title "Project <em>#{h @project.name}</em>".html_safe
+- stylesheet :tables
 
 = render :partial => "properties", :object => @project
 = render :partial => "comments/on_object", :object => @project
@@ -9,6 +10,27 @@
       %a.dj-link{ :href => new_project_import_url(@project) }
         Import data
   #import.dj-replace.dj-anchor
+
+- if @project.data_nodes.empty?
+  %h2 No data nodes.
+- else
+  %h2 Data nodes:
+  %table.zebra
+    %thead
+      %tr
+        %th In Sample
+        %th Name
+        %th Data Type
+        %th Identifier
+        %th Status
+    %tbody
+      - @project.data_nodes.visible.by_id.by_sample.each do |node|
+        %tr
+          %td= node.sample
+          %td= node.name
+          %td= node.data_type
+          %td= node.identifier
+          %td= node.status
 
 %h2 Imports:
 %p= link_to 'Show Imports', project_imports_url(@project)
