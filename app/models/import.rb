@@ -2,7 +2,7 @@
 #
 # Instances of this model have a dual role: each instance receives a
 # JSON-encoded collection of data node descriptions and, via an
-# 'after_create' hook, establishes the corresponding entries in the
+# 'before_save' hook, establishes the corresponding entries in the
 # database. After the import is completed, the instance retains the
 # original JSON-source and in addition stores a log of the actions
 # taken and their outcome.
@@ -59,8 +59,149 @@ class Import
   # is saved to the database as a part of the table row associated
   # with this instance.
   def run_this_import
-    if import_log.blank?
-      self.import_log = { :Status => 'Unsupported' }
+    return unless import_log.blank?
+
+    # -- preparations
+    result = {
+      'User' => user && user.name,
+      'Date' => (source_timestamp or '').to_s,
+      'Project' => project.name,
+      'Sample' => sample_name, # "#{sample.name} (#{sample.nickname})",
+      'Nodes' => [],
+      'Status' => 'UNSUPPORTED'
+    }
+    nodes_created = 0
+    predecessors = {}
+    predecessors.default = []
+    @name2node = {}
+    @name2node.default = []
+
+    # -- create new nodes
+    content.each do |entry|
+      log = handle_node(entry)
+      result["Nodes"] << log
+      if log["IsMain"] and log["Status"] == "Success"
+        result["MainNodeID"] = log["Id"]
+        result["MainNodeExternalID"] = log["ExternalID"]
+      end
+      predecessors[log["Id"]] += entry["predecessors"]
+      nodes_created += 1 if log["Created"]
     end
+
+    # -- create database links between the nodes in this import
+    link_log = link_predecessors(predecessors)
+    
+    # -- compose a log for this import
+    status = result["Nodes"].map { |x| x["Status"] }
+    result["Status"] = status.include?("Failure") ? "Mixed" : "Success"
+    result["Messages"] =
+      ["Created #{pluralize nodes_created, "data node"}."] + (link_log || [])
+
+    # -- set the log attribute
+    self.import_log = result
+
+  rescue Exception => ex
+    result ||= {}
+    result["Status"] = 'Error'
+    result["Messages"] = [ex.to_s] + ex.backtrace[0,10]
+    self.import_log = result
+  end
+
+  # Performs the necessary update actions for a single data node. The
+  # node is created if it doesn't already exist. Otherwise, a check
+  # for inconsistencies is done and information added to the existing
+  # node if appropriate.
+  #
+  # *Arguments*:
+  # _entry_:: a hash describing the data node to create.
+  def handle_node(entry)
+    messages = []
+
+    # -- check for conflicts with existing nodes
+    existing = find_nodes_like(entry)
+    problems =
+      check_conflicts(entry, existing.select { |n| n.status == 'valid' })
+    valid = problems.empty?
+    msgs_for_node = (entry["parse_errors"] + problems).join("\n")
+
+    # -- create the node if it doesn't exist
+    if existing.empty? or not (valid or find_rejected(entry, msgs_for_node))
+      node = create_node(entry, valid, msgs_for_node)
+      messages << "Node created."
+      if resolve_if_pending(node) > 0
+        messages << "Node resolves missings inputs."
+      end
+      created = true
+    else
+      node = existing[0]
+      messages << "Node existed; #{problems.empty? ? "no" : "some"} conflicts."
+      created = false
+    end
+
+    # -- add any new information to the node
+    res = add_missing_info(node, entry)
+    messages += res[:messages]
+    is_main = res[:is_main]
+
+    # -- remember the node created for later lookup by name
+    @name2node[entry["name"]] += [ node ]
+
+    # -- add a log entry to the database
+    status = problems.empty? ? "Success" : "Failure"
+    messages = entry["parse_errors"].map { |s| "(PARSE ERROR) #{s}" } +
+      messages + problems
+    
+    #TODO implement data logs
+    #data_logs.create(:data_node_id => node.id,
+    #                 :status => status, :messages => messages)
+
+    # -- return some information to the caller
+    {
+      "Name" => entry["name"],
+      "Status" => status,
+      "Created" => created,
+      "Messages" => messages,
+      "Id" => node.id,
+      "ExternalID" => node.identifier,
+      "IsMain" => is_main
+    }
+  end
+
+  def create_node(entry, valid, messages)
+    status = valid ? 'valid' : 'error'
+    node = project.data_nodes.build(:name       => entry["name"],
+                                    :data_type  => entry["data_type"],
+                                    :identifier => entry["identifier"],
+                                    :messages   => messages,
+                                    :status     => status,
+                                    :hidden     => false)
+    node.save!
+    node
+
+    #TODO - create the associated process node
+  end
+
+  #TODO - Placeholder methods to be fleshed out later
+  def find_nodes_like(entry)
+    []
+  end
+
+  def check_conflicts(entry, nodes)
+    []
+  end
+
+  def resolve_if_pending(node)
+    0
+  end
+
+  def add_missing_info(node, entry)
+    {
+      :messages => [],
+      :is_main => false
+    }
+  end
+
+  def link_predecessors(predecessors)
+    []
   end
 end
