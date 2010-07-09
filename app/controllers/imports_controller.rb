@@ -37,9 +37,9 @@ class ImportsController < ApplicationController
 
   def legitimate_user
     if @project
-      @project.allows?(:edit, @user)
+      @project.allows?(:upload, @user)
     else
-      @user and @user.may_edit
+      @user and @user.may_upload
     end
   end
 

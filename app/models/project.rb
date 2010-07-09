@@ -46,6 +46,8 @@ class Project
       user and user.may_edit and %w{contributor manager}.include? role
     when :manage
       user and user.may_edit and (user.may_authorize or role == 'manager')
+    when :upload
+      user and user.may_upload
     else
       false
     end

@@ -2,7 +2,7 @@ class User
   # -- define sets of abilities for certain roles
   READER_TASKS = [ 'login', 'view' ]
   EDITOR_TASKS = READER_TASKS + [ 'edit' ]
-  ADMIN_TASKS  = EDITOR_TASKS + [ 'authorize' ]
+  ADMIN_TASKS  = EDITOR_TASKS + [ 'authorize', 'upload' ]
   WIZARD_TASKS = ADMIN_TASKS + [ 'impersonate' ]
   ABILITIES    = WIZARD_TASKS
 
@@ -137,7 +137,8 @@ class User
 
   # Checks whether this user can add or remove ability <a> for user <user>.
   def can_authorize?(user, a)
-    user != self and may_authorize and (abilities | ADMIN_TASKS).include?(a)
+    user != self and may_authorize and
+      (abilities | ADMIN_TASKS).include?(a)
   end
 
   # List of projects this user is a member of.
