@@ -10,7 +10,7 @@ class ProcessNode
   field :data_type,  :type => String
   field :history,    :type => String
   field :output_log, :type => String
-  field :input_ids,  :type => Array
+  field :input_ids,  :type => Array, :default => []
 
   # -- associations
   embedded_in :project, :inverse_of => :process_nodes
@@ -22,5 +22,12 @@ class ProcessNode
 
   def inputs=(list)
     self.input_ids = list.map { |value| value._id }
+  end
+
+  def add_input(value)
+    unless input_ids.include? value._id
+      input_ids << value._id 
+      save!
+    end
   end
 end

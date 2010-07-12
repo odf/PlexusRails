@@ -279,6 +279,94 @@ class Import
     info
   end
 
+  # Establish new predecessor ("input") links between the DataNode
+  # instances where necessary.
+  #
+  # *Arguments*:
+  # _predecessors_:: a data structure describing predecessor relation.
+  def link_predecessors(predecessors)
+    # -- initialize an error log
+    log = []
+
+    # -- each list entry links an internal node id to a list of predecessors
+    for (node_id, specs) in predecessors
+      # -- locate the specified node
+      node = project.data_nodes.where(:_id => node_id).first
+
+      # -- process the given list of predecessors
+      for item in specs
+        # -- extract attributes that identify this predecessor
+        name = item["name"]
+        ident = item["identifier"]
+        msg = item.delete("message")
+
+        # -- preserve a possible error message
+        unless msg.blank?
+          blame = ident || name
+          blame = "UNNAMED" if blame.blank?
+          log << "(PARSER) #{blame}: #{msg}"
+        end
+
+        # -- find the node described
+        candidates = if ident == nil then @name2node[name]
+                     else project.data_nodes.where(:identifier => ident) end
+
+        if candidates.size != 1
+          # -- too many or too few candidates - create a log entry
+          msg = candidates.empty? ? "not found" : "ambigous"
+          log << "Predecessor #{ident || name} #{msg} for node '#{node.name}'."
+          # -- if an external identifier was given, create a placeholder
+          if ident
+            pre = project.data_nodes.build(:name       => name,
+                                           :identifier => ident,
+                                           :status     => 'missing')
+            pre.save!
+            node.producer.add_input(pre)
+          end
+        else
+          # -- create the predecessor link if it wouldn't create a cycle
+          pre = candidates[0]
+          if pre == node
+            log << "(WARNING) " +
+              "Can't make node '#{node.name}' its own predecessor."
+          #TODO - do the test for cycles properly
+          #elsif pre.all_predecessors.include?(node)
+          #  log << "(WARNING) Making '#{pre.name}' a predecessor of " +
+          #    "'#{node.name}' would create a cycle."
+          else
+            node.producer.add_input(pre)
+          end
+        end
+      end
+    end
+
+    # -- return the error log
+    log
+  end
+
+  # Replaces any references to placeholder ("missing") data nodes with
+  # the same identifier as the given node by references to the given
+  # node. Returns the number of placeholder nodes found.
+  #
+  # *Arguments*:
+  # _node_:: the DataNode instance to resolve pending references for
+  def resolve_if_pending(node)
+    count = 0
+    #TODO - fixme!
+    for pending in project.data_nodes.where(:status => 'missing',
+                                            :identifier => node.identifier)
+      # -- update references 
+      for pNode in pending.consumers
+        pNode.add_input(node)
+      end
+      # -- remove the placeholder node
+      pending.destroy
+      # -- increase the counter
+      count += 1
+    end
+    count
+  end
+
   # Utility method. Creates a Time instance from a string attribute
   # contained in a hash.
   #
@@ -291,14 +379,6 @@ class Import
 
   #TODO - Placeholder methods to be fleshed out later
   def check_conflicts(entry, nodes)
-    []
-  end
-
-  def resolve_if_pending(node)
-    0
-  end
-
-  def link_predecessors(predecessors)
     []
   end
 end

@@ -38,4 +38,8 @@ class DataNode
   def date
     producer && producer.date
   end
+
+  def predecessors
+    producer.inputs
+  end
 end
