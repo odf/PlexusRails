@@ -28,7 +28,7 @@
       = (@user.abilities || []).join(', ')
     %li
       %dfn Last active:
-      = @user.last_active && @user.last_active.strftime("%d-%B-%Y %H:%M:%S")
+      = @user.last_active && format_time(@user.last_active)
       .clear
 = timestamps(@user)
 

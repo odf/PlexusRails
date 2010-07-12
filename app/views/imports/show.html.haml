@@ -14,7 +14,7 @@
       = @import.sample_name || dash
     %li
       %dfn Source Date
-      = @import.source_timestamp || dash
+      = format_time(@import.source_timestamp) || dash
 = timestamps(@import)
 
 - if @import.description.blank?

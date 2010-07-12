@@ -3,6 +3,9 @@ class ApplicationController < ActionController::Base
 
   layout 'application'
 
+  # -- make general helper methods available
+  include ApplicationHelper
+
   # -- methods that will be accessible to templates
   helper_method(:current_date, :current_time, :current_user, :can_authorize?,
                 *User::ABILITIES.map(&User.method(:ability_getter)))
@@ -44,12 +47,12 @@ class ApplicationController < ActionController::Base
 
   # Returns the current date as a nicely formatted string
   def current_date
-    Date.today.strftime("%d %B %Y")
+    format_date(Date.today)
   end
 
   # Returns the current date as a nicely formatted string
   def current_time
-    Time.now.strftime("%d-%B-%Y %H:%M:%S")
+    format_time(Time.now)
   end
 
   # The logged in user for the current session, or nil if none.

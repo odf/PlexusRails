@@ -214,14 +214,13 @@ class Import
 
     node = project.data_nodes.build(:name       => entry["name"],
                                     :sample     => sample_name,
-                                    :date       => entry["date"],
                                     :data_type  => entry["data_type"],
                                     :identifier => entry["identifier"],
                                     :messages   => messages,
                                     :status     => status,
                                     :hidden     => false)
 
-    process = project.process_nodes.build(:date       => entry["date"],
+    process = project.process_nodes.build(:date       => parse_timestamp(entry),
                                           :data_type  => entry["process"],
                                           :run_by     => entry["run_by"],
                                           :history    => entry["source_text"],

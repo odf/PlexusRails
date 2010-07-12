@@ -14,7 +14,7 @@
       %tr
         %td= import.user.name
         %td= import.sample_name
-        %td= import.source_timestamp
+        %td= format_time import.source_timestamp
         %td= '' || import.created_at
         %td= link_to('Details', [import.project, import])
 

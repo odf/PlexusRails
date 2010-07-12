@@ -7,7 +7,6 @@ class DataNode
   # -- simple persistent attributes
   field :sample,          :type => String
   field :name,            :type => String
-  field :date,            :type => Time
   field :data_type,       :type => String
   field :identifier,      :type => String
   field :messages,        :type => String
@@ -28,10 +27,15 @@ class DataNode
 
   # -- accessors for the producer
   def producer
-    project.process_nodes.where(:_id => producer_id)
+    producer_id && project.process_nodes.where(:_id => producer_id).first
   end
 
   def producer=(value)
-    producer_id = value._id
+    self.producer_id = value._id
+  end
+
+  # -- convenience methods
+  def date
+    producer && producer.date
   end
 end

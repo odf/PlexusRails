@@ -5,8 +5,12 @@ module ApplicationHelper
     sanitize(RedCloth.new(text).to_html)
   end
 
+  def format_date(time)
+    time && time.strftime("%d %B %Y")
+  end
+
   def format_time(time)
-    time.strftime("%d-%B-%Y %H:%M:%S") unless time.nil?
+    time && time.strftime("%d-%b-%Y %H:%M:%S")
   end
 
   def dash
@@ -17,8 +21,7 @@ module ApplicationHelper
     stamp = lambda do |type, time, user|
       if time
         author = "by <em>#{h user.name}</em>, " unless user.blank?
-        date = time.strftime("%d-%B-%Y %H:%M:%S")
-        "#{type} #{author}#{date}"
+        "#{type} #{author}#{format_time(time)}"
       end
     end
 

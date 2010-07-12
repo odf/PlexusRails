@@ -5,7 +5,7 @@ class ProcessNode
   include Mongoid::Document
 
   # -- simple persistent attributes
-  field :date,       :type => String
+  field :date,       :type => Time
   field :run_by,     :type => String
   field :data_type,  :type => String
   field :history,    :type => String
@@ -21,6 +21,6 @@ class ProcessNode
   end
 
   def inputs=(list)
-    input_ids = list.map { |value| value._id }
+    self.input_ids = list.map { |value| value._id }
   end
 end
