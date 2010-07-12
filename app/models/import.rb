@@ -221,9 +221,18 @@ class Import
                                     :status     => status,
                                     :hidden     => false)
 
-    #TODO - create the associated process node
+    process = project.process_nodes.build(:date       => entry["date"],
+                                          :data_type  => entry["process"],
+                                          :run_by     => entry["run_by"],
+                                          :history    => entry["source_text"],
+                                          :output_log => entry["output_log"])
 
+    #TODO - create process attributes
+
+    node.producer = process
+    process.save!
     node.save!
+
     node
   end
 

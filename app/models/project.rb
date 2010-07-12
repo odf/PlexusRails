@@ -17,6 +17,7 @@ class Project
   embeds_many :comments
   embeds_many :imports
   embeds_many :data_nodes
+  embeds_many :process_nodes
 
   # -- indexes on this model
   index 'memberships.role'
