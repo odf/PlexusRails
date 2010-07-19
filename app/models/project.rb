@@ -81,6 +81,23 @@ class Project
     end
   end
 
+  # -- methods pertaining to the data relationships graph
+
+  def graph
+    @graph ||= data_nodes.resolved.inject(Persistent::DAG.new) do |gr, v|
+      gr.with_vertex(v.id) + v.predecessors.resolved.map { |w| [w.id, v.id] }
+    end
+  end
+
+  def bottlenecks
+    @bottlenecks ||= graph.bottlenecks
+  end
+
+  def nodes_by_id
+    @nodes ||= Persistent::HashMap.new +
+      graph.vertices.map { |n| [n, data_nodes.find(n)] }
+  end
+
   # -- private methods start here
   private
 

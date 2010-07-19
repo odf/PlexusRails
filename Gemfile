@@ -6,14 +6,15 @@ gem 'rails', '3.0.0.beta4'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'haml'
-gem 'bson_ext', '1.0.1'
+gem 'bson_ext'
 gem 'mongoid', '>= 2.0.0.beta7'
 gem 'json_pure', :require => 'json'
 gem 'RedCloth'
 gem 'sanitize'
 
-gem 'verboten', :git => "#{ENV['HOME']}/Rails/my-gems/verboten"
+gem 'persistent', :git => "#{ENV['HOME']}/Rails/my-gems/persistent"
 gem 'formular', :git => "#{ENV['HOME']}/Rails/my-gems/formular"
+gem 'verboten', :git => "#{ENV['HOME']}/Rails/my-gems/verboten"
 
 group :test do
   gem 'capybara'
