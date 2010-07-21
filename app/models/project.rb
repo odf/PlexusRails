@@ -84,8 +84,8 @@ class Project
   # -- methods pertaining to the data relationships graph
 
   def graph
-    @graph ||= data_nodes.resolved.inject(Persistent::DAG.new) do |gr, v|
-      gr.with_vertex(v.id) + v.producer.inputs.resolved.map { |w| [w.id, v.id] }
+    @graph ||= data_nodes.inject(Persistent::DAG.new) do |gr, v|
+      gr.with_vertex(v.id) + v.producer.inputs.map { |w| [w.id, v.id] }
     end
   end
 
@@ -125,6 +125,21 @@ class Project
     end
 
     nodes_sorted.map { |v| [v, level[v]] }
+  end
+
+  def add_link(source, target)
+    if graph.reachable(target.id).include?(source.id)
+      false
+    else
+      @graph = graph.with_edge(source.id, target.id)
+      target.producer.add_input(source)
+      true
+    end
+  end
+
+  def destroy_node(v)
+    @graph = graph.without_vertex(v.id)
+    v.destroy
   end
 
   # -- private methods start here

@@ -308,10 +308,15 @@ class Import
         end
 
         # -- find the node described
-        candidates = if ident == nil then @name2node[name]
-                     else project.data_nodes.where(:identifier => ident) end
+        candidates = if ident == nil
+                       @name2node[name]
+                     else
+                       project.data_nodes.where(:identifier => ident).to_a
+                     end
 
-        if candidates.size != 1
+        if candidates.size == 1
+          pre = candidates.first
+        else
           # -- too many or too few candidates - create a log entry
           msg = candidates.empty? ? "not found" : "ambigous"
           log << "Predecessor #{ident || name} #{msg} for node '#{node.name}'."
@@ -321,20 +326,16 @@ class Import
                                            :identifier => ident,
                                            :status     => 'missing')
             pre.save!
-            node.producer.add_input(pre)
-          end
-        else
-          # -- create the predecessor link if it wouldn't create a cycle
-          pre = candidates[0]
-          if pre == node
-            log << "(WARNING) " +
-              "Can't make node '#{node.name}' its own predecessor."
-          #TODO - do the test for cycles properly
-          #elsif pre.all_predecessors.include?(node)
-          #  log << "(WARNING) Making '#{pre.name}' a predecessor of " +
-          #    "'#{node.name}' would create a cycle."
           else
-            node.producer.add_input(pre)
+            pre = nil
+          end
+        end
+
+        if pre
+          # -- create the predecessor link if it wouldn't create a cycle
+          unless project.add_link(pre, node)
+            log << "(WARNING) Making '#{pre.name}' a predecessor of " +
+              "'#{node.name}' would create a cycle."
           end
         end
       end
@@ -351,20 +352,22 @@ class Import
   # *Arguments*:
   # _node_:: the DataNode instance to resolve pending references for
   def resolve_if_pending(node)
-    count = 0
-    #TODO - fixme!
-    for pending in project.data_nodes.where(:status => 'missing',
-                                            :identifier => node.identifier)
-      # -- update references 
-      for pNode in pending.consumers
-        pNode.add_input(node)
+    # -- load the placeholders for this node into an array
+    pending = project.data_nodes.where(:status => 'missing',
+                                       :identifier => node.identifier).to_a
+
+    # -- link the new node to each successor
+    pending.each do |v|
+      v.successors.each do |w|
+        project.add_link(node, w)
       end
-      # -- remove the placeholder node
-      pending.destroy
-      # -- increase the counter
-      count += 1
     end
-    count
+
+    # -- remove the placeholders
+    pending.each(&project.method(:destroy_node))
+
+    # -- return the number of nodes replaced
+    pending.count
   end
 
   # Utility method. Creates a Time instance from a string attribute
