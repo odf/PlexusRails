@@ -333,9 +333,11 @@ class Import
 
         if pre
           # -- create the predecessor link if it wouldn't create a cycle
-          unless project.add_link(pre, node)
+          if node.descendants.include?(pre)
             log << "(WARNING) Making '#{pre.name}' a predecessor of " +
               "'#{node.name}' would create a cycle."
+          else
+            project.add_link(pre, node)
           end
         end
       end
@@ -357,11 +359,7 @@ class Import
                                        :identifier => node.identifier).to_a
 
     # -- link the new node to each successor
-    pending.each do |v|
-      v.successors.each do |w|
-        project.add_link(node, w)
-      end
-    end
+    pending.each { |v| v.successors.each { |w| project.add_link(node, w) } }
 
     # -- remove the placeholders
     pending.each(&project.method(:destroy_node))

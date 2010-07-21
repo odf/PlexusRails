@@ -129,13 +129,8 @@ class Project
   end
 
   def add_link(source, target)
-    if graph.reachable(target.id).include?(source.id)
-      false
-    else
-      @graph = graph.with_edge(source.id, target.id)
-      target.producer.add_input(source)
-      true
-    end
+    @graph = graph.with_edge(source.id, target.id)
+    target.producer.add_input(source)
   end
 
   def destroy_node(v)
