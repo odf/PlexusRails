@@ -21,18 +21,14 @@
         %th In Sample
         %th Name
         %th Date
-        %th Data Type
-        %th Identifier
-        %th Status
     %tbody
-      - @project.data_nodes.visible.by_id.by_sample.each do |node|
+      - @project.nodes_with_levels.each do |v, level|
+        - node = @project.data_nodes.where(:_id => v).first
         %tr
           %td= node.sample
-          %td= node.name
+          %td{ :style => "text-align: left" }
+            = ("&nbsp;&nbsp;" * level + node.name).html_safe
           %td= format_time(node.date)
-          %td= node.data_type
-          %td= node.identifier
-          %td= node.status
 
 %h2 Imports:
 %p= link_to 'Show Imports', project_imports_url(@project)
