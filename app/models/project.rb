@@ -85,7 +85,8 @@ class Project
 
   def graph
     @graph ||= data_nodes.inject(Persistent::DAG.new) do |gr, v|
-      gr.with_vertex(v.id) + v.producer.inputs.map { |w| [w.id, v.id] }
+      inputs = v.producer ? v.producer.inputs : []
+      gr.with_vertex(v.id) + inputs.map { |w| [w.id, v.id] }
     end
   end
 
