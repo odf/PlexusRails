@@ -12,9 +12,10 @@ gem 'json_pure', :require => 'json'
 gem 'RedCloth'
 gem 'sanitize'
 
+gem 'lazy',       :git => "#{ENV['HOME']}/Rails/my-gems/lazy"
 gem 'persistent', :git => "#{ENV['HOME']}/Rails/my-gems/persistent"
-gem 'formular', :git => "#{ENV['HOME']}/Rails/my-gems/formular"
-gem 'verboten', :git => "#{ENV['HOME']}/Rails/my-gems/verboten"
+gem 'formular',   :git => "#{ENV['HOME']}/Rails/my-gems/formular"
+gem 'verboten',   :git => "#{ENV['HOME']}/Rails/my-gems/verboten"
 
 group :test do
   gem 'capybara'

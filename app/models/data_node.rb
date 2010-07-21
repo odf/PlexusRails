@@ -21,9 +21,9 @@ class DataNode
   embeds_one :domain
 
   # -- some named scopes
-  named_scope :visible, :where => { :hidden => false }
-  named_scope :resolved, :where => { :status.ne => 'error' }
-  named_scope :by_id, :order_by => :identifier
+  named_scope :visible,   :where => { :hidden => false }
+  named_scope :resolved,  :where => { :status.ne => 'error' }
+  named_scope :by_id,     :order_by => :identifier
   named_scope :by_sample, :order_by => :sample
 
   # -- accessors for the producer

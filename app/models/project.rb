@@ -85,7 +85,7 @@ class Project
 
   def graph
     @graph ||= data_nodes.resolved.inject(Persistent::DAG.new) do |gr, v|
-      gr.with_vertex(v.id) + v.predecessors.resolved.map { |w| [w.id, v.id] }
+      gr.with_vertex(v.id) + v.producer.inputs.resolved.map { |w| [w.id, v.id] }
     end
   end
 
@@ -96,6 +96,35 @@ class Project
   def nodes_by_id
     @nodes ||= Persistent::HashMap.new +
       graph.vertices.map { |n| [n, data_nodes.find(n)] }
+  end
+
+  # The list of valid and rejected node ids, with each node listed
+  # before its successors.
+  def nodes_sorted
+    node_dates = nodes_by_id.apply { |v| (v && v.date) || Time.at(0) }
+
+    visit = proc do |state, v|
+      if state.marked?(v)
+        state
+      else
+        children = graph.succ(v).sort_by(&node_dates).reverse
+        children.inject(state.with_mark(v), &visit).after(v)
+      end
+    end
+
+    sources = graph.sources.sort_by(&node_dates).reverse
+    sources.inject(Persistent::Accumulator.new, &visit)
+  end
+  
+  # A list of node id/level pairs, selected and ordered as in
+  # nodes_sorted, where the level of a node is one higher than the
+  # maximum level of any of its predecessors.
+  def nodes_with_levels
+    level = nodes_sorted.inject(Persistent::HashMap.new) do |h, v|
+      h.with(v, 1 + (graph.pred(v).map { |w| h[w] }.compact.max || -1))
+    end
+
+    nodes_sorted.map { |v| [v, level[v]] }
   end
 
   # -- private methods start here
