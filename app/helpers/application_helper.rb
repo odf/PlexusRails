@@ -53,12 +53,13 @@ module ApplicationHelper
     url_for(nesting_for(object))
   end
 
-  private
   def nesting_for(object)
-    case object
-    when Comment          then nesting_for(object.commentable) + [object]
-    when Import, DataNode then [object.project, object]
-    else                       [object]
+    if object.is_a? Comment
+      nesting_for(object.commentable) + [object]
+    elsif object.respond_to?(:project)
+      [object.project, object]
+    else
+      [object]
     end
   end
 end

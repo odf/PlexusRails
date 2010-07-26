@@ -15,11 +15,22 @@ class CommentsController < ApplicationController
   private
 
   def find_commentable
-    ids = params.select { |k, v| k.ends_with? '_id' }
+    tmp = params.clone
+    project_id = tmp.delete(:project_id)
+
+    ids = tmp.select { |k, v| k.ends_with? '_id' }
     if ids.length == 1
       key, val = ids[0]
-      model = key.sub(/_id$/, '').classify.constantize
-      @commentable = model && model.find(val)
+      resource = key.sub(/_id$/, '')
+      model = resource.classify.constantize
+      if model
+        if project_id
+          @commentable =
+            Project.find(project_id).send(resource.pluralize).find(val)
+        else
+          @commentable = model.find(val)
+        end
+      end
     else
       raise 'Missing or ambiguous commentable.'
     end
