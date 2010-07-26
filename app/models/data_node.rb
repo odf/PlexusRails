@@ -19,6 +19,7 @@ class DataNode
   # -- associations
   embedded_in :project, :inverse_of => :data_nodes
   embeds_one :domain
+  embeds_many :comments
 
   # -- some named scopes
   named_scope :visible,   :where => { :hidden => false }
@@ -76,6 +77,18 @@ class DataNode
     find_nodes Persistent::Depth_First_Traversal.new([self._id], &adj)
   end
 
+  def hideable?
+    project.bottlenecks.include? self.id
+  end
+
+  def toggle_visibility
+    value = self.hidden ? false : true
+    find_nodes(project.graph.reachable(self.id)).each do |node|
+      node.hidden = value
+      node.save!
+    end
+  end
+
   # -- permissions are as in the project this data node belongs to
   def allows?(action, user)
     project.allows?(action, user)
@@ -83,6 +96,6 @@ class DataNode
 
   private
   def find_nodes(nodes)
-    nodes.map { |v| project.data_nodes.where(:_id => v).first }
+    project.data_nodes.any_in(:_id => nodes)
   end
 end

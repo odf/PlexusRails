@@ -48,4 +48,17 @@ module ApplicationHelper
 
     "<p class=\"note\">#{txt}</p>".html_safe unless txt.blank?
   end
+
+  def url_for_object(object)
+    url_for(nesting_for(object))
+  end
+
+  private
+  def nesting_for(object)
+    case object
+    when Comment          then nesting_for(object.commentable) + [object]
+    when Import, DataNode then [object.project, object]
+    else                       [object]
+    end
+  end
 end

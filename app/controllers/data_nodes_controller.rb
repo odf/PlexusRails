@@ -3,6 +3,7 @@ class DataNodesController < ApplicationController
   before_authorization_filter :find_node
 
   permit :show do may_view(@data_node) end
+  permit :toggle do may_edit(@project) end
 
   private
 
@@ -17,5 +18,10 @@ class DataNodesController < ApplicationController
   public
 
   def show
+  end
+
+  def toggle
+    @data_node.toggle_visibility
+    render :action => :show
   end
 end
