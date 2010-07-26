@@ -1,4 +1,4 @@
 - title "Editing Project <em>#{h @project.name}</em>".html_safe
 
-%fieldset.dj-replace.dj-form.dj-anchor
+%fieldset#properties.dj-replace.dj-form.dj-anchor
   = render :partial => 'form', :locals => { :create => false }

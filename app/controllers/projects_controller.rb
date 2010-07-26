@@ -6,8 +6,6 @@ class ProjectsController < ApplicationController
   permit :show                    do may_view(@project)   end
   permit :edit, :update, :destroy do may_manage(@project) end
 
-  redirect_if_cancelled
-
   helper_method :may_manage
 
 
@@ -27,19 +25,26 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = Project.new(params[:project])
-    @project.name = params[:project][:name]
-
-    if @project.save
-      redirect_to @project, :notice => 'Project was successfully  created.'
+    if params[:result] == 'Cancel'
+      flash[:notice] = 'Creation was cancelled.'
+      redirect_to :action => :index
     else
-      render :action => 'new', :alert => 'Could not create project.'
+      @project = Project.new(params[:project])
+      @project.name = params[:project][:name]
+
+      if @project.save
+        redirect_to @project, :notice => 'Project was successfully  created.'
+      else
+        render :action => 'new', :alert => 'Could not create project.'
+      end
     end
   end
 
   def update
-    if @project.update_attributes(params[:project])
-      redirect_to @project, :notice => 'Project was successfully updated.'
+    if params[:result] == 'Cancel'
+      flash[:notice] = 'Update was cancelled.'
+    elsif @project.update_attributes(params[:project])
+      flash[:notice] = 'Project was successfully updated.'
     else
       render :action => 'edit', :alert => 'Could not update project.'
     end

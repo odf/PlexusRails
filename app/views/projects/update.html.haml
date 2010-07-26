@@ -1,0 +1,6 @@
+- title "Project <em>#{h @project.name}</em>".html_safe
+- stylesheet :tables, :datasets
+
+= render :partial => "properties", :object => @project
+
+= link_to "Full view", @project

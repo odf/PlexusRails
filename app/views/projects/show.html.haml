@@ -4,21 +4,27 @@
 = render :partial => "properties", :object => @project
 = render :partial => "comments/on_object", :object => @project
 
+%h2
+  = @project.data_nodes.empty? ? "No Datasets." : "Datasets:"
+  - if may_edit(@project)
+    %span.action-links
+      - if params[:showall]
+        = link_to "Exclude hidden", url_for(:showall => nil)
+      - else
+        = link_to "Include hidden", url_for(:showall => 1)
+
+- @project.nodes_with_levels.each do |v, level, hideable|
+  - node = @project.data_nodes.where(:_id => v).first
+  - if !node.hidden or params[:showall]
+    - locals = { :level => level, :hideable => hideable }
+    = render :partial => 'dataset', :locals => locals, :object => node
+
 - if may_edit(@project)
   %p
     %span#import-link.dj-replace.dj-anchor.action-links
       %a.dj-link{ :href => new_project_import_url(@project) }
         Import data
   #import.dj-replace.dj-anchor
-
-- if @project.data_nodes.empty?
-  %h2 No data nodes.
-- else
-  %h2 Data nodes:
-  - @project.nodes_with_levels.each do |v, level, hideable|
-    - node = @project.data_nodes.where(:_id => v).first
-    - locals = { :level => level, :hideable => hideable }
-    = render :partial => 'dataset', :locals => locals, :object => node
 
 %h2 Imports:
 %p= link_to 'Show Imports', project_imports_url(@project)
