@@ -15,23 +15,10 @@
   %h2 No data nodes.
 - else
   %h2 Data nodes:
-  -# %table.zebra
-    %thead
-      %tr
-        %th In Sample
-        %th Name
-        %th Date
-    %tbody
-      - @project.nodes_with_levels.each do |v, level|
-        - node = @project.data_nodes.where(:_id => v).first
-        %tr
-          %td= node.sample
-          %td{ :style => "text-align: left" }
-            = ("&nbsp;&nbsp;" * level + node.name).html_safe
-          %td= format_time(node.date)
-  - @project.nodes_with_levels.each do |v, level|
+  - @project.nodes_with_levels.each do |v, level, hideable|
     - node = @project.data_nodes.where(:_id => v).first
-    = render :partial => 'dataset', :object => node, :locals => { :level => level }
+    - locals = { :level => level, :hideable => hideable }
+    = render :partial => 'dataset', :locals => locals, :object => node
 
 %h2 Imports:
 %p= link_to 'Show Imports', project_imports_url(@project)

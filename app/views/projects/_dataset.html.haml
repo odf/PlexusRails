@@ -4,8 +4,7 @@
 - url = '#'
 -# url = (dataset.status == 'valid') ? dataset_url(dataset) : '#'
 - hidden = dataset.hidden ? ' hidden' : ''
-- hideable = ''
--# hideable = hideable ? ' hideable' : ''
+- hideable = hideable ? ' hideable' : ''
 - level = 0 if !defined?(level) or level.nil?
 
 %div{ :id => "x#{dataset.id}x", :class => "data-set#{hideable}" }
@@ -21,11 +20,14 @@
         - if dataset.status == 'error'
           %em (rejected)
         %br/
+        %dfn Sample:
+        = dataset.sample
+        %br/
         %dfn Process:
         = (process_node.data_type || "").underscore.humanize
         %br/
         %dfn Time:
-        = format_time(dataset.date)
+        = format_time(dataset.date, :mode => :sortable, :zone => true)
         %br/
         - unless process_node.run_by.blank?
           %dfn Operator:
@@ -42,6 +44,6 @@
       - else
         %img{:src => "/images/grains-tiny.png", :alt => ""}
       &nbsp;
-      = format_time(dataset.date)
+      = format_time(dataset.date, :mode => :terse)
       - if dataset.filename
         &nbsp; &bull;

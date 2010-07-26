@@ -125,7 +125,7 @@ class Project
       h.with(v, 1 + (graph.pred(v).map { |w| h[w] }.compact.max || -1))
     end
 
-    nodes_sorted.map { |v| [v, level[v]] }
+    nodes_sorted.map { |v| [v, level[v], bottlenecks.include?(v)] }
   end
 
   def add_link(source, target)

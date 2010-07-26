@@ -6,11 +6,23 @@ module ApplicationHelper
   end
 
   def format_date(time)
-    time && time.strftime("%d %B %Y")
+    time && time.strftime('%d %B %Y')
   end
 
-  def format_time(time)
-    time && time.strftime("%d-%b-%Y %H:%M:%S")
+  def format_time(time, options = {})
+    mode = options[:mode] || :human_short
+    zone = options[:zone] || false
+    utc = options.has_key?(:utc) ? options[:utc] : mode == :mango
+    if time
+      fmt = case mode.to_sym
+            when :human       then '%d %B %Y %H:%M:%S'
+            when :human_short then '%d-%b-%Y %H:%M:%S'
+            when :sortable    then '%Y/%m/%d %H:%M:%S'
+            when :terse       then time < 22.hours.ago ? '%Y/%m/%d' : '%H:%M '
+            when :mango       then '%Y%m%d_%H%M%S'
+            end
+      (utc ? time.utc : time).strftime(fmt) + (zone ? ' ' + time.zone : '')
+    end
   end
 
   def dash

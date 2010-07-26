@@ -64,6 +64,18 @@
       jQuery(this).parent().find('.collapsible').removeClass('toggle-hide');
     });
 
+    // -- highlights predecessors and successors of a data set on hover
+    jQuery('.data-set', context).hover(function() {
+      var related = jQuery(this).find(".predecessors,.successors").text();
+      jQuery('.data-set').each(function() {
+	var item = jQuery(this);
+	if (related.indexOf(item.attr('id')) >= 0) item.addClass('highlighted');
+      });
+      return false;
+    }, function() {
+      jQuery('.data-set').removeClass('highlighted');
+    });
+
     // -- handles tabs
     jQuery('.tabs-container', context).each(function() {
       var container = jQuery(this);
