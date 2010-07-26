@@ -1,0 +1,47 @@
+- process_node = dataset.producer
+- pics = []
+-# pics = dataset.data_pictures.select { |p| p.allows_to_view(current_user) }
+- url = '#'
+-# url = (dataset.status == 'valid') ? dataset_url(dataset) : '#'
+- hidden = dataset.hidden ? ' hidden' : ''
+- hideable = ''
+-# hideable = hideable ? ' hideable' : ''
+- level = 0 if !defined?(level) or level.nil?
+
+%div{ :id => "x#{dataset.id}x", :class => "data-set#{hideable}" }
+  %span.predecessors{ :style => "display: none" }
+    == x#{dataset.predecessors.map(&:id).to_a.join('x')}x
+  %span.successors{ :style => "display: none" }
+    == x#{dataset.successors.map(&:id).to_a.join('x')}x
+  %a{ :href => url }
+    %span{ :class => "data-set-header #{dataset.status}#{hidden}", |
+           :style => "margin-left: #{level * 8}pt" } |
+      %span.data-set-popup
+        = dataset.suffix
+        - if dataset.status == 'error'
+          %em (rejected)
+        %br/
+        %dfn Process:
+        = (process_node.data_type || "").underscore.humanize
+        %br/
+        %dfn Time:
+        = format_time(dataset.date)
+        %br/
+        - unless process_node.run_by.blank?
+          %dfn Operator:
+          = process_node.run_by
+          %br/
+        - for pic in pics
+          %img{:src => picture_url("#{pic.id}_small"), :alt => ""}
+      &nbsp;
+      %dfn= (dataset.data_type || "").underscore.humanize.titleize
+      == (#{h(dataset.last_suffix)})
+      &nbsp;
+      - if pics.empty?
+        &mdash;
+      - else
+        %img{:src => "/images/grains-tiny.png", :alt => ""}
+      &nbsp;
+      = format_time(dataset.date)
+      - if dataset.filename
+        &nbsp; &bull;

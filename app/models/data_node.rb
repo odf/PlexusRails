@@ -41,6 +41,19 @@ class DataNode
     producer && producer.date
   end
 
+  def suffix
+    (name || "").sub(/\A[a-z_]*/, '')
+  end
+
+  def last_suffix
+    case suffix
+    when /\A\d/, /_/
+      suffix.scan(/[^_]+/)[-1]
+    else
+      suffix[0,2]
+    end
+  end
+
   def predecessors
     find_nodes project.graph.pred(self._id)
   end

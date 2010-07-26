@@ -1,5 +1,5 @@
 - title "Project <em>#{h @project.name}</em>".html_safe
-- stylesheet :tables
+- stylesheet :tables, :datasets
 
 = render :partial => "properties", :object => @project
 = render :partial => "comments/on_object", :object => @project
@@ -15,7 +15,7 @@
   %h2 No data nodes.
 - else
   %h2 Data nodes:
-  %table.zebra
+  -# %table.zebra
     %thead
       %tr
         %th In Sample
@@ -29,6 +29,9 @@
           %td{ :style => "text-align: left" }
             = ("&nbsp;&nbsp;" * level + node.name).html_safe
           %td= format_time(node.date)
+  - @project.nodes_with_levels.each do |v, level|
+    - node = @project.data_nodes.where(:_id => v).first
+    = render :partial => 'dataset', :object => node, :locals => { :level => level }
 
 %h2 Imports:
 %p= link_to 'Show Imports', project_imports_url(@project)
