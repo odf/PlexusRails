@@ -72,7 +72,7 @@
 - unless @data_node.predecessors.empty?
   %hr/
   %h2 Predecessors:
-= render :partial => "projects/dataset", :locals => { :level => 0 }, |
+= render :partial => "dataset", :locals => { :level => 0 }, |
          :collection => @data_node.predecessors.resolved |
 - unless @data_node.predecessors.missing.empty?
   %h4 Unresolved:
@@ -82,5 +82,5 @@
 - unless @data_node.successors.empty?
   %hr/
   %h2 Successors:
-= render :partial => "projects/dataset", :locals => { :level => 0 }, |
+= render :partial => "dataset", :locals => { :level => 0 }, |
          :collection => @data_node.successors |

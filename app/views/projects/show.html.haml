@@ -17,7 +17,7 @@
   - node = @project.data_nodes.where(:_id => v).first
   - if !node.hidden or params[:showall]
     - locals = { :level => level, :hideable => hideable }
-    = render :partial => 'dataset', :locals => locals, :object => node
+    = render :partial => 'data_nodes/dataset', :locals => locals, :object => node
 
 - if may_edit(@project)
   %p
