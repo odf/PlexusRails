@@ -1,8 +1,8 @@
 - process_node = dataset.producer
 - pics = []
 -# pics = dataset.data_pictures.select { |p| p.allows_to_view(current_user) }
-- url = '#'
--# url = (dataset.status == 'valid') ? dataset_url(dataset) : '#'
+- url = (dataset.status == 'valid') ? |
+        project_data_node_url(dataset.project, dataset) : '#' |
 - hidden = dataset.hidden ? ' hidden' : ''
 - hideable = hideable ? ' hideable' : ''
 - level = 0 if !defined?(level) or level.nil?

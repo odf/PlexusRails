@@ -1,0 +1,8 @@
+- title "Dataset <em>#{breakable(@data_node.suffix)}</em>".html_safe
+
+%p
+  %b Project:
+  = link_to @data_node.project.name, @data_node.project
+  &mdash;
+  %b Sample:
+  = @data_node.sample

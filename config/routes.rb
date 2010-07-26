@@ -7,7 +7,9 @@ PlexusR3::Application.routes.draw do |map|
         post :data_index
       end
     end
+    resources :data_nodes
   end
+
   resources :sessions
 
   root :to => 'projects#index'

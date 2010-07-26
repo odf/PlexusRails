@@ -29,6 +29,10 @@ module ApplicationHelper
     '&mdash;'.html_safe
   end
 
+  def breakable(s)
+    h(s).gsub('_', '&shy;_').html_safe
+  end
+
   def timestamps(object)
     stamp = lambda do |type, time, user|
       if time

@@ -71,6 +71,11 @@ class DataNode
     find_nodes Persistent::Depth_First_Traversal.new([self._id], &adj)
   end
 
+  # -- permissions are as in the project this data node belongs to
+  def allows?(action, user)
+    project.allows?(action, user)
+  end
+
   private
   def find_nodes(nodes)
     nodes.map { |v| project.data_nodes.where(:_id => v).first }
