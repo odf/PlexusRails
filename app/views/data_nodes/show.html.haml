@@ -59,7 +59,7 @@
 
 = render :partial => "comments/on_object", :object => @data_node
 
-- unless process_node.parameters.empty? and process_node.output_log.blank?
+- unless process_node.parameters.blank? and process_node.output_log.blank?
   %h2 Runtime Parameters:
   .collapsible
     - unless process_node.parameters.empty?
