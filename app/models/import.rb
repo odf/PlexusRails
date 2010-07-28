@@ -146,7 +146,7 @@ class Import
     # -- remember the node created for later lookup by name
     @name2node[entry["name"]] += [ node ]
 
-    # -- add a log entry to the database
+    # -- add some loggin information
     status = problems.empty? ? "Success" : "Failure"
     messages = entry["parse_errors"].map { |s| "(PARSE ERROR) #{s}" } +
       messages + problems

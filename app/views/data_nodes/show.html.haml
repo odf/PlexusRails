@@ -1,6 +1,7 @@
 - title "Dataset <em>#{breakable(@data_node.suffix)}</em>".html_safe
 - stylesheet :properties, :datasets
 - time_options = { :mode => :sortable, :zone => true }
+- filename = @data_node.filename
 
 %p
   %b Project:
@@ -37,24 +38,18 @@
       %li
         %dfn Operator
         = @data_node.producer.run_by
-    - if @data_node.filename.blank?
-      %li
-        %dfn Data stored
+    %li
+      %dfn Data stored
+      - if filename.blank?
         no
-    - else
+      - elsif @data_node.synchronized_at.blank?
+        at unknown time
+      - else
+        = format_time(@data_node.synchronized_at, time_options)
+    - unless filename.blank? or filename == @data_node.name
       %li
-        %dfn Data stored
-        - if @data_node.synchronized_at.blank?
-          at unknown time
-        - else
-          = format_time(@data_node.synchronized_at, time_options)
-      - unless @data_node.name == @data_node.filename
-        %li
-          %dfn File name
-          - if @data_node.filename.blank?
-            &mdash;
-          - else
-            = @data_node.filename
+        %dfn File name
+        = filename
 
 - if @data_node.domain
   %h2 Domain:
