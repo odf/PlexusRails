@@ -22,6 +22,7 @@
                 %p= a[i+m][1]
 
 - for a in entries[1]
-  %h2= a[0].gsub(/: */, ' ').sub(/\s*Comments\s*$/, ' Notes') + ":"
-  - a[1].split("\n").each do |line|
-    %p= line
+  %h3= a[0].gsub(/: */, ' ').sub(/\s*Comments\s*$/, ' Notes') + ":"
+  %tt
+    %small
+      %pre= a[1]

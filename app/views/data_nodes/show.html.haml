@@ -1,5 +1,5 @@
 - title "Dataset <em>#{breakable(@data_node.suffix)}</em>".html_safe
-- stylesheet :properties, :datasets
+- stylesheet :properties, :datasets, :tabs
 - time_options = { :mode => :sortable, :zone => true }
 
 - filename = @data_node.filename
@@ -59,38 +59,40 @@
 
 = render :partial => "comments/on_object", :object => @data_node
 
-- unless process_node.parameters.blank? and process_node.output_log.blank?
-  %h2 Runtime Parameters:
-  .collapsible
-    - unless process_node.parameters.empty?
-      = render :partial => "parameters", :object => process_node.parameters
-  .clear
-- unless process_node.output_log.blank?
-  %h2 Output:
-  .collapsible
-    - process_node.output_log.split("\n").each do |line|
-      %p= line
-  .clear
+%h2 Additional information:
+.tabs-container
+  %input{ :type => 'hidden' }
+  %ul{ :style => 'display: none' }
+    = tab_link('#predecessors', 'Predecessors')
+    = tab_link('#successors', 'Successors')
+    = tab_link('#parameters', 'Parameters')
+    = tab_link('#output', 'Process Output')
+    = tab_link('#history', 'History Entry')
 
-%h2 Full History Entry:
-.collapsible
-  %tt
-    %small
-      %pre.comment= h(process_node.history)
+  #parameters
+    = render :partial => "parameters", :object => process_node.parameters
+
+  #output
+    %tt
+      %small
+        %pre= process_node.output_log
+
+  #history
+    %tt
+      %small
+        %pre= process_node.history
+
+  #predecessors
+    = render :partial => "dataset", :locals => { :level => 0 }, |
+             :collection => @data_node.predecessors.resolved |
+
+    - unless @data_node.predecessors.missing.empty?
+      %h4 Unresolved:
+      %ul
+      - for v in @data_node.predecessors.missing
+        %li= v.identifier || v.name
+
+  #successors
+    = render :partial => "dataset", :locals => { :level => 0 }, |
+             :collection => @data_node.successors |
 .clear
-
-- unless @data_node.predecessors.empty?
-  %hr/
-  %h2 Predecessors:
-= render :partial => "dataset", :locals => { :level => 0 }, |
-         :collection => @data_node.predecessors.resolved |
-- unless @data_node.predecessors.missing.empty?
-  %h4 Unresolved:
-  %ul
-- for v in @data_node.predecessors.missing
-  %li= v.identifier || v.name
-- unless @data_node.successors.empty?
-  %hr/
-  %h2 Successors:
-= render :partial => "dataset", :locals => { :level => 0 }, |
-         :collection => @data_node.successors |

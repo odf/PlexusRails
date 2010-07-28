@@ -5,6 +5,8 @@ class DataNodesController < ApplicationController
   permit :show do may_view(@data_node) end
   permit :toggle do may_edit(@project) end
 
+  before_filter :prepare_tabs
+
   private
 
   def find_project
@@ -13,6 +15,12 @@ class DataNodesController < ApplicationController
 
   def find_node
     @data_node = @project.data_nodes.where(:_id => params[:id]).first
+  end
+
+  def prepare_tabs
+    #session['active-tab'] = params['active-tab'] if params['active-tab']
+    #@active_tab = session['active-tab'] || "#predecessors"
+    @active_tab = '#predecessors'
   end
 
   public
