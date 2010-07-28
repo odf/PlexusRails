@@ -1,7 +1,9 @@
 - title "Dataset <em>#{breakable(@data_node.suffix)}</em>".html_safe
 - stylesheet :properties, :datasets
 - time_options = { :mode => :sortable, :zone => true }
+
 - filename = @data_node.filename
+- process_node = @data_node.producer
 
 %p
   %b Project:
@@ -30,14 +32,14 @@
       = (@data_node.data_type || "").underscore.humanize
     %li
       %dfn Process
-      = (@data_node.producer.data_type || "").underscore.humanize
+      = (process_node.data_type || "").underscore.humanize
     %li
       %dfn Data created
       = format_time(@data_node.date, time_options)
-    - unless @data_node.producer.run_by.blank?
+    - unless process_node.run_by.blank?
       %li
         %dfn Operator
-        = @data_node.producer.run_by
+        = process_node.run_by
     %li
       %dfn Data stored
       - if filename.blank?
@@ -57,11 +59,24 @@
 
 = render :partial => "comments/on_object", :object => @data_node
 
+- unless process_node.parameters.empty? and process_node.output_log.blank?
+  %h2 Runtime Parameters:
+  .collapsible
+    - unless process_node.parameters.empty?
+      = render :partial => "parameters", :object => process_node.parameters
+  .clear
+- unless process_node.output_log.blank?
+  %h2 Output:
+  .collapsible
+    - process_node.output_log.split("\n").each do |line|
+      %p= line
+  .clear
+
 %h2 Full History Entry:
 .collapsible
   %tt
     %small
-      %pre.comment= h(@data_node.producer.history)
+      %pre.comment= h(process_node.history)
 .clear
 
 - unless @data_node.predecessors.empty?

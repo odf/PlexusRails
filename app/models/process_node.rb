@@ -10,6 +10,7 @@ class ProcessNode
   field :data_type,  :type => String
   field :history,    :type => String
   field :output_log, :type => String
+  field :parameters, :type => Hash, :default => {}
   field :input_ids,  :type => Array, :default => []
 
   # -- associations

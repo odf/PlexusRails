@@ -1,0 +1,27 @@
+- stylesheet :parameters
+
+- entries = parameters.map { |key, value| |
+              [ key.humanize.titleize.gsub(/\./, ': '), value ] |
+            }.sort.partition { |a| a[1].to_s.size <= 80 and a[1] !~ /.\n./ } |
+
+.parameters
+  - a = entries[0] + [[nil, nil]]
+  - m = a.size / 2
+  %ul
+    - for i in 0...m
+      %li
+        %ul
+          %li
+            %div
+              %dfn= a[i][0]
+              %p= a[i][1]
+          %li
+            - if a[i+m][0]
+              %div
+                %dfn= a[i+m][0]
+                %p= a[i+m][1]
+
+- for a in entries[1]
+  %h2= a[0].gsub(/: */, ' ').sub(/\s*Comments\s*$/, ' Notes') + ":"
+  - a[1].split("\n").each do |line|
+    %p= line
