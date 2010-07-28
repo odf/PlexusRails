@@ -73,14 +73,12 @@
     = render :partial => "parameters", :object => process_node.parameters
 
   #output
-    %tt
-      %small
-        %pre= process_node.output_log
+    - unless process_node.output_log.blank?
+      %pre.code= process_node.output_log
 
   #history
-    %tt
-      %small
-        %pre= process_node.history
+    - unless process_node.history.blank?
+      %pre.code= process_node.history
 
   #predecessors
     = render :partial => "dataset", :locals => { :level => 0 }, |
