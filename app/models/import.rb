@@ -141,6 +141,7 @@ class Import
     # -- add any new information to the node
     res = add_missing_info(node, entry)
     messages += res[:messages]
+    problems += res[:errors]
     is_main = res[:is_main]
 
     # -- remember the node created for later lookup by name
@@ -202,6 +203,58 @@ class Import
     return []
   end
 
+  # Checks for inconsistencies between a data node descriptor and a
+  # list of existing DataNode instances in the database.
+  #
+  # *Arguments*:
+  # _entry_:: a hash containing attributes for a data node
+  # _nodes_:: an array of nodes to compare with
+  def check_conflicts(entry, nodes)
+    # -- start with an empty list of inconsistency messages
+    problems = []
+
+    # -- there should have been only one node to compare with
+    if nodes.size > 1
+      problems <<
+        "(WARNING) Multiple matching data nodes exist in the database."
+    end
+
+    # -- loop over the nodes given
+    for node in nodes
+      # -- check for inconsistent file names
+      if entry["data_file"] and not node.filename.blank?
+        if node.filename != entry["data_file"]["name"]
+          problems <<
+            "(ERROR) Data is already associated with file '#{node.filename}'."
+        end
+      end
+
+      # -- check for mismatches in the history entries
+      if node.producer.history != entry["source_text"]
+        problems << "(ERROR) History mismatch."
+      end
+
+      # -- check for data domain mismatches
+      if node.domain
+        (entry["domain"] || {}).each do |key, val|
+          old = node.domain.send key
+          if val.class == Float && old.class == Float
+            changed = (val - old).abs / val > 1e-4
+          elsif not (val.blank? or old.blank?)
+            changed = (val != old);
+          end
+          if changed
+            problems <<
+              "(ERROR) Domain mismatch: '#{key}' was #{old}, is #{val}."
+          end
+        end
+      end
+    end
+
+    # -- return the list of inconsistency messages
+    problems
+  end
+
   # Creates a DataNode instance in the database with the given
   # attributes.
   #
@@ -243,6 +296,7 @@ class Import
     # -- prepare a return value
     info = {
       :messages => [],
+      :errors => [],
       :is_main => false
     }
 
@@ -264,8 +318,19 @@ class Import
 
       # -- set the fingerprint
       if node.fingerprint.nil?
-        node.fingerprint = entry["data_file"]["fingerprint"]
-        info[:messages] << "Fingerprint set."
+        fingerprint = entry["data_file"]["fingerprint"]
+        query = Project.where("data_nodes.fingerprint" => fingerprint)
+        if query.empty?
+          node.fingerprint = fingerprint
+          info[:messages] << "Fingerprint set."
+        else
+          query.each do |p|
+            p.data_nodes.where(:fingerprint => fingerprint).each do |v|
+              info[:errors] <<
+                "Duplicates fingerprint of node #{v.name} in project #{p.name}."
+            end
+          end
+        end
       end
 
       # -- update the synchronization date
@@ -379,11 +444,5 @@ class Import
   # _entry_:: a hash containing data node attributes
   def parse_timestamp(entry)
     Time.parse(entry["date"]).getutc unless entry["date"].blank?
-  end
-
-
-  #TODO - Placeholder methods to be fleshed out later
-  def check_conflicts(entry, nodes)
-    []
   end
 end
