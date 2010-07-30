@@ -254,17 +254,22 @@ class Import
 
     # -- update information on the source file for this entry
     if entry["data_file"]
-      name = entry["data_file"]["name"]
-      date = parse_timestamp(entry["data_file"])
       info[:is_main] = true
 
       # -- set the filename if missing
       if node.filename.nil?
-        node.filename = name
+        node.filename = entry["data_file"]["name"]
         info[:messages] << "Filename set."
       end
 
+      # -- set the fingerprint
+      if node.fingerprint.nil?
+        node.fingerprint = entry["data_file"]["fingerprint"]
+        info[:messages] << "Fingerprint set."
+      end
+
       # -- update the synchronization date
+      date = parse_timestamp(entry["data_file"])
       if node.synchronized_at.nil? or node.synchronized_at < date
         node.synchronized_at = date
         info[:messages] << "File synchronization timestamp updated."

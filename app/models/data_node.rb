@@ -13,6 +13,7 @@ class DataNode
   field :status,          :type => String
   field :hidden,          :type => Boolean
   field :filename,        :type => String
+  field :fingerprint,     :type => String
   field :synchronized_at, :type => Time
   field :producer_id,     :type => String
 

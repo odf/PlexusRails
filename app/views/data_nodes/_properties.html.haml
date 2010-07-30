@@ -12,11 +12,12 @@
       %dfn Mango ID
       = breakable(@data_node.identifier || "")
     %li
-      %dfn Type
+      %dfn Data Type
       = (@data_node.data_type || "").underscore.humanize
     %li
-      %dfn Process
+      %dfn Process Type
       = (process_node.data_type || "").underscore.humanize
+    %br/
     %li
       %dfn Data created
       = format_time(@data_node.date, time_options)
@@ -32,6 +33,10 @@
         at unknown time
       - else
         = format_time(@data_node.synchronized_at, time_options)
+    - if @data_node.fingerprint
+      %li
+        %dfn Fingerprint
+        = @data_node.fingerprint
     - unless filename.blank? or filename == @data_node.name
       %li
         %dfn File name
