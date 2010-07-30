@@ -1,6 +1,7 @@
 - url = project_data_node_url(dataset.project, dataset)
 - hidden = dataset.hidden ? ' hidden' : ''
 - hideable = hideable ? ' hideable' : ''
+- level = 0 if not defined?(level) or level.nil?
 
 %div{ :id => "x#{dataset.id}x", :class => "data-set#{hideable}" }
   %span.predecessors{ :style => "display: none" }

@@ -1,0 +1,61 @@
+- stylesheet :properties
+- time_options = { :mode => :sortable, :zone => true }
+- filename = @data_node.filename
+- process_node = @data_node.producer
+
+.properties
+  %ul
+    %li
+      %dfn Full Name
+      = breakable(@data_node.name || "")
+    %li
+      %dfn External ID
+      = breakable(@data_node.identifier || "")
+    %li
+      %dfn Type
+      = (@data_node.data_type || "").underscore.humanize
+    %li
+      %dfn Process
+      = (process_node.data_type || "").underscore.humanize
+    %li
+      %dfn Data created
+      = format_time(@data_node.date, time_options)
+    - unless process_node.run_by.blank?
+      %li
+        %dfn Operator
+        = process_node.run_by
+    %li
+      %dfn Data stored
+      - if filename.blank?
+        no
+      - elsif @data_node.synchronized_at.blank?
+        at unknown time
+      - else
+        = format_time(@data_node.synchronized_at, time_options)
+    - unless filename.blank? or filename == @data_node.name
+      %li
+        %dfn File name
+        = filename
+
+    - if @data_node.domain
+      - domain = @data_node.domain
+      %br/
+      %li
+        %dfn Origin
+        - x = domain.domain_origin_x
+        - y = domain.domain_origin_y
+        - z = domain.domain_origin_z
+        == (#{x}, #{y}, #{z})
+      %li
+        %dfn Size
+        - x = domain.domain_size_x
+        - y = domain.domain_size_y
+        - z = domain.domain_size_z
+        == #{x} &times; #{y} &times; #{z}
+      %li
+        - unit = h(domain.voxel_unit).sub(/\Amicron\Z/, "&micro;").html_safe
+        %dfn== Voxel size (#{unit})
+        - x = "%.2f" % domain.voxel_size_x
+        - y = "%.2f" % domain.voxel_size_y
+        - z = "%.2f" % domain.voxel_size_z
+        == #{x} &times; #{y} &times; #{z}

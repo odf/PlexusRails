@@ -1,8 +1,5 @@
 - title "Dataset <em>#{breakable(@data_node.suffix)}</em>".html_safe
-- stylesheet :properties, :datasets, :tabs
-- time_options = { :mode => :sortable, :zone => true }
-
-- filename = @data_node.filename
+- stylesheet :datasets, :tabs
 - process_node = @data_node.producer
 
 %p
@@ -12,65 +9,32 @@
   %b Sample:
   = @data_node.sample
 
-%h2
-  Properties:
-  %span.action-links
-    - if @data_node.hideable?
-      - text = @data_node.hidden ? "Unhide" : "Hide"
-      - url = toggle_project_data_node_url(@project, @data_node)
-      = link_to text, url, :method => :put
-.properties
-  %ul
-    %li
-      %dfn Full Name
-      = breakable(@data_node.name || "")
-    %li
-      %dfn External ID
-      = breakable(@data_node.identifier || "")
-    %li
-      %dfn Type
-      = (@data_node.data_type || "").underscore.humanize
-    %li
-      %dfn Process
-      = (process_node.data_type || "").underscore.humanize
-    %li
-      %dfn Data created
-      = format_time(@data_node.date, time_options)
-    - unless process_node.run_by.blank?
-      %li
-        %dfn Operator
-        = process_node.run_by
-    %li
-      %dfn Data stored
-      - if filename.blank?
-        no
-      - elsif @data_node.synchronized_at.blank?
-        at unknown time
-      - else
-        = format_time(@data_node.synchronized_at, time_options)
-    - unless filename.blank? or filename == @data_node.name
-      %li
-        %dfn File name
-        = filename
-
-- if @data_node.domain
-  %h2 Domain:
-  = render :partial => "domain", :object => @data_node.domain
-
 = render :partial => "comments/on_object", :object => @data_node
 
-%h2 Additional information:
+- if @data_node.hideable?
+  %h2
+    %span.action-links
+      - text = @data_node.hidden ? "Include Node in" : "Exclude Node from"
+      - url = toggle_project_data_node_url(@project, @data_node)
+      = link_to "#{text} Project View", url, :method => :put
+
+%h2 Details:
+
 .tabs-container
   %input{ :type => 'hidden' }
-  %ul{ :style => 'display: none' }
+  %ul
+    = tab_link('#general', 'General')
     = tab_link('#predecessors', 'Predecessors')
     = tab_link('#successors', 'Successors')
     = tab_link('#parameters', 'Parameters')
     = tab_link('#output', 'Process Output')
     = tab_link('#history', 'History Entry')
 
+  #general
+    = render "properties"
+
   #parameters
-    = render :partial => "parameters", :object => process_node.parameters
+    = render "parameters"
 
   #output
     - unless process_node.output_log.blank?
@@ -81,7 +45,7 @@
       %pre.code= process_node.history
 
   #predecessors
-    = render :partial => "dataset", :locals => { :level => 0 }, |
+    = render :partial => "dataset", |
              :collection => @data_node.predecessors.resolved |
 
     - unless @data_node.predecessors.missing.empty?
@@ -91,6 +55,5 @@
         %li= v.identifier || v.name
 
   #successors
-    = render :partial => "dataset", :locals => { :level => 0 }, |
-             :collection => @data_node.successors |
+    = render :partial => "dataset", :collection => @data_node.successors
 .clear

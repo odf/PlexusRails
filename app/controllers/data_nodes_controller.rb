@@ -19,8 +19,8 @@ class DataNodesController < ApplicationController
 
   def prepare_tabs
     #session['active-tab'] = params['active-tab'] if params['active-tab']
-    #@active_tab = session['active-tab'] || "#predecessors"
-    @active_tab = '#predecessors'
+    #@active_tab = session['active-tab'] || "#general"
+    @active_tab = '#general'
   end
 
   public
