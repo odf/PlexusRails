@@ -1,6 +1,6 @@
 class DataNodesController < ApplicationController
+  before_authorization_filter :find_resource
   before_authorization_filter :find_project
-  before_authorization_filter :find_node
 
   permit :show do may_view(@data_node) end
   permit :toggle do may_edit(@project) end
@@ -10,11 +10,7 @@ class DataNodesController < ApplicationController
   private
 
   def find_project
-    @project = Project.where(:_id => params[:project_id]).first
-  end
-
-  def find_node
-    @data_node = @project.data_nodes.where(:_id => params[:id]).first
+    @project = @data_node.project
   end
 
   def prepare_tabs

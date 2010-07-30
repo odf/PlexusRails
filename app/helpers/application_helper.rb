@@ -54,13 +54,7 @@ module ApplicationHelper
   end
 
   def nesting_for(object)
-    if object.is_a? Comment
-      nesting_for(object.commentable) + [object]
-    elsif object.respond_to?(:project)
-      [object.project, object]
-    else
-      [object]
-    end
+    (object.embedded? ? nesting_for(object._parent) : []) + [object]
   end
 
   def tab_link(ref, text)

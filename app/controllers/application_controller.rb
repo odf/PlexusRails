@@ -64,9 +64,23 @@ class ApplicationController < ActionController::Base
 
   # Sets a properly named instance variable with the resource given.
   def find_resource
-    model_name = self.class.name.sub(/Controller$/, '').singularize
-    found = model_name.constantize.where(:_id => params[:id]).first
-    instance_variable_set("@#{model_name.downcase}", found)
+    class_name = self.class.name.sub(/Controller$/, '').classify
+    found = find_recursively(class_name)
+    instance_variable_set("@#{class_name.underscore}", found)
+  end
+
+  def find_recursively(class_name, level = 0)
+    model_class = class_name.constantize
+    key = level == 0 ? "id" : "#{class_name.underscore}_id"
+    if model_class.embedded?
+      assoc = model_class.associations.values.select { |v|
+        v.association == Mongoid::Associations::EmbeddedIn
+      }.first
+      parent = find_recursively(assoc.name.classify, level + 1)
+      parent.send(assoc.inverse_of).where(:_id => params[key]).first
+    else
+      model_class.where(:_id => params[key]).first
+    end
   end
 
   # A unified way to abort an action if the 'Cancel' button was pressed.
