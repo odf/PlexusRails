@@ -1,9 +1,8 @@
 class ImportsController < ApplicationController
   protect_from_forgery :except => [ :data_index, :create ]
 
-  before_authorization_filter :find_project
-  before_authorization_filter :find_import, :only => :show
-  before_authorization_filter :find_user,   :only => [:data_index, :create]
+  before_authorization_filter :find_resource
+  before_authorization_filter :find_user, :only => [:data_index, :create]
 
   permit :index               do may_edit           end
   permit :show                do may_view(@import)  end
@@ -11,19 +10,6 @@ class ImportsController < ApplicationController
   permit :data_index, :create do legitimate_user    end
   
   private
-
-  def find_project
-    query = if params[:project_id]
-              { :_id => params[:project_id] }
-            else
-              { :name => params[:project] }
-            end
-    @project = Project.where(query).first
-  end
-
-  def find_import
-    @import = @project.imports.where(:_id => params[:id]).first
-  end
 
   def find_user
     @user = current_user || authenticated_user

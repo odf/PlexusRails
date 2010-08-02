@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # Sets a properly named instance variable with the resource given.
+  # Creates instance variables for a resource and, if nested, its ancestors.
   def find_resource
     class_name = self.class.name.sub(/Controller$/, '').classify
     found = find_recursively(class_name)
@@ -73,10 +73,11 @@ class ApplicationController < ActionController::Base
     model_class = class_name.constantize
     key = level == 0 ? "id" : "#{class_name.underscore}_id"
     if model_class.embedded?
-      assoc = model_class.associations.values.select { |v|
+      assoc = model_class.associations.values.find { |v|
         v.association == Mongoid::Associations::EmbeddedIn
-      }.first
+      }
       parent = find_recursively(assoc.name.classify, level + 1)
+      instance_variable_set("@#{assoc.name}", parent)
       parent.send(assoc.inverse_of).where(:_id => params[key]).first
     else
       model_class.where(:_id => params[key]).first
