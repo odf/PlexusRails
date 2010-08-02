@@ -1,6 +1,5 @@
 class CommentsController < ApplicationController
   before_authorization_filter :find_commentable
-  before_authorization_filter :find_comment, :except => [:new, :create]
 
   permit :new, :create            do may_edit(@commentable) end
   permit :edit, :update, :destroy do may_edit(@comment)     end
@@ -15,28 +14,7 @@ class CommentsController < ApplicationController
   private
 
   def find_commentable
-    tmp = params.clone
-    project = Project.where(:_id => tmp.delete(:project_id)).first
-
-    ids = tmp.select { |k, v| k.ends_with? '_id' }
-    if ids.length == 1
-      key, val = ids[0]
-      resource = key.sub(/_id$/, '')
-      model = resource.classify.constantize
-      @commentable = model && if project
-                                project.send(resource.pluralize).find(val)
-                              else
-                                model.find(val)
-                              end
-    elsif project
-      @commentable = project 
-    else
-      raise 'Missing or ambiguous commentable.'
-    end
-  end
-
-  def find_comment
-    @comment = @commentable.comments.find(params[:id])
+    find_resource :parent_as => 'commentable'
   end
 
   public

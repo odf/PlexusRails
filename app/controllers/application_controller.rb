@@ -63,21 +63,26 @@ class ApplicationController < ActionController::Base
   private
 
   # Creates instance variables for a resource and, if nested, its ancestors.
-  def find_resource
-    class_name = self.class.name.sub(/Controller$/, '').classify
-    found = find_recursively(class_name)
-    instance_variable_set("@#{class_name.underscore}", found)
+  def find_resource(options = {})
+    found = find_recursively(self.class.name.sub(/Controller$/, ''), 0, options)
+    variable = "@#{options[:as] || found.class.name.underscore}"
+    instance_variable_set(variable, found)
   end
 
-  def find_recursively(class_name, level = 0)
-    model_class = class_name.constantize
+  def find_recursively(class_name, level = 0, options = {})
+    model_class = class_name.classify.constantize
     key = level == 0 ? "id" : "#{class_name.underscore}_id"
-    if model_class.embedded?
-      assoc = model_class.associations.values.find { |v|
-        v.association == Mongoid::Associations::EmbeddedIn
-      }
-      parent = find_recursively(assoc.name.classify, level + 1)
-      instance_variable_set("@#{assoc.name}", parent)
+    assoc = if level == 0 and params[:nested_in]
+              Struct.new('Assoc', 'name', 'inverse_of').
+                     new(params[:nested_in].underscore, class_name.underscore)
+            elsif model_class.embedded?
+              model_class.associations.values.find do |v|
+                v.association == Mongoid::Associations::EmbeddedIn
+              end
+            end
+    if assoc
+      parent = find_recursively(assoc.name, level + 1)
+      instance_variable_set("@#{options[:parent_as] || assoc.name}", parent)
       parent.send(assoc.inverse_of).where(:_id => params[key]).first
     else
       model_class.where(:_id => params[key]).first

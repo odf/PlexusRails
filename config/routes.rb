@@ -1,14 +1,14 @@
 PlexusR3::Application.routes.draw do |map|
   resources :users
   resources :projects do
-    resources :comments
+    resources :comments, :nested_in => 'project'
     resources :imports do
       collection do
         post :data_index
       end
     end
     resources :data_nodes do
-      resources :comments
+      resources :comments, :nested_in => 'data_node'
       member do
         put :toggle
       end
