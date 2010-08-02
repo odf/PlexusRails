@@ -49,7 +49,7 @@ module ApplicationHelper
     "<p class=\"note\">#{txt}</p>".html_safe unless txt.blank?
   end
 
-  def url_for_object(object)
+  def nested_url_for(object)
     url_for(nesting_for(object))
   end
 
