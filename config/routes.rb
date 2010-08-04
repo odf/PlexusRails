@@ -24,4 +24,22 @@ PlexusR3::Application.routes.draw do |map|
 
   match 'imports' => 'imports#create'
   match 'samples/stored_data' => 'imports#data_index'
+
+  # -- quick test for picture uploading
+  match 'pictures' => proc { |env|
+    payload = env['rack.request.form_hash']['picture']['uploaded_data']
+    name = payload[:filename]
+    data = payload[:tempfile].read
+    File.open("/home/olaf/scratch/Plexus-files/#{name}", "w") { |fp|
+      fp.write(data)
+    }
+
+    response = {
+      'Status' => 'Success',
+      'Name'   => name,
+      'Size'   => data.size
+    }
+
+    [200, {}, [response.to_json]]
+  }
 end
