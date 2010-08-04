@@ -46,6 +46,7 @@ class ImportsController < ApplicationController
   def show
   end
   
+  #TODO this is a placeholder - make it produce a useful answer
   def data_index
     respond_to do |format|
       format.json do

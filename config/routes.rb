@@ -27,7 +27,8 @@ PlexusR3::Application.routes.draw do |map|
 
   # -- quick test for picture uploading
   match 'pictures' => proc { |env|
-    payload = env['rack.request.form_hash']['picture']['uploaded_data']
+    params =  env['rack.request.form_hash']
+    payload = params['picture']['uploaded_data']
     name = payload[:filename]
     data = payload[:tempfile].read
     File.open("/home/olaf/scratch/Plexus-files/#{name}", "w") { |fp|
@@ -37,7 +38,8 @@ PlexusR3::Application.routes.draw do |map|
     response = {
       'Status' => 'Success',
       'Name'   => name,
-      'Size'   => data.size
+      'Size'   => data.size,
+      'NodeID' => params['data_id']
     }
 
     [200, {}, [response.to_json]]
