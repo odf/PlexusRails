@@ -5,6 +5,7 @@ class DataNode
   include Mongoid::Document
 
   # -- simple persistent attributes
+  field :fingerprint,     :type => String
   field :sample,          :type => String
   field :name,            :type => String
   field :data_type,       :type => String
@@ -13,9 +14,11 @@ class DataNode
   field :status,          :type => String
   field :hidden,          :type => Boolean
   field :filename,        :type => String
-  field :fingerprint,     :type => String
   field :synchronized_at, :type => Time
   field :producer_id,     :type => String
+
+  # -- use the fingerprint as the document key
+  key :fingerprint
 
   # -- associations
   embedded_in :project, :inverse_of => :data_nodes

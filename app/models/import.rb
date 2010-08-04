@@ -263,15 +263,23 @@ class Import
   # _valid_:: a boolean indicating whether the node is valid
   # _messages_:: string of error and warning messages for this node
   def create_node(entry, valid, messages)
+    require 'digest/md5'
+
     status = valid ? 'valid' : 'error'
 
-    node = project.data_nodes.build(:name       => entry["name"],
-                                    :sample     => sample_name,
-                                    :data_type  => entry["data_type"],
-                                    :identifier => entry["identifier"],
-                                    :messages   => messages,
-                                    :status     => status,
-                                    :hidden     => false)
+    md5 = Digest::MD5.new
+    for key in %w{name identifier date data_type process source_text}
+      md5.update(entry[key] || "")
+    end
+
+    node = project.data_nodes.build(:name        => entry["name"],
+                                    :fingerprint => md5.hexdigest,
+                                    :sample      => sample_name,
+                                    :data_type   => entry["data_type"],
+                                    :identifier  => entry["identifier"],
+                                    :messages    => messages,
+                                    :status      => status,
+                                    :hidden      => false)
 
     process = project.process_nodes.build(:date       => parse_timestamp(entry),
                                           :data_type  => entry["process"],
@@ -314,23 +322,6 @@ class Import
       if node.filename.nil?
         node.filename = entry["data_file"]["name"]
         info[:messages] << "Filename set."
-      end
-
-      # -- set the fingerprint
-      if node.fingerprint.nil?
-        fingerprint = entry["data_file"]["fingerprint"]
-        query = Project.where("data_nodes.fingerprint" => fingerprint)
-        if query.empty?
-          node.fingerprint = fingerprint
-          info[:messages] << "Fingerprint set."
-        else
-          query.each do |p|
-            p.data_nodes.where(:fingerprint => fingerprint).each do |v|
-              info[:errors] <<
-                "Duplicates fingerprint of node #{v.name} in project #{p.name}."
-            end
-          end
-        end
       end
 
       # -- update the synchronization date
