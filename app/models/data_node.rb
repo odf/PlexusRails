@@ -29,6 +29,7 @@ class DataNode
   # -- some named scopes
   named_scope :visible,   :where => { :hidden => false }
   named_scope :resolved,  :where => { :status.ne => 'missing' }
+  named_scope :valid,     :where => { :status => 'valid' }
   named_scope :missing,   :where => { :status => 'missing' }
   named_scope :by_id,     :order_by => :identifier
   named_scope :by_sample, :order_by => :sample
