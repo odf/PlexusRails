@@ -1,7 +1,6 @@
-- base_url = nested_url_for(image)
-
 .thumbnail.dj-replace.dj-anchor
   - if image and may_view(image)
+    - base_url = nested_url_for(image)
     .picture-link
       %a{ :href  => base_url, :title => image.caption }
         %img{ :src => base_url, :alt => "", :height => 120, :width => 120 }
