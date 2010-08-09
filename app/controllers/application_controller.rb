@@ -62,6 +62,24 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def find_user
+    @user = current_user || authenticated_user
+  end
+
+  def authenticated_user
+    if request.ssl? or not Rails.env.production?
+      User.authenticate(params[:user] || {})
+    end
+  end
+
+  def legitimate_user
+    if @project
+      @project.allows?(:upload, @user)
+    else
+      @user and @user.may_upload
+    end
+  end
+
   # Creates instance variables for a resource and, if nested, its ancestors.
   def find_resource(options = {})
     found = find_recursively(self.class.name.sub(/Controller$/, ''), 0, options)
