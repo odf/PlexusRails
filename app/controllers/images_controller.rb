@@ -41,9 +41,28 @@ class ImagesController < ApplicationController
   def create
     @image = @illustratable.images.build(params[:image])
     if @image.save
-      flash[:notice] = 'Image was successfully added.'
+      status = "Success"
+      message = "Image successfully added."
     else
-      flash[:alert] = 'Could not create image.'
+      status = "Error"
+      message = "Image upload failed: " +
+        @image.errors.map { |attr, msg| "#{attr} #{msg}" }.join("; ")
+    end
+
+    respond_to do |format|
+      format.html do
+        if status == "Error"
+          flash.now[:error] = message
+          flash.now[:object_with_errors] = :picture
+          render :text => '', :layout => true
+        else
+          flash[:notice] = message
+          render
+        end
+      end
+      format.json do
+        render :json => { "Status" => status, "Message" => message }
+      end
     end
   end
 
