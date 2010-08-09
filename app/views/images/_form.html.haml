@@ -1,8 +1,10 @@
 - stylesheet :forms
+- target = (nesting_for(@illustratable) + [@image])
 
 .dj-form
-  = formular_for (nesting_for(@illustratable) + [@image]) do |form|
-    = form.text_area :caption, :cols => 80, :rows => 10, :label => ''
+  = formular_for target, :html => {:multipart => true}  do |form|
+    %p= form.file_field :content, :label => 'Image file'
+    = form.text_area :caption, :cols => 80, :rows => 5, :label => ''
     %br
     = form.result_buttons
 

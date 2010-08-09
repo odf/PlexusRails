@@ -19,7 +19,7 @@ class Image
 
   ASSET_PATH = File.join(Rails.root, "assets")
 
-  before_create :store_file
+  after_create :store_file
   before_destroy :delete_file
 
   def allows?(action, user)
@@ -28,6 +28,11 @@ class Image
 
   def content=(uploaded)
     self.filename = uploaded.original_filename
+    components = nesting_for(illustratable).inject([ASSET_PATH]) do |list, obj|
+      list + [obj.class.name.underscore.pluralize, obj._id]
+    end + ['images', filename]
+    self.stored_path = File.join(*components)
+
     @content = uploaded.read
   end
 
@@ -40,9 +45,8 @@ class Image
   def store_file
     raise "No directory #{ASSET_PATH}." unless File.directory?(ASSET_PATH)
 
-    components = nesting_for(illustratable).map(&:_id) + [filename]
-    self.stored_path = File.join(ASSET_PATH, *components)
     FileUtils.mkpath(File.dirname(self.stored_path))
+    File.open(stored_path, "wb") { |fp| fp.write(@content) }
   end
 
   def delete_file

@@ -42,11 +42,6 @@ class DataNode
     self.producer_id = value._id
   end
 
-  # -- placeholder
-  def images
-    []
-  end
-
   # -- convenience methods
   def date
     producer && producer.date

@@ -8,3 +8,4 @@ log/*.log
 tmp/**/*
 public/stylesheets/*.css
 doc/app
+assets

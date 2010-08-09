@@ -1,7 +1,7 @@
 .dj-replace.dj-anchor
   - if image and may_view(image)
     - base_url = nested_url_for(image)
-    .image= format_text(image.text)
+    .image= format_text(image.caption)
     .clear
     - if may_edit(image)
       %p.note
