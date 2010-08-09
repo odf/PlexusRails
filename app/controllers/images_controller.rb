@@ -23,7 +23,7 @@ class ImagesController < ApplicationController
   def show
     send_data(@image.data,
               :filename => @image.filename,
-              :type => @image.content_type || "image/png",
+              :type => @image.content_type,
               :disposition => "inline")
   end
 

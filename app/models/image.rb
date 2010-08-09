@@ -28,6 +28,8 @@ class Image
 
   def content=(uploaded)
     self.filename = uploaded.original_filename
+    self.content_type = uploaded.content_type
+
     components = nesting_for(illustratable).inject([ASSET_PATH]) do |list, obj|
       list + [obj.class.name.underscore.pluralize, obj._id]
     end + ['images', filename]
