@@ -37,7 +37,7 @@ class Image
   end
 
   def data
-    read_file(stored_path)
+    File.open(stored_path) { |fp| fp.read }
   end
 
   private

@@ -30,7 +30,8 @@
           = dataset.producer.run_by
           %br/
         - for pic in dataset.images
-          %img{:src => picture_url("#{pic.id}_small"), :alt => ""}
+          %img{ :src => nested_url_for(pic), :alt => "", |
+                :width => 80, :height => 80 } |
       &nbsp;
       %dfn= (dataset.data_type || "").underscore.humanize.titleize
       == (#{h(dataset.last_suffix)})

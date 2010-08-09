@@ -2,6 +2,7 @@ class ImagesController < ApplicationController
   before_authorization_filter :find_illustratable
 
   permit :new, :create            do may_edit(@illustratable) end
+  permit :show                    do may_view(@image)         end
   permit :edit, :update, :destroy do may_edit(@image)         end
 
   before_filter :only => [:create, :update] do
@@ -18,6 +19,13 @@ class ImagesController < ApplicationController
   end
 
   public
+
+  def show
+    send_data(@image.data,
+              :filename => @image.filename,
+              :type => @image.content_type || "image/png",
+              :disposition => "inline")
+  end
 
   def new
     @image = Image.new(:illustratable => @illustratable)
