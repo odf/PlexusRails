@@ -1,5 +1,6 @@
 module ApplicationHelper
   include Formular::Helper
+  include Nesting
 
   def format_text(text)
     sanitize(RedCloth.new(text).to_html)
@@ -51,10 +52,6 @@ module ApplicationHelper
 
   def nested_url_for(object)
     url_for(nesting_for(object))
-  end
-
-  def nesting_for(object)
-    (object.embedded? ? nesting_for(object._parent) : []) + [object]
   end
 
   def tab_link(ref, text)
