@@ -1,0 +1,49 @@
+@import definitions
+
+.thumbnail
+  :position relative
+  :display inline
+  :float left
+  :font-size 90%
+  :text-align center
+  :margin 0 10px 16px 0
+  .caption
+    :width 130px
+    :border 1px solid
+    :padding 6px
+    :line-height 160%
+    :background-color = !tint4_background_light
+    :border-color #ccc
+  p
+    :margin 0
+    :padding 0
+    :font-style italic
+    :white-space nowrap
+  .picture-link
+    :width 140px
+    :border 2px solid
+    :border-bottom 3px solid
+    :margin-bottom 2px
+    :background-color = !standard_background
+    :border-color #ccc
+    a
+      :display block
+      :width 140px
+      :height 141px
+      img
+        :padding 8px 8px 9px 8px
+        :border none
+    a:hover img
+      :background-color transparent
+      :border-color transparent
+  .picture-link:hover
+    :background-color = !tint1_background_dark
+    :border-color #aaa
+  .dummy-link:hover
+    :background-color = !standard_background
+    :border-color #ccc
+
+.picture-link
+  a:link, a:visited, a:hover, a:active
+    :padding 0
+    :border none
