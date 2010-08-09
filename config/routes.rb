@@ -2,6 +2,7 @@ PlexusR3::Application.routes.draw do |map|
   resources :users
   resources :projects do
     resources :comments, :nested_in => 'project'
+    resources :images, :nested_in => 'project'
     resources :imports do
       collection do
         post :data_index
@@ -9,6 +10,7 @@ PlexusR3::Application.routes.draw do |map|
     end
     resources :data_nodes do
       resources :comments, :nested_in => 'data_node'
+      resources :images, :nested_in => 'data_node'
       member do
         put :toggle
       end

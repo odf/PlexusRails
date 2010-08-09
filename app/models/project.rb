@@ -15,6 +15,7 @@ class Project
   # -- associations
   embeds_many :memberships
   embeds_many :comments
+  embeds_many :images
   embeds_many :imports
   embeds_many :data_nodes
   embeds_many :process_nodes

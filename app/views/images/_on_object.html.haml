@@ -1,0 +1,11 @@
+- url = "#{nested_url_for(on_object)}/images/new"
+
+.dj-context
+  %h2
+    = if on_object.images.empty? then "No Images." else "Images:" end
+    %span.action-links
+      %a.dj-link{ :href => url } Add one
+
+  .dj-anchor#images
+    = render(:partial => "images/image", :collection => on_object.images)
+.clear

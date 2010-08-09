@@ -9,6 +9,7 @@
   %b Sample:
   = @data_node.sample
 
+= render :partial => "images/on_object", :object => @data_node
 = render :partial => "comments/on_object", :object => @data_node
 
 - if @data_node.hideable?

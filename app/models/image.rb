@@ -3,6 +3,7 @@ class Image
   include Timestamps
 
   field :filename,     :type => String
+  field :stored_path,  :type => String
   field :content_type, :type => String
   field :size,         :type => Fixnum
   field :width,        :type => Fixnum
@@ -10,13 +11,19 @@ class Image
   field :caption,      :type => String
   field :info,         :type => Hash
 
-  embedded_in :illustratable, :inverse_of => :image
+  key :filename
 
-  after_create :write_data
+  embedded_in :illustratable, :inverse_of => :images
+
+  include Nesting
+
+  ASSET_PATH = File.join(Rails.root, "assets")
+
+  before_create :store_file
   before_destroy :delete_file
 
   def allows?(action, user)
-    commentable.allows?(action, user)
+    illustratable.allows?(action, user)
   end
 
   def content=(uploaded)
@@ -30,23 +37,15 @@ class Image
 
   private
 
-  # TODO flesh these out
+  def store_file
+    raise "No directory #{ASSET_PATH}." unless File.directory?(ASSET_PATH)
 
-  def path_components
-    [Rails.root, "assets", "images", stored_as]
-  end
-
-  def stored_path
-    File.join(*path_components)
-  end
-
-  def write_data
-    self.stored_as = "#{self.id}__#{self.name}"
-    self.save!
-    write_file(@content, *path_components)
+    components = nesting_for(illustratable).map(&:_id) + [filename]
+    self.stored_path = File.join(ASSET_PATH, *components)
+    FileUtils.mkpath(File.dirname(self.stored_path))
   end
 
   def delete_file
-    File.unlink stored_path if File.exist? stored_path
+    File.unlink(stored_path) if File.exist?(stored_path)
   end
 end

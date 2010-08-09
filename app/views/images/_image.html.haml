@@ -1,0 +1,11 @@
+.dj-replace.dj-anchor
+  - if image and may_view(image)
+    - base_url = nested_url_for(image)
+    .image= format_text(image.text)
+    .clear
+    - if may_edit(image)
+      %p.note
+        %span.action-links
+          %a.dj-link{ :href => "#{base_url}/edit" } Edit
+          %a.dj-delete{ :href => base_url } Delete
+    = timestamps(image)

@@ -22,8 +22,9 @@ class DataNode
 
   # -- associations
   embedded_in :project, :inverse_of => :data_nodes
-  embeds_one :domain
+  embeds_one  :domain
   embeds_many :comments
+  embeds_many :images
 
   # -- some named scopes
   named_scope :visible,   :where => { :hidden => false }

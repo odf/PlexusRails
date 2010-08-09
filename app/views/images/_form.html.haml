@@ -1,0 +1,13 @@
+- stylesheet :forms
+
+.dj-form
+  = formular_for (nesting_for(@illustratable) + [@image]) do |form|
+    = form.text_area :caption, :cols => 80, :rows => 10, :label => ''
+    %br
+    = form.result_buttons
+
+.note
+  (See
+  %a{ :href => "http://redcloth.org/" } http://redcloth.org/
+  for markup options.)
+.clear

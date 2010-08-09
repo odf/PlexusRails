@@ -1,0 +1,4 @@
+= render :partial => 'image', :object => @image
+- if @image and @image.illustratable
+  = link_to "See context", nesting_for(@image.illustratable)
+  = link_to "See context", nesting_for(@image.illustratable)
