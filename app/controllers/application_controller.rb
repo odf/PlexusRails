@@ -73,8 +73,7 @@ class ApplicationController < ActionController::Base
     model_class = class_name.classify.constantize
     key = level == 0 ? "id" : "#{class_name.underscore}_id"
     assoc = if level == 0 and params[:nested_in]
-              Struct.new('Assoc', 'name', 'inverse_of').
-                     new(params[:nested_in].underscore, class_name.underscore)
+              make_assoc(params[:nested_in], class_name)
             elsif model_class.embedded?
               model_class.associations.values.find do |v|
                 v.association == Mongoid::Associations::EmbeddedIn
@@ -87,6 +86,11 @@ class ApplicationController < ActionController::Base
     else
       model_class.where(:_id => params[key]).first
     end
+  end
+
+  def make_assoc(name, inverse)
+    Struct.new('Assoc', 'name', 'inverse_of') unless defined?(Struct::Assoc)
+    Struct::Assoc.new(name.underscore, inverse.underscore)
   end
 
   # A unified way to abort an action if the 'Cancel' button was pressed.
