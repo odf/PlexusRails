@@ -26,7 +26,7 @@ class Image
     illustratable.allows?(action, user)
   end
 
-  def content=(uploaded)
+  def uploaded_data=(uploaded)
     self.filename = uploaded.original_filename
     self.content_type = uploaded.content_type
 
@@ -40,6 +40,10 @@ class Image
 
   def data
     File.open(stored_path) { |fp| fp.read }
+  end
+
+  def nice_caption
+    caption.blank? ? filename.sub(/\_[^_]*$/, '') : caption
   end
 
   private

@@ -2,7 +2,7 @@
 
 %fieldset.dj-form
   = formular_for target, :html => {:multipart => true}  do |form|
-    %p= form.file_field :content, :label => 'Image file'
+    %p= form.file_field :uploaded_data, :label => 'Image file'
     = form.text_area :caption, :cols => 80, :rows => 5
     %br
     = form.result_buttons

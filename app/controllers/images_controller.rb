@@ -1,9 +1,13 @@
 class ImagesController < ApplicationController
-  before_authorization_filter :find_illustratable
+  protect_from_forgery :except => :create
 
-  permit :new, :create            do may_edit(@illustratable) end
+  before_authorization_filter :find_illustratable
+  before_authorization_filter :find_user,         :only   => :create
+
   permit :show                    do may_view(@image)         end
   permit :edit, :update, :destroy do may_edit(@image)         end
+  permit :new                     do may_edit(@illustratable) end
+  permit :create                  do legitimate_user          end
 
   before_filter :only => [:create, :update] do
     if params[:result] == 'Cancel'

@@ -1,12 +1,11 @@
 .thumbnail.dj-replace.dj-anchor
   - if image and may_view(image)
     - base_url = nested_url_for(image)
-    - caption = image.caption.blank? ? image.filename : image.caption
     .picture-link
-      %a{ :href  => base_url, :title => caption }
+      %a{ :href  => base_url, :title => image.nice_caption }
         %img{ :src => base_url, :alt => "", :height => 120, :width => 120 }
     .caption
-      = caption
+      = image.nice_caption
       - if may_edit(image)
         %span.action-links
           %a.dj-delete{ :href => base_url } x
