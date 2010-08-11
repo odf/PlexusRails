@@ -30,14 +30,14 @@ class ImportsController < ApplicationController
   def show
   end
   
-  #TODO this is a placeholder - make it produce a useful answer
+  #TODO filter nodes by sample once we have introduced them
   def data_index
     respond_to do |format|
       format.json do
         render :json => {
           "Project" => @project && @project.name,
           "Sample"  => @sample && "#{@sample.name} (#{@sample.nickname})",
-          "Nodes"   => @sample ? @sample.stored_data : [],
+          "Nodes"   => @project ? @project.stored_data : [],
           "Status"  => "Success"
         }
       end

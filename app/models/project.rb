@@ -129,6 +129,25 @@ class Project
     nodes_sorted.map { |v| [v, level[v], bottlenecks.include?(v)] }
   end
 
+  def stored_data()
+    good_nodes = data_nodes.valid.reject do |node|
+      node.filename.blank? and node.images.empty?
+    end
+
+    good_nodes.map do |node|
+      sync_time = node.synchronized_at || Time.at(0)
+      name = node.filename.blank? ? node.name : node.filename
+      { "Name"       => name,
+        "Identifier" => node.identifier,
+        "IdInt"      => node.id,
+        "IdExt"      => node.identifier,
+        "Date"       => sync_time.getutc.strftime("%Y/%m/%d %H:%M:%S ") + 'UTC',
+        "External"   => (not node.filename.blank?),
+        "Images"     => node.images.map(&:filename)
+      }
+    end
+  end
+
   def add_link(source, target)
     @graph = graph.with_edge(source.id, target.id)
     target.producer.add_input(source)
