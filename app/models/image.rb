@@ -11,9 +11,6 @@ class Image
   # -- add timestamps and authors for creation and modification
   include Timestamps
 
-  # -- defines 'nesting_for(object)'
-  include Nesting
-
   # --  simple persistent attributes
   field :filename,     :type => String
   field :stored_path,  :type => String
@@ -41,11 +38,7 @@ class Image
   def uploaded_data=(uploaded)
     self.filename = uploaded.original_filename
     self.content_type = uploaded.content_type
-
-    components = nesting_for(illustratable).inject([ASSET_PATH]) do |list, obj|
-      list + [obj.class.name.underscore.pluralize, obj._id]
-    end + ['images', filename]
-    self.stored_path = File.join(*components)
+    self.stored_path = make_path
 
     @content = uploaded.read
   end
@@ -67,6 +60,13 @@ class Image
 
   # -- the methods for storing and deleting files are private
   private
+  include Nesting
+
+  def make_path
+    File.join(nesting_for(illustratable).inject([ASSET_PATH]) { |list, obj|
+                list + [obj.class.name.underscore.pluralize, obj._id]
+              } + ['images', filename])
+  end
 
   def store_file
     raise "No directory #{ASSET_PATH}." unless File.directory?(ASSET_PATH)
