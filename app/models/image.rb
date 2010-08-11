@@ -1,7 +1,20 @@
+# The model to represent an image attachment.
+
 class Image
+  # -- where to write files
+  #TODO this needs to go into an initializer
+  ASSET_PATH = File.join(Rails.root, "assets")
+
+  # -- we use MongoDB via the Mongoid gem to store this model
   include Mongoid::Document
+
+  # -- add timestamps and authors for creation and modification
   include Timestamps
 
+  # -- defines 'nesting_for(object)'
+  include Nesting
+
+  # --  simple persistent attributes
   field :filename,     :type => String
   field :stored_path,  :type => String
   field :content_type, :type => String
@@ -11,21 +24,20 @@ class Image
   field :caption,      :type => String
   field :info,         :type => Hash
 
+  # -- use the filename as the document key
   key :filename
 
+  # -- associations
   embedded_in :illustratable, :inverse_of => :images
 
-  include Nesting
+  # -- filename must be unique within illustratable
+  validates :filename, :presence => true, :strong_uniqueness => true
 
-  ASSET_PATH = File.join(Rails.root, "assets")
-
+  # -- these handle the storage of the actual image files
   after_create :store_file
   before_destroy :delete_file
 
-  def allows?(action, user)
-    illustratable.allows?(action, user)
-  end
-
+  # Pseudo-attribute for getting the uploaded data in.
   def uploaded_data=(uploaded)
     self.filename = uploaded.original_filename
     self.content_type = uploaded.content_type
@@ -38,14 +50,22 @@ class Image
     @content = uploaded.read
   end
 
+  # Getting the data out.
   def data
     File.open(stored_path) { |fp| fp.read }
   end
-
+  
+  # This method returns the caption, if any, or else the filename.
   def nice_caption
     caption.blank? ? filename.sub(/\_[^_]*$/, '') : caption
   end
 
+  # Permissions are as in the project this image belongs to.
+  def allows?(action, user)
+    illustratable.allows?(action, user)
+  end
+
+  # -- the methods for storing and deleting files are private
   private
 
   def store_file

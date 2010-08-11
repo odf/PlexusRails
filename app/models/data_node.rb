@@ -26,6 +26,9 @@ class DataNode
   embeds_many :comments
   embeds_many :images
 
+  # -- fingerprint must be unique within project
+  validates :fingerprint, :presence => true, :strong_uniqueness => true
+
   # -- some named scopes
   named_scope :visible,   :where => { :hidden => false }
   named_scope :resolved,  :where => { :status.ne => 'missing' }
