@@ -1,4 +1,4 @@
-PlexusR3::Application.routes.draw do |map|
+PlexusR3::Application.routes.draw do
   resources :users
   resources :projects do
     resources :comments, :nested_in => 'project'
@@ -21,13 +21,13 @@ PlexusR3::Application.routes.draw do |map|
 
   root :to => 'projects#index'
 
-  match 'login' => 'sessions#new'
-  match 'logout' => 'sessions#destroy'
+  match 'login', :to => 'sessions#new'
+  match 'logout', :to => 'sessions#destroy'
 
-  match 'imports' => 'imports#create'
-  match 'samples/stored_data' => 'imports#data_index'
+  match 'imports', :to => 'imports#create'
+  match 'samples/stored_data', :to => 'imports#data_index'
 
-  match 'pictures' => proc { |env|
+  match 'pictures', :to => proc { |env|
     params = env['rack.request.form_hash']
 
     project = Project.where(:name => params['data_spec']['project']).first
