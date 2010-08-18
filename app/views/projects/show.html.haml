@@ -15,7 +15,7 @@
         = link_to "Include hidden", url_for(:showall => 1)
 
 - @project.nodes_with_levels.each do |v, level, hideable|
-  - node = @project.data_nodes.where(:_id => v).first
+  - node = @project.data_nodes.find(v)
   - if !node.hidden or params[:showall]
     - locals = { :level => level, :hideable => hideable }
     = render :partial => 'data_nodes/dataset', :locals => locals, :object => node

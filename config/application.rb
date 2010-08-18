@@ -19,6 +19,9 @@ module PlexusR3
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
+    # Custom directories with classes and modules you want to be autoloadable.  
+    config.autoload_paths += %W(#{Rails.root}/lib)
+
     config.generators do |g|
       g.orm :mongoid
       g.template_engine :haml

@@ -100,9 +100,9 @@ class ApplicationController < ActionController::Base
     if assoc
       parent = find_recursively(assoc.name, level + 1)
       instance_variable_set("@#{options[:parent_as] || assoc.name}", parent)
-      parent.send(assoc.inverse_of).where(:_id => params[key]).first
+      parent.send(assoc.inverse_of).find(params[key])
     else
-      model_class.where(:_id => params[key]).first
+      model_class.find(params[key])
     end
   end
 

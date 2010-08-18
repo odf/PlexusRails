@@ -39,7 +39,7 @@ class DataNode
 
   # -- accessors for the producer
   def producer
-    producer_id && project.process_nodes.where(:_id => producer_id).first
+    producer_id && project.process_nodes.find(producer_id)
   end
 
   def producer=(value)

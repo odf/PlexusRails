@@ -351,7 +351,7 @@ class Import
     # -- each list entry links an internal node id to a list of predecessors
     for (node_id, specs) in predecessors
       # -- locate the specified node
-      node = project.data_nodes.where(:_id => node_id).first
+      node = project.data_nodes.find(node_id)
 
       # -- process the given list of predecessors
       for item in specs
