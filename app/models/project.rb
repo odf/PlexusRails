@@ -7,7 +7,9 @@ class Project < ActiveRecord::Base
   #field :organization, :type => String
 
   # -- associations
-  # embeds_many :memberships
+  has_many :memberships, :dependent => :destroy
+  has_many :members, :through => :memberships, :source => :user
+
   # embeds_many :comments
   # embeds_many :images
   # embeds_many :imports
@@ -20,13 +22,9 @@ class Project < ActiveRecord::Base
   end
   
   # -- make sure project names are unique (case-insensitive)
-  validates :name, :presence => true, :strong_uniqueness => true
+  validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
 
   # -- methods to inquire project memberships and user permissions
-  def members
-    memberships.sorted.map &:user
-  end
-
   def role_of(user)
     (m = membership_of(user)) && m.role
   end
@@ -69,7 +67,7 @@ class Project < ActiveRecord::Base
         membership.update_attributes(:role => role)
       end
     elsif user and not role.blank?
-      memberships.create(:user_id => user.id, :role => role)
+      memberships.build(:user_id => user.id, :role => role)
     end
   end
 

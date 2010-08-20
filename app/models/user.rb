@@ -21,10 +21,10 @@ class User < ActiveRecord::Base
   # field :abilities, :type => Array, :default => READER_TASKS
 
   # -- associations
-  has_one :activity_log
+  has_one :activity_log, :dependent => :destroy
+  has_many :memberships, :dependent => :destroy
+  has_many :projects, :through => :memberships, :source => :project
 
-  # -- we can't link back to embedded documents, so these do not work
-  #references_many :memberships
   #references_many :comments
   #references_many :imports
 
@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
 
   # -- the validations for this model
   validates :login_name,
-    :uniqueness => true,
+    :uniqueness => { :case_sensitive => false },
     :format => {
       :with => /\A([a-z0-9.-]*)?\Z/i,
       :message => 'may only contain letters, digits, hyphens and dots'
@@ -133,11 +133,6 @@ class User < ActiveRecord::Base
   def can_authorize?(user, a)
     user != self and may_authorize and
       (abilities | ADMIN_TASKS).include?(a)
-  end
-
-  # List of projects this user is a member of.
-  def projects
-    Project.all.select { |p| !p.role_of(self).blank? }
   end
 
   # Logs an action (page view) for this user

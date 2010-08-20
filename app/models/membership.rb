@@ -1,10 +1,8 @@
-class Membership
-  include Mongoid::Document
+class Membership < ActiveRecord::Base
+  #field :role, :type => String
 
-  field :role, :type => String
+  belongs_to :project
+  belongs_to :user
 
-  embedded_in :project, :inverse_of => :memberships
-  belongs_to_related :user
-
-  named_scope :sorted, :order_by => [[:role, :desc]]
+  scope :sorted, :order => "memberships.role DESC"
 end

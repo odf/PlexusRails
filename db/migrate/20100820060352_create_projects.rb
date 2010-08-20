@@ -3,6 +3,9 @@ class CreateProjects < ActiveRecord::Migration
     create_table :projects do |t|
       t.string :name
       t.string :organization
+      t.timestamps
+      t.integer :created_by
+      t.integer :updated_by
     end
   end
 
