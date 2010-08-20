@@ -6,9 +6,6 @@ class User < ActiveRecord::Base
   WIZARD_TASKS = ADMIN_TASKS + [ 'impersonate' ]
   ABILITIES    = WIZARD_TASKS
 
-  # -- add timestamps with user ids
-  include Timestamps
-
   # -- declaration of persistent fields
   # field :login_name
   # field :hashed_password

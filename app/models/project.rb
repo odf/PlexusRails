@@ -1,7 +1,4 @@
 class Project < ActiveRecord::Base
-  # -- add timestamps with user ids
-  include Timestamps
-
   # -- declaration of persistent fields
   #field :name, :type => String, :accessible => false
   #field :organization, :type => String
@@ -20,7 +17,7 @@ class Project < ActiveRecord::Base
   before_validation do |project|
     project.name = project.name.strip.gsub(/\s+/, ' ')
   end
-  
+
   # -- make sure project names are unique (case-insensitive)
   validates :name, :presence => true, :uniqueness => { :case_sensitive => false }
 
