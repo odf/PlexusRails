@@ -11,8 +11,8 @@ class CreateUsers < ActiveRecord::Migration
       t.string  :homepage
       t.string  :abilities, :default => 'login view'
       t.timestamps
-      t.integer :created_by
-      t.integer :updated_by
+      t.integer :created_by_id
+      t.integer :updated_by_id
     end
   end
 

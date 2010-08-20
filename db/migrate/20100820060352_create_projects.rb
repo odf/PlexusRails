@@ -4,8 +4,8 @@ class CreateProjects < ActiveRecord::Migration
       t.string :name
       t.string :organization
       t.timestamps
-      t.integer :created_by
-      t.integer :updated_by
+      t.integer :created_by_id
+      t.integer :updated_by_id
     end
   end
 

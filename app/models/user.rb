@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  include Blame
+
   # -- define sets of abilities for certain roles
   READER_TASKS = [ 'login', 'view' ]
   EDITOR_TASKS = READER_TASKS + [ 'edit' ]

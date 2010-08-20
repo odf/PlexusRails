@@ -1,4 +1,6 @@
 class Project < ActiveRecord::Base
+  include Blame
+
   # -- declaration of persistent fields
   #field :name, :type => String, :accessible => false
   #field :organization, :type => String
