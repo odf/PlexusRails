@@ -18,7 +18,7 @@ class ProjectsController < ApplicationController
 
   def new
     @project = Project.new
-    @project.memberships.build(:user => current_user, :role => 'manager')
+    @project._manager = current_user
   end
 
   def edit

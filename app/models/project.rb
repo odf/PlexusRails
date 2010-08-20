@@ -46,9 +46,13 @@ class Project < ActiveRecord::Base
   end
 
   # -- pseudo-attribute for editing memberships and roles
+  attr_accessor :_manager
+
   def roles
     User.sorted.map do |user|
-      membership_of(user) || Membership.new(:user => user, :role => '')
+      membership_of(user) ||
+        Membership.new(:user => user,
+                       :role => (user == _manager) ? 'manager' : '')
     end
   end
 
@@ -67,7 +71,7 @@ class Project < ActiveRecord::Base
         membership.update_attributes(:role => role)
       end
     elsif user and not role.blank?
-      memberships.build(:user_id => user.id, :role => role)
+      memberships.build(:user => user, :role => role)
     end
   end
 
