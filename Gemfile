@@ -7,10 +7,10 @@ gem 'rails', '>=3.0.0.rc'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mongrel'
+gem 'sqlite3-ruby', :require => 'sqlite3'
 
 gem 'haml'
 gem 'bson_ext'
-gem 'mongoid', '2.0.0.beta.16'
 gem 'json_pure', :require => 'json'
 gem 'RedCloth'
 gem 'sanitize'
@@ -27,6 +27,6 @@ group :test do
   gem 'rspec-rails', '>= 2.0.0.beta.8'
   gem 'spork'
   gem 'launchy'    # So you can do Then show me the page
-  gem 'machinist_mongo', :require => 'machinist/mongoid', :git => 'git://github.com/odf/machinist_mongo.git'
+  gem 'machinist'
   gem 'faker'
 end

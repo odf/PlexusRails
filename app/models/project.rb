@@ -1,27 +1,18 @@
-class Project
-  # -- we use MongoDB via the Mongoid gem to store this model
-  include Mongoid::Document
-
+class Project < ActiveRecord::Base
   # -- add timestamps with user ids
   include Timestamps
 
   # -- declaration of persistent fields
-  field :name, :type => String, :accessible => false
-  field :organization, :type => String
-
-  # -- what to use as the document key
-  key :name
+  #field :name, :type => String, :accessible => false
+  #field :organization, :type => String
 
   # -- associations
-  embeds_many :memberships
-  embeds_many :comments
-  embeds_many :images
-  embeds_many :imports
-  embeds_many :data_nodes
-  embeds_many :process_nodes
-
-  # -- indexes on this model
-  index 'memberships.role'
+  # embeds_many :memberships
+  # embeds_many :comments
+  # embeds_many :images
+  # embeds_many :imports
+  # embeds_many :data_nodes
+  # embeds_many :process_nodes
 
   # -- whitespace in the project name is normalized to single spaces
   before_validation do |project|

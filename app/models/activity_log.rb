@@ -1,10 +1,8 @@
-class ActivityLog
-  include Mongoid::Document
+class ActivityLog < ActiveRecord::Base
+  #field :at, :type => Time
+  #field :action
 
-  field :at, :type => Time
-  field :action, :type => String
-
-  references_one :user
+  belongs_to :user
 
   def add(at, action)
     update_attributes(:at => at, :action => action)

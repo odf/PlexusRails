@@ -1,4 +1,4 @@
-class User
+class User < ActiveRecord::Base
   # -- define sets of abilities for certain roles
   READER_TASKS = [ 'login', 'view' ]
   EDITOR_TASKS = READER_TASKS + [ 'edit' ]
@@ -6,29 +6,22 @@ class User
   WIZARD_TASKS = ADMIN_TASKS + [ 'impersonate' ]
   ABILITIES    = WIZARD_TASKS
 
-  # -- use MongoDB via Mongoid for storage and cache all queries
-  include Mongoid::Document
-  cache
-
   # -- add timestamps with user ids
   include Timestamps
 
   # -- declaration of persistent fields
-  field :login_name, :type => String, :accessible => false
-  field :hashed_password, :type => String, :accessible => false
-  field :first_name, :type => String
-  field :last_name, :type => String
-  field :email, :type => String
-  field :crypt_strength, :type => Integer, :default => 4, :accessible => false
-  field :organization, :type => String
-  field :homepage, :type => String
-  field :abilities, :type => Array, :default => READER_TASKS
-
-  # -- what to use as the document key
-  key :login_name
+  # field :login_name
+  # field :hashed_password
+  # field :first_name
+  # field :last_name
+  # field :email
+  # field :crypt_strength, :type => Integer, :default => 4
+  # field :organization
+  # field :homepage
+  # field :abilities, :type => Array, :default => READER_TASKS
 
   # -- associations
-  referenced_in :activity_log
+  has_one :activity_log
 
   # -- we can't link back to embedded documents, so these do not work
   #references_many :memberships
@@ -39,19 +32,11 @@ class User
   attr_accessor :password, :password_confirmation
 
   # -- named scopes for selecting by role and for sorting
-  named_scope :reader, :where => { :abilities.all => READER_TASKS }
-  named_scope :editor, :where => { :abilities.all => EDITOR_TASKS }
-  named_scope :admin,  :where => { :abilities.all => ADMIN_TASKS }
-  named_scope :wizard, :where => { :abilities.all => WIZARD_TASKS }
-
-  named_scope :sorted, :order_by => [[:last_name, :asc], [:first_name, :asc]]
-
-  # -- doco says fields we sort by should be indexed
-  index [[:last_name, Mongo::ASCENDING], [:first_name, Mongo::ASCENDING]]
+  scope :sorted, :order => [:last_name, :first_name]
 
   # -- the validations for this model
   validates :login_name,
-    :strong_uniqueness => true,
+    :uniqueness => true,
     :format => {
       :with => /\A([a-z0-9.-]*)?\Z/i,
       :message => 'may only contain letters, digits, hyphens and dots'
@@ -89,6 +74,15 @@ class User
       user.hashed_password =
         Crypt::crypt(user.password, :strength => user.crypt_strength)
     end
+  end
+
+  # Make the abilities attribute look like an array
+  def abilities
+    read_attribute(:abilities).split(' ')
+  end
+
+  def abilities=(values)
+    write_attribute(:abilities, values.join(' '))
   end
 
   # Finds the user with the given login name and password, if any.

@@ -1,11 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
-require "action_controller/railtie"
-
-require 'mongoid/railtie'
-require "action_mailer/railtie"
-require "active_resource/railtie"
-require "rails/test_unit/railtie"
+require 'rails/all'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -23,7 +18,7 @@ module PlexusR3
     config.autoload_paths += %W(#{Rails.root}/lib)
 
     config.generators do |g|
-      g.orm :mongoid
+      g.orm :active_record
       g.template_engine :haml
     #   g.test_framework :rspec, :fixture => true, :views => false
     #   g.fixture_replacement :machinist, :dir => "spec/factories"

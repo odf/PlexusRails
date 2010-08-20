@@ -10,7 +10,7 @@ class ProjectsController < ApplicationController
 
 
   def index
-    @projects = Project.order_by(:name).select { |p| may_view(p) }
+    @projects = Project.order(:name).select { |p| may_view(p) }
   end
 
   def show

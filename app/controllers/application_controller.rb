@@ -92,10 +92,10 @@ class ApplicationController < ActionController::Base
     key = level == 0 ? "id" : "#{class_name.underscore}_id"
     assoc = if level == 0 and params[:nested_in]
               make_assoc(params[:nested_in], class_name)
-            elsif model_class.embedded?
-              model_class.associations.values.find do |v|
-                v.association == Mongoid::Associations::EmbeddedIn
-              end
+            # elsif model_class.embedded?
+            #   model_class.associations.values.find do |v|
+            #     v.association == Mongoid::Associations::EmbeddedIn
+            #   end
             end
     if assoc
       parent = find_recursively(assoc.name, level + 1)
