@@ -9,6 +9,9 @@ class CreateImports < ActiveRecord::Migration
       t.text     :source_log
       t.text     :import_log
       t.string   :description
+      t.timestamps
+      t.integer :created_by_id
+      t.integer :updated_by_id
     end
   end
 

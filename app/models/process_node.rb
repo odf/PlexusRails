@@ -19,7 +19,7 @@ class ProcessNode < ActiveRecord::Base
   end
 
   def inputs=(list)
-    self.input_ids = list.map { |v| v.id.to_s }.join(' '))
+    self.input_ids = list.map { |v| v.id.to_s }.join(' ')
   end
 
   def add_input(value)
@@ -31,10 +31,10 @@ class ProcessNode < ActiveRecord::Base
 
   # -- accessors for parameters
   def parameters
-    ActiveSupport::JSON.decode read_attribute(:parameters)
+    JSON::load(read_attribute(:parameters))
   end
 
   def parameters=(data)
-    write_attribute(:parameters, ActiveSupport::JSON.encode data)
+    write_attribute(:parameters, data.to_json)
   end
 end

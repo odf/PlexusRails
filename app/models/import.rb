@@ -31,7 +31,7 @@ class Import < ActiveRecord::Base
 
   # -- pseudo-attributes for use with Rails-generated forms
   def data=(value)
-    self.content = value
+    write_attribute(:content, value.read)
   end
 
   def time=(value)
@@ -46,11 +46,11 @@ class Import < ActiveRecord::Base
   # -- JSON-powered accessors
   [:content, :import_log].each do |attr|
     define_method(attr) do
-      ActiveSupport::JSON.decode(read_attribute(attr) || "null")
+      JSON::load(read_attribute(attr) || "{}")
     end
 
     define_method("#{attr}=") do |data|
-      write_attribute(attr, ActiveSupport::JSON.encode(data))
+      write_attribute(attr, data.to_json)
     end
   end
 
@@ -111,7 +111,7 @@ class Import < ActiveRecord::Base
   rescue Exception => ex
     result ||= {}
     result["Status"] = 'Error'
-    result["Messages"] = [ex.to_s] + ex.backtrace[0,10]
+    result["Messages"] = [ex.to_s] + ex.backtrace[0,50]
     self.import_log = result
   end
 
@@ -196,7 +196,8 @@ class Import < ActiveRecord::Base
 
       # -- the timestamp must always match precisely
       date = parse_timestamp(entry)
-      candidates = project.data_nodes.where :date => date, :status => status
+      candidates = project.data_nodes.where(:status => status).
+        joins(:producer).where('date == ?', date)
 
       # -- match given node name, then file name, with existing node names
       for field in [:name, :filename]

@@ -72,6 +72,10 @@ ActiveRecord::Schema.define(:version => 20100823060432) do
     t.text     "source_log"
     t.text     "import_log"
     t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
   end
 
   create_table "memberships", :force => true do |t|
