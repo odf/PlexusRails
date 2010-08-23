@@ -1,34 +1,40 @@
 # The model to represent a process node.
 
-class ProcessNode
-  # -- we use MongoDB via the Mongoid gem to store this model
-  include Mongoid::Document
-
+class ProcessNode < ActiveRecord::Base
   # -- simple persistent attributes
-  field :date,       :type => Time
-  field :run_by,     :type => String
-  field :data_type,  :type => String
-  field :history,    :type => String
-  field :output_log, :type => String
-  field :parameters, :type => Hash, :default => {}
-  field :input_ids,  :type => Array, :default => []
+  # field :date,       :type => Time
+  # field :run_by,     :type => String
+  # field :data_type,  :type => String
+  # field :history,    :type => String
+  # field :output_log, :type => String
+  # field :parameters, :type => Hash, :default => {}
+  # field :input_ids,  :type => Array, :default => []
 
   # -- associations
-  embedded_in :project, :inverse_of => :process_nodes
+  belongs_to :project
 
   # -- accessors for input nodes
   def inputs
-    project.data_nodes.any_in(:_id => input_ids)
+    input_ids.split(' ').map &project.data_nodes.method(:find)
   end
 
   def inputs=(list)
-    self.input_ids = list.map { |value| value._id }
+    self.input_ids = list.map { |v| v.id.to_s }.join(' '))
   end
 
   def add_input(value)
-    unless input_ids.include? value._id
-      input_ids << value._id 
+    unless inputs.map(&:id).include? value._id
+      self.inputs = inputs + [value]
       save!
     end
+  end
+
+  # -- accessors for parameters
+  def parameters
+    ActiveSupport::JSON.decode read_attribute(:parameters)
+  end
+
+  def parameters=(data)
+    write_attribute(:parameters, ActiveSupport::JSON.encode data)
   end
 end

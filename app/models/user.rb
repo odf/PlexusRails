@@ -24,8 +24,7 @@ class User < ActiveRecord::Base
   has_many :memberships
   has_many :projects, :through => :memberships, :source => :project
   has_many :comments, :foreign_key => :author_id
-
-  #references_many :imports
+  has_many :imports
 
   # -- these fields are used in forms but not stored
   attr_accessor :password, :password_confirmation

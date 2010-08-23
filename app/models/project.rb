@@ -10,11 +10,9 @@ class Project < ActiveRecord::Base
   has_many :members, :through => :memberships, :source => :user
   has_many :comments, :as => :commentable, :dependent => :destroy
   has_many :images, :as => :illustratable, :dependent => :destroy
-
-  # embeds_many :images
-  # embeds_many :imports
-  # embeds_many :data_nodes
-  # embeds_many :process_nodes
+  has_many :data_nodes, :dependent => :destroy
+  has_many :process_nodes, :dependent => :destroy
+  has_many :imports, :dependent => :destroy
 
   # -- whitespace in the project name is normalized to single spaces
   before_validation do |project|

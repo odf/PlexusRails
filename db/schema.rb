@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100823024225) do
+ActiveRecord::Schema.define(:version => 20100823060432) do
 
   create_table "activity_logs", :force => true do |t|
     t.integer  "user_id"
@@ -26,6 +26,24 @@ ActiveRecord::Schema.define(:version => 20100823024225) do
     t.datetime "updated_at"
     t.integer  "created_by_id"
     t.integer  "updated_by_id"
+  end
+
+  create_table "data_nodes", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "producer_id"
+    t.string   "fingerprint"
+    t.string   "sample"
+    t.string   "name"
+    t.string   "data_type"
+    t.string   "identifier"
+    t.text     "messages"
+    t.string   "status"
+    t.boolean  "hidden"
+    t.string   "filename"
+    t.datetime "synchronized_at"
+    t.string   "domain_origin"
+    t.string   "domain_size"
+    t.string   "voxel_size"
   end
 
   create_table "images", :force => true do |t|
@@ -45,10 +63,31 @@ ActiveRecord::Schema.define(:version => 20100823024225) do
     t.integer  "updated_by_id"
   end
 
+  create_table "imports", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "project_id"
+    t.datetime "source_timestamp"
+    t.string   "sample_name"
+    t.text     "content"
+    t.text     "source_log"
+    t.text     "import_log"
+    t.string   "description"
+  end
+
   create_table "memberships", :force => true do |t|
     t.integer "user_id"
     t.integer "project_id"
     t.string  "role"
+  end
+
+  create_table "process_nodes", :force => true do |t|
+    t.datetime "date"
+    t.string   "run_by"
+    t.string   "data_type"
+    t.text     "history"
+    t.text     "output_log"
+    t.text     "parameters"
+    t.text     "input_ids"
   end
 
   create_table "projects", :force => true do |t|

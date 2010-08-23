@@ -7,34 +7,31 @@
 # original JSON-source and in addition stores a log of the actions
 # taken and their outcome.
 
-class Import
-  # -- we use MongoDB via the Mongoid gem to store this model
-  include Mongoid::Document
-
+class Import < ActiveRecord::Base
   # -- make 'pluralize' and such available (for logging)
   include ActionView::Helpers::TextHelper
 
   # -- add timestamps with user ids
-  include Timestamps
+  include Blame
 
   # -- simple persistent attributes
-  field :source_timestamp, :type => Time
-  field :sample_name,      :type => String
-  field :content,          :type => Hash
-  field :source_log,       :type => String
-  field :import_log,       :type => Hash
-  field :description,      :type => String
+  # field :source_timestamp, :type => Time
+  # field :sample_name,      :type => String
+  # field :content,          :type => Hash
+  # field :source_log,       :type => String
+  # field :import_log,       :type => Hash
+  # field :description,      :type => String
 
   # -- associations
-  referenced_in :user
-  embedded_in :project, :inverse_of => :imports
+  belongs_to :user
+  belongs_to :project
 
   # -- before saving, perform the actions prescribed by this import
   before_save :run_this_import
 
   # -- pseudo-attributes for use with Rails-generated forms
   def data=(value)
-    self.content = JSON::load(value.read)
+    self.content = value
   end
 
   def time=(value)
@@ -44,6 +41,17 @@ class Import
 
   def sample=(value)
     self.sample_name = value
+  end
+
+  # -- JSON-powered accessors
+  [:content, :import_log].each do |attr|
+    define_method(attr) do
+      ActiveSupport::JSON.decode read_attribute(attr)
+    end
+
+    define_method("#{attr}=") do |data|
+      write_attribute(attr, ActiveSupport::JSON.encode data)
+    end
   end
 
   # -- permissions are as in the project this import belongs to

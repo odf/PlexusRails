@@ -1,49 +1,67 @@
 # The model to represent a data node.
 
-class DataNode
-  # -- we use MongoDB via the Mongoid gem to store this model
-  include Mongoid::Document
-
+class DataNode < ActiveRecord::Base
   # -- simple persistent attributes
-  field :fingerprint,     :type => String
-  field :sample,          :type => String
-  field :name,            :type => String
-  field :data_type,       :type => String
-  field :identifier,      :type => String
-  field :messages,        :type => String
-  field :status,          :type => String
-  field :hidden,          :type => Boolean
-  field :filename,        :type => String
-  field :synchronized_at, :type => Time
-  field :producer_id,     :type => String
+  # field :fingerprint,     :type => String
+  # field :sample,          :type => String
+  # field :name,            :type => String
+  # field :data_type,       :type => String
+  # field :identifier,      :type => String
+  # field :messages,        :type => String
+  # field :status,          :type => String
+  # field :hidden,          :type => Boolean
+  # field :filename,        :type => String
+  # field :synchronized_at, :type => Time
+  # field :producer_id,     :type => String
 
-  # -- use the fingerprint as the document key
-  key :fingerprint
+  # -- domain attributes
+  # field :origin,     :type => Array
+  # field :size,       :type => Array
+  # field :voxel_size, :type => Array
+  # field :voxel_unit, :type => String
 
   # -- associations
-  embedded_in :project, :inverse_of => :data_nodes
-  embeds_one  :domain
-  embeds_many :comments
-  embeds_many :images
+  belongs_to :project
+  belongs_to :producer,
+    :class_name => "ProcessNode",
+    :foreign_key => "process_node_id"
+  has_many :comments, :as => :commentable, :dependent => :destroy
+  has_many :images, :as => :illustratable, :dependent => :destroy
 
   # -- fingerprint must be unique within project
-  validates :fingerprint, :presence => true, :strong_uniqueness => true
+  validates :fingerprint,
+    :presence => true,
+    :uniqueness => { :case_sensitive => false }
 
   # -- some named scopes
-  named_scope :visible,   :where => { :hidden => false }
-  named_scope :resolved,  :where => { :status.ne => 'missing' }
-  named_scope :valid,     :where => { :status => 'valid' }
-  named_scope :missing,   :where => { :status => 'missing' }
-  named_scope :by_id,     :order_by => :identifier
-  named_scope :by_sample, :order_by => :sample
+  scope :visible,   where(:hidden => false)
+  scope :resolved,  where('status != ?', 'missing')
+  scope :valid,     where(:status => 'valid')
+  scope :missing,   where(:status => 'missing')
+  scope :by_id,     order(:identifier)
+  scope :by_sample, order(:sample)
 
-  # -- accessors for the producer
-  def producer
-    producer_id && project.process_nodes.find(producer_id)
-  end
+  # -- domain access
+  [:domain_origin, :domain_size, :voxel_size].each do |attr|
+    define_method attr do
+      read_attribute(attr).split(' ').map(&:to_f)
+    end
 
-  def producer=(value)
-    self.producer_id = value._id
+    define_method "#{attr}=" do |values|
+      write_attribute(attr, values.map(&:to_s).join(' '))
+    end
+
+    %w{x y z}.each_with_index do |axis_name, axis_index|
+      define_method "#{attr}_#{axis_name}" do
+        self.send(attr)[axis_index]
+      end
+
+      define_method "#{attr}_#{axis_name}=" do |value|
+        tmp = self.send(attr)
+        tmp[axis_index] = value
+        self.send("#{attr}=", tmp)
+      end
+    end
   end
 
   # -- convenience methods
@@ -65,20 +83,20 @@ class DataNode
   end
 
   def predecessors
-    find_nodes project.graph.pred(self._id)
+    find_nodes project.graph.pred(self.id)
   end
 
   def successors
-    find_nodes project.graph.succ(self._id)
+    find_nodes project.graph.succ(self.id)
   end
 
   def descendants
-    find_nodes project.graph.reachable(self._id)
+    find_nodes project.graph.reachable(self.id)
   end
 
   def ancestors
     adj = project.graph.method(:pred)
-    find_nodes Persistent::Depth_First_Traversal.new([self._id], &adj)
+    find_nodes Persistent::Depth_First_Traversal.new([self.id], &adj)
   end
 
   def hideable?
@@ -100,6 +118,6 @@ class DataNode
 
   private
   def find_nodes(nodes)
-    project.data_nodes.any_in(:_id => nodes)
+    nodes.map &project.data_nodes.method(:find)
   end
 end
