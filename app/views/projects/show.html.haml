@@ -5,7 +5,7 @@
 = render :partial => "images/on_object", :object => @project
 = render :partial => "comments/on_object", :object => @project
 
--# %h2
+%h2
   = @project.data_nodes.empty? ? "No Datasets." : "Datasets:"
   - if may_edit(@project)
     %span.action-links
@@ -14,18 +14,18 @@
       - else
         = link_to "Include hidden", url_for(:showall => 1)
 
--# @project.nodes_with_levels.each do |v, level, hideable|
+- @project.nodes_with_levels.each do |v, level, hideable|
   - node = @project.data_nodes.find(v)
   - if !node.hidden or params[:showall]
     - locals = { :level => level, :hideable => hideable }
     = render :partial => 'data_nodes/dataset', :locals => locals, :object => node
 
--# if may_edit(@project)
+- if may_edit(@project)
   %p
     %span#import-link.dj-replace.dj-anchor.action-links
-      %a.dj-link{ :href => new_project_import_url(@project) }
+      %a.dj-link{ :href => new_import_url(:project_id => @project.id) }
         Import data
   #import.dj-replace.dj-anchor
 
--# %h2 Imports:
--# %p= link_to 'Show Imports', project_imports_url(@project)
+%h2 Imports:
+%p= link_to 'Show Imports', imports_url(:project_id => @project.id)

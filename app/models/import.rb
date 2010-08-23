@@ -46,11 +46,11 @@ class Import < ActiveRecord::Base
   # -- JSON-powered accessors
   [:content, :import_log].each do |attr|
     define_method(attr) do
-      ActiveSupport::JSON.decode read_attribute(attr)
+      ActiveSupport::JSON.decode(read_attribute(attr) || "null")
     end
 
     define_method("#{attr}=") do |data|
-      write_attribute(attr, ActiveSupport::JSON.encode data)
+      write_attribute(attr, ActiveSupport::JSON.encode(data))
     end
   end
 
