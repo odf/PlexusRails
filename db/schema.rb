@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100823012534) do
+ActiveRecord::Schema.define(:version => 20100823024225) do
 
   create_table "activity_logs", :force => true do |t|
     t.integer  "user_id"
@@ -22,6 +22,23 @@ ActiveRecord::Schema.define(:version => 20100823012534) do
     t.text     "text"
     t.integer  "commentable_id"
     t.string   "commentable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
+  end
+
+  create_table "images", :force => true do |t|
+    t.string   "filename"
+    t.string   "stored_path"
+    t.string   "content_type"
+    t.integer  "size"
+    t.integer  "width"
+    t.integer  "height"
+    t.string   "caption"
+    t.text     "info"
+    t.integer  "illustratable_id"
+    t.string   "illustratable_type"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "created_by_id"

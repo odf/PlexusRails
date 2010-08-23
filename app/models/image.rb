@@ -1,44 +1,40 @@
 # The model to represent an image attachment.
 
-class Image
+class Image < ActiveRecord::Base
+
   # -- where to write files
   #TODO this needs to go into an initializer
   ASSET_PATH = File.join(Rails.root, "assets")
 
-  # -- we use MongoDB via the Mongoid gem to store this model
-  include Mongoid::Document
-
   # -- add timestamps and authors for creation and modification
-  include Timestamps
+  include Blame
 
   # --  simple persistent attributes
-  field :filename,     :type => String
-  field :stored_path,  :type => String
-  field :content_type, :type => String
-  field :size,         :type => Fixnum
-  field :width,        :type => Fixnum
-  field :height,       :type => Fixnum
-  field :caption,      :type => String
-  field :info,         :type => Hash
-
-  # -- use the filename as the document key
-  key :filename
+  # field :filename,     :type => String
+  # field :stored_path,  :type => String
+  # field :content_type, :type => String
+  # field :size,         :type => Fixnum
+  # field :width,        :type => Fixnum
+  # field :height,       :type => Fixnum
+  # field :caption,      :type => String
+  # field :info,         :type => Hash
 
   # -- associations
-  embedded_in :illustratable, :inverse_of => :images
+  belongs_to :illustratable, :polymorphic => true
 
   # -- filename must be unique within illustratable
-  validates :filename, :presence => true, :strong_uniqueness => true
+  validates :filename,
+    :presence => true,
+    :uniqueness => { :case_sensitive => false }
 
   # -- these handle the storage of the actual image files
-  after_create :store_file
+  before_create :store_file
   before_destroy :delete_file
 
   # Pseudo-attribute for getting the uploaded data in.
   def uploaded_data=(uploaded)
     self.filename = uploaded.original_filename
     self.content_type = uploaded.content_type
-    self.stored_path = make_path
 
     @content = uploaded.read
   end
@@ -60,18 +56,18 @@ class Image
 
   # -- the methods for storing and deleting files are private
   private
-  include Nesting
 
   def make_path
-    File.join(nesting_for(illustratable).inject([ASSET_PATH]) { |list, obj|
-                list + [obj.class.name.underscore.pluralize, obj._id]
-              } + ['images', filename])
+    on = illustratable
+    File.join([on.class.name.underscore.pluralize, on.id.to_s, 
+               'images', filename])
   end
 
   def store_file
     raise "No directory #{ASSET_PATH}." unless File.directory?(ASSET_PATH)
 
-    FileUtils.mkpath(File.dirname(self.stored_path))
+    self.stored_path = make_path
+    FileUtils.mkpath(File.dirname(stored_path))
     File.open(stored_path, "wb") { |fp| fp.write(@content) }
   end
 

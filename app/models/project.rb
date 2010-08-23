@@ -9,6 +9,7 @@ class Project < ActiveRecord::Base
   has_many :memberships, :dependent => :destroy
   has_many :members, :through => :memberships, :source => :user
   has_many :comments, :as => :commentable, :dependent => :destroy
+  has_many :images, :as => :illustratable, :dependent => :destroy
 
   # embeds_many :images
   # embeds_many :imports
