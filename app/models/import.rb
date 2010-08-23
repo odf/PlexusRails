@@ -197,7 +197,7 @@ class Import < ActiveRecord::Base
       # -- the timestamp must always match precisely
       date = parse_timestamp(entry)
       candidates = project.data_nodes.where(:status => status).
-        joins(:producer).where('date == ?', date)
+        joins(:producer).where('date = ?', date)
 
       # -- match given node name, then file name, with existing node names
       for field in [:name, :filename]
@@ -281,25 +281,23 @@ class Import < ActiveRecord::Base
       md5.update(entry[key] || "")
     end
 
-    node = project.data_nodes.build(:name        => entry["name"],
-                                    :fingerprint => md5.hexdigest,
-                                    :sample      => sample_name,
-                                    :data_type   => entry["data_type"],
-                                    :identifier  => entry["identifier"],
-                                    :messages    => messages,
-                                    :status      => status,
-                                    :hidden      => false)
+    process = project.process_nodes.create(:date       => parse_timestamp(entry),
+                                           :data_type  => entry["process"],
+                                           :run_by     => entry["run_by"],
+                                           :history    => entry["source_text"],
+                                           :output_log => entry["output_log"],
+                                           :parameters => entry["parameters"])
+    Rails.logger.warn(">>> Created new process node with id #{process.id}")
 
-    process = project.process_nodes.build(:date       => parse_timestamp(entry),
-                                          :data_type  => entry["process"],
-                                          :run_by     => entry["run_by"],
-                                          :history    => entry["source_text"],
-                                          :output_log => entry["output_log"],
-                                          :parameters => entry["parameters"])
-
-    node.producer = process
-    process.save!
-    node.save!
+    node = project.data_nodes.create(:producer_id => process.id,
+                                     :name        => entry["name"],
+                                     :fingerprint => md5.hexdigest,
+                                     :sample      => sample_name,
+                                     :data_type   => entry["data_type"],
+                                     :identifier  => entry["identifier"],
+                                     :messages    => messages,
+                                     :status      => status,
+                                     :hidden      => false)
 
     node
   end

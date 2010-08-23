@@ -22,9 +22,7 @@ class DataNode < ActiveRecord::Base
 
   # -- associations
   belongs_to :project
-  belongs_to :producer,
-    :class_name => "ProcessNode",
-    :foreign_key => "process_node_id"
+  belongs_to :producer, :class_name => "ProcessNode"
   has_many :comments, :as => :commentable, :dependent => :destroy
   has_many :images, :as => :illustratable, :dependent => :destroy
 

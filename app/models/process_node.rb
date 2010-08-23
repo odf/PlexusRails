@@ -12,6 +12,7 @@ class ProcessNode < ActiveRecord::Base
 
   # -- associations
   belongs_to :project
+  has_many :outputs, :class_name => 'DataNode', :foreign_key => 'producer_id'
 
   # -- accessors for input nodes
   def inputs

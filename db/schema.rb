@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(:version => 20100823060432) do
   end
 
   create_table "process_nodes", :force => true do |t|
+    t.integer  "project_id"
     t.datetime "date"
     t.string   "run_by"
     t.string   "data_type"
