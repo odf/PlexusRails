@@ -1,6 +1,5 @@
 module ApplicationHelper
   include Formular::Helper
-  include Nesting
 
   def format_text(text)
     sanitize(RedCloth.new(text).to_html)
@@ -48,10 +47,6 @@ module ApplicationHelper
           ].compact.join("<br />")
 
     "<p class=\"note\">#{txt}</p>".html_safe unless txt.blank?
-  end
-
-  def nested_url_for(object)
-    url_for(nesting_for(object))
   end
 
   def tab_link(ref, text)

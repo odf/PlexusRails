@@ -1,6 +1,6 @@
 .dj-replace.dj-anchor
   - if comment and may_view(comment)
-    - base_url = nested_url_for(comment)
+    - base_url = url_for([comment.commentable, comment])
     .comment= format_text(comment.text)
     .clear
     - if may_edit(comment)

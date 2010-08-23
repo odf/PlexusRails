@@ -1,11 +1,10 @@
-class Comment
-  include Mongoid::Document
-  include Timestamps
+class Comment < ActiveRecord::Base
+  include Blame
 
-  field :text, :type => String
+  #field :text, :type => String
 
-  embedded_in :commentable, :inverse_of => :comments
-  belongs_to_related :author, :class_name => 'User'
+  belongs_to :author, :class_name => 'User'
+  belongs_to :commentable, :polymorphic => true
 
   def allows?(action, user)
     case action.to_sym

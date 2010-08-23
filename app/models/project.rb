@@ -8,8 +8,8 @@ class Project < ActiveRecord::Base
   # -- associations
   has_many :memberships, :dependent => :destroy
   has_many :members, :through => :memberships, :source => :user
+  has_many :comments, :as => :commentable, :dependent => :destroy
 
-  # embeds_many :comments
   # embeds_many :images
   # embeds_many :imports
   # embeds_many :data_nodes

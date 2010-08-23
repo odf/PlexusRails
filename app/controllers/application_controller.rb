@@ -90,25 +90,14 @@ class ApplicationController < ActionController::Base
   def find_recursively(class_name, level = 0, options = {})
     model_class = class_name.classify.constantize
     key = level == 0 ? "id" : "#{class_name.underscore}_id"
-    assoc = if level == 0 and params[:nested_in]
-              make_assoc(params[:nested_in], class_name)
-            # elsif model_class.embedded?
-            #   model_class.associations.values.find do |v|
-            #     v.association == Mongoid::Associations::EmbeddedIn
-            #   end
-            end
-    if assoc
-      parent = find_recursively(assoc.name, level + 1)
-      instance_variable_set("@#{options[:parent_as] || assoc.name}", parent)
-      parent.send(assoc.inverse_of).find(params[key])
+    if level == 0 and params[:nested_in]
+      parent_name = params[:nested_in].underscore
+      parent = find_recursively(parent_name, level + 1)
+      instance_variable_set("@#{options[:parent_as] || parent_name}", parent)
+      parent.send(class_name.underscore.pluralize).find_by_id(params[key])
     else
-      model_class.find(params[key])
+      model_class.find_by_id(params[key])
     end
-  end
-
-  def make_assoc(name, inverse)
-    Struct.new('Assoc', 'name', 'inverse_of') unless defined?(Struct::Assoc)
-    Struct::Assoc.new(name.underscore, inverse.underscore)
   end
 
   # A unified way to abort an action if the 'Cancel' button was pressed.

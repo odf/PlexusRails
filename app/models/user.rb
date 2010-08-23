@@ -20,11 +20,11 @@ class User < ActiveRecord::Base
   # field :abilities, :type => Array, :default => READER_TASKS
 
   # -- associations
-  has_one :activity_log, :dependent => :destroy
-  has_many :memberships, :dependent => :destroy
+  has_one  :activity_log
+  has_many :memberships
   has_many :projects, :through => :memberships, :source => :project
+  has_many :comments, :foreign_key => :author_id
 
-  #references_many :comments
   #references_many :imports
 
   # -- these fields are used in forms but not stored

@@ -10,12 +10,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100820063738) do
+ActiveRecord::Schema.define(:version => 20100823012534) do
 
   create_table "activity_logs", :force => true do |t|
     t.integer  "user_id"
     t.datetime "at"
     t.string   "action"
+  end
+
+  create_table "comments", :force => true do |t|
+    t.text     "text"
+    t.integer  "author_id"
+    t.integer  "commentable_id"
+    t.string   "commentable_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
   end
 
   create_table "memberships", :force => true do |t|
