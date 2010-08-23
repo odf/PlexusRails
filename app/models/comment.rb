@@ -3,8 +3,9 @@ class Comment < ActiveRecord::Base
 
   #field :text, :type => String
 
-  belongs_to :author, :class_name => 'User'
   belongs_to :commentable, :polymorphic => true
+
+  alias_method :author, :created_by
 
   def allows?(action, user)
     case action.to_sym

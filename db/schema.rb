@@ -20,7 +20,6 @@ ActiveRecord::Schema.define(:version => 20100823012534) do
 
   create_table "comments", :force => true do |t|
     t.text     "text"
-    t.integer  "author_id"
     t.integer  "commentable_id"
     t.string   "commentable_type"
     t.datetime "created_at"

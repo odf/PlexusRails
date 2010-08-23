@@ -20,8 +20,7 @@ class CommentsController < ApplicationController
   public
 
   def new
-    @comment = Comment.new(:commentable => @commentable,
-                           :author => current_user)
+    @comment = Comment.new(:commentable => @commentable)
   end
   
   def edit
