@@ -32,12 +32,11 @@ class DataNode < ActiveRecord::Base
     :uniqueness => { :case_sensitive => false }
 
   # -- some named scopes
-  scope :visible,   where(:hidden => false)
-  scope :resolved,  where('status != ?', 'missing')
-  scope :valid,     where(:status => 'valid')
-  scope :missing,   where(:status => 'missing')
-  scope :by_id,     order(:identifier)
-  scope :by_sample, order(:sample)
+  scope :visible,  where(:hidden => false)
+  scope :resolved, where('status != ?', 'missing')
+  scope :valid,    where(:status => 'valid')
+  scope :missing,  where(:status => 'missing')
+  scope :with_ids, lambda { |ids| where("id in (?)", ids.to_a) }
 
   # -- domain access
   [:domain_origin, :domain_size, :voxel_size].each do |attr|
@@ -87,20 +86,20 @@ class DataNode < ActiveRecord::Base
   end
 
   def predecessors
-    find_nodes project.graph.pred(self.id)
+    find_related project.graph.pred(self.id)
   end
 
   def successors
-    find_nodes project.graph.succ(self.id)
+    find_related project.graph.succ(self.id)
   end
 
   def descendants
-    find_nodes project.graph.reachable(self.id)
+    find_related project.graph.reachable(self.id)
   end
 
   def ancestors
     adj = project.graph.method(:pred)
-    find_nodes Persistent::Depth_First_Traversal.new([self.id], &adj)
+    find_related Persistent::Depth_First_Traversal.new([self.id], &adj)
   end
 
   def hideable?
@@ -109,7 +108,7 @@ class DataNode < ActiveRecord::Base
 
   def toggle_visibility
     value = self.hidden ? false : true
-    find_nodes(project.graph.reachable(self.id)).each do |node|
+    descendants.each do |node|
       node.hidden = value
       node.save!
     end
@@ -121,7 +120,7 @@ class DataNode < ActiveRecord::Base
   end
 
   private
-  def find_nodes(nodes)
-    nodes.map &project.data_nodes.method(:find)
+  def find_related(ids)
+    self.class.with_ids(ids)
   end
 end
