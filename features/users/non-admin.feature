@@ -13,10 +13,10 @@ Feature: Non-administrator
 
   Scenario: An non-administrator cannot edit other users
     Given a user "client" exists
-    When I go to "/users/client/edit"
+    When I go to the edit page for user "client"
     Then I should see "Access denied"
 
   Scenario: An non-administrator cannot assign rights to themself
-    When I go to "/users/staff/edit"
+    When I go to the edit page for user "staff"
     Then I should see "Editing user staff"
     Then I should not see "May login"

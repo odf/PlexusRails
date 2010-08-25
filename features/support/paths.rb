@@ -17,7 +17,10 @@ module NavigationHelpers
     #   when /^(.*)'s profile page$/i
     #     user_profile_path(User.find_by_login($1))
 
-    when /"(.*)"/
+    when /the edit page for user "(.*)"/
+      edit_user_path(User.where(:login_name => $1).first)
+
+    when /^"(.*)"$/
       $1
 
     else
