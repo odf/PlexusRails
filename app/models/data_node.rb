@@ -62,6 +62,12 @@ class DataNode < ActiveRecord::Base
     end
   end
 
+  def has_domain_info
+    [:domain_origin, :domain_size, :voxel_size, :voxel_unit].any? do |attr|
+      not read_attribute(attr).blank?
+    end
+  end
+
   # -- convenience methods
   def date
     producer && producer.date

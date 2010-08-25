@@ -16,7 +16,7 @@
   %h2
     %span.action-links
       - text = @data_node.hidden ? "Include Node in" : "Exclude Node from"
-      - url = toggle_project_data_node_url(@project, @data_node)
+      - url = toggle_data_node_url(@data_node)
       = link_to "#{text} Project View", url, :method => :put
 
 %h2 Details:

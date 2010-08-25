@@ -1,4 +1,3 @@
-- url = project_data_node_url(dataset.project, dataset)
 - hidden = dataset.hidden ? ' hidden' : ''
 - hideable = hideable ? ' hideable' : ''
 - level = 0 if not defined?(level) or level.nil?
@@ -8,7 +7,7 @@
     == x#{dataset.predecessors.map(&:id).to_a.join('x')}x
   %span.successors{ :style => "display: none" }
     == x#{dataset.successors.map(&:id).to_a.join('x')}x
-  %a{ :href => url }
+  %a{ :href => data_node_url(dataset) }
     %span{ :class => "data-set-header #{dataset.status}#{hidden}", |
            :style => "margin-left: #{level * 8}pt" } |
       %span.data-set-popup
