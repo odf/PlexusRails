@@ -29,7 +29,7 @@
           = dataset.producer.run_by
           %br/
         - for pic in dataset.images
-          %img{ :src => nested_url_for(pic), :alt => "", |
+          %img{ :src => url_for([dataset, pic]), :alt => "", |
                 :width => 80, :height => 80 } |
       &nbsp;
       %dfn= (dataset.data_type || "").underscore.humanize.titleize

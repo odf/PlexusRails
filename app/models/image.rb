@@ -58,7 +58,7 @@ class Image < ActiveRecord::Base
 
   def make_path
     on = illustratable
-    File.join([on.class.name.underscore.pluralize, on.id.to_s, 
+    File.join([ASSET_PATH, on.class.name.underscore.pluralize, on.id.to_s, 
                'images', filename])
   end
 

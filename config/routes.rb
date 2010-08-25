@@ -34,9 +34,9 @@ PlexusR3::Application.routes.draw do
     params = env['rack.request.form_hash']
 
     project = Project.where(:name => params['data_spec']['project']).first
-    params['project_id'] = project._id
-    data_node = project.data_nodes.where(:fingerprint => params['data_id']).first
-    params['data_node_id'] = data_node._id
+    params['project_id'] = project.id
+    data_node = project.data_nodes.find(params['data_id'])
+    params['data_node_id'] = data_node.id
     params['nested_in'] = 'data_node'
     params['image'] = params['picture']
 
