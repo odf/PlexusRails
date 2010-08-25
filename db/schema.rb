@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(:version => 20100823060432) do
     t.string   "domain_origin"
     t.string   "domain_size"
     t.string   "voxel_size"
+    t.string   "voxel_unit"
   end
 
   create_table "images", :force => true do |t|

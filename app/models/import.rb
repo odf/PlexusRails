@@ -244,18 +244,15 @@ class Import < ActiveRecord::Base
       end
 
       # -- check for data domain mismatches
-      if node.domain
-        (entry["domain"] || {}).each do |key, val|
-          old = node.domain.send key
-          if val.class == Float && old.class == Float
-            changed = (val - old).abs / val > 1e-4
-          elsif not (val.blank? or old.blank?)
-            changed = (val != old);
-          end
-          if changed
-            problems <<
-              "(ERROR) Domain mismatch: '#{key}' was #{old}, is #{val}."
-          end
+      (entry["domain"] || {}).each do |key, val|
+        old = node.send key
+        if val.class == Float && old.class == Float
+          changed = (val - old).abs / val > 1e-4
+        elsif not (val.blank? or old.blank?)
+          changed = (val != old);
+        end
+        if changed
+          problems << "(ERROR) Domain mismatch: '#{key}' was #{old}, is #{val}."
         end
       end
     end
@@ -287,7 +284,6 @@ class Import < ActiveRecord::Base
                                            :history    => entry["source_text"],
                                            :output_log => entry["output_log"],
                                            :parameters => entry["parameters"])
-    Rails.logger.warn(">>> Created new process node with id #{process.id}")
 
     node = project.data_nodes.create(:producer_id => process.id,
                                      :name        => entry["name"],
@@ -316,9 +312,9 @@ class Import < ActiveRecord::Base
     }
 
     # -- update the data domain if necessary
-    if entry["domain"] && !node.domain
-      node.build_domain(entry["domain"])
-      info[:messages] << "Domain entry added."
+    if entry["domain"] && !node.domain_origin
+      node.attributes = entry["domain"]
+      info[:messages] << "Domain information added."
     end
 
     # -- update information on the source file for this entry

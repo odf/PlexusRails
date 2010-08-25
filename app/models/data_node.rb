@@ -42,11 +42,11 @@ class DataNode < ActiveRecord::Base
   # -- domain access
   [:domain_origin, :domain_size, :voxel_size].each do |attr|
     define_method attr do
-      read_attribute(attr).split(' ').map(&:to_f)
+      (read_attribute(attr) || '').split(' ').map(&:to_f)
     end
 
     define_method "#{attr}=" do |values|
-      write_attribute(attr, values.map(&:to_s).join(' '))
+      write_attribute(attr, (values || []).map(&:to_s).join(' '))
     end
 
     %w{x y z}.each_with_index do |axis_name, axis_index|

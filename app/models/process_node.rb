@@ -16,7 +16,7 @@ class ProcessNode < ActiveRecord::Base
 
   # -- accessors for input nodes
   def inputs
-    input_ids.split(' ').map &project.data_nodes.method(:find)
+    (input_ids || '').split(' ').map { |v| project.data_nodes.find(v) }
   end
 
   def inputs=(list)
@@ -24,7 +24,7 @@ class ProcessNode < ActiveRecord::Base
   end
 
   def add_input(value)
-    unless inputs.map(&:id).include? value._id
+    unless inputs.map(&:id).include? value.id
       self.inputs = inputs + [value]
       save!
     end

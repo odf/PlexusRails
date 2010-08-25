@@ -18,6 +18,7 @@ class CreateDataNodes < ActiveRecord::Migration
       t.string   :domain_origin
       t.string   :domain_size
       t.string   :voxel_size
+      t.string   :voxel_unit
     end
   end
 
