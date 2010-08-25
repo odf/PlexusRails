@@ -10,14 +10,16 @@ require File.expand_path(File.dirname(__FILE__) + '/../../config/environment')
 require 'cucumber/formatter/unicode' # Remove this line if you don't want Cucumber Unicode support
 require 'cucumber/rails/rspec'
 require 'cucumber/rails/world'
-#require 'cucumber/rails/active_record'
+require 'cucumber/rails/active_record'
 require 'cucumber/web/tableish'
 
 require 'capybara/rails'
 require 'capybara/cucumber'
 require 'capybara/session'
 require 'cucumber/rails/capybara_javascript_emulation'
+require 'database_cleaner'
+require 'database_cleaner/cucumber'
 
 Capybara.default_selector = :css
-
+DatabaseCleaner.strategy = :transaction
 ActionController::Base.allow_rescue = false
