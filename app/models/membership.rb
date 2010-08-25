@@ -1,5 +1,5 @@
 class Membership < ActiveRecord::Base
-  #field :role, :type => String
+  # t.string  "role"
 
   belongs_to :project
   belongs_to :user

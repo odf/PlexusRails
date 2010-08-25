@@ -1,6 +1,7 @@
 class ActivityLog < ActiveRecord::Base
-  #field :at, :type => Time
-  #field :action
+  # t.integer  "user_id"
+  # t.datetime "at"
+  # t.string   "action"
 
   belongs_to :user
 

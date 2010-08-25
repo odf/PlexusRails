@@ -1,24 +1,20 @@
 # The model to represent a data node.
 
 class DataNode < ActiveRecord::Base
-  # -- simple persistent attributes
-  # field :fingerprint,     :type => String
-  # field :sample,          :type => String
-  # field :name,            :type => String
-  # field :data_type,       :type => String
-  # field :identifier,      :type => String
-  # field :messages,        :type => String
-  # field :status,          :type => String
-  # field :hidden,          :type => Boolean
-  # field :filename,        :type => String
-  # field :synchronized_at, :type => Time
-  # field :producer_id,     :type => String
-
-  # -- domain attributes
-  # field :origin,     :type => Array
-  # field :size,       :type => Array
-  # field :voxel_size, :type => Array
-  # field :voxel_unit, :type => String
+  # t.string   "fingerprint"
+  # t.string   "sample"
+  # t.string   "name"
+  # t.string   "data_type"
+  # t.string   "identifier"
+  # t.text     "messages"
+  # t.string   "status"
+  # t.boolean  "hidden"
+  # t.string   "filename"
+  # t.datetime "synchronized_at"
+  # t.string   "domain_origin"
+  # t.string   "domain_size"
+  # t.string   "voxel_size"
+  # t.string   "voxel_unit"
 
   # -- associations
   belongs_to :project

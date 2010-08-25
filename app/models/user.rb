@@ -1,23 +1,25 @@
 class User < ActiveRecord::Base
-  include Blame
-
-  # -- define sets of abilities for certain roles
+  # -- sets of abilities for certain roles
   READER_TASKS = [ 'login', 'view' ]
   EDITOR_TASKS = READER_TASKS + [ 'edit' ]
   ADMIN_TASKS  = EDITOR_TASKS + [ 'authorize', 'upload' ]
   WIZARD_TASKS = ADMIN_TASKS + [ 'impersonate' ]
   ABILITIES    = WIZARD_TASKS
 
-  # -- declaration of persistent fields
-  # field :login_name
-  # field :hashed_password
-  # field :first_name
-  # field :last_name
-  # field :email
-  # field :crypt_strength, :type => Integer, :default => 4
-  # field :organization
-  # field :homepage
-  # field :abilities, :type => Array, :default => READER_TASKS
+  # -- fields
+  include Blame
+
+  # t.string   "login_name"
+  # t.string   "hashed_password"
+  # t.string   "first_name"
+  # t.string   "last_name"
+  # t.string   "email"
+  # t.integer  "crypt_strength",  :default => 4
+  # t.string   "organization"
+  # t.string   "homepage"
+  # t.string   "abilities",       :default => "login view"
+  # t.datetime "created_at"
+  # t.datetime "updated_at"
 
   # -- associations
   has_one  :activity_log
@@ -76,11 +78,11 @@ class User < ActiveRecord::Base
 
   # Make the abilities attribute look like an array
   def abilities
-    read_attribute(:abilities).split(' ')
+    (read_attribute(:abilities) || '').split(' ')
   end
 
   def abilities=(values)
-    write_attribute(:abilities, values.join(' '))
+    write_attribute(:abilities, (values || []).join(' '))
   end
 
   # Finds the user with the given login name and password, if any.

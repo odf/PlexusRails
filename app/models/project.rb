@@ -1,9 +1,10 @@
 class Project < ActiveRecord::Base
   include Blame
 
-  # -- declaration of persistent fields
-  #field :name, :type => String, :accessible => false
-  #field :organization, :type => String
+  # t.string   "name"
+  # t.string   "organization"
+  # t.datetime "created_at"
+  # t.datetime "updated_at"
 
   # -- associations
   has_many :memberships, :dependent => :destroy

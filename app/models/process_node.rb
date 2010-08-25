@@ -1,14 +1,13 @@
 # The model to represent a process node.
 
 class ProcessNode < ActiveRecord::Base
-  # -- simple persistent attributes
-  # field :date,       :type => Time
-  # field :run_by,     :type => String
-  # field :data_type,  :type => String
-  # field :history,    :type => String
-  # field :output_log, :type => String
-  # field :parameters, :type => Hash, :default => {}
-  # field :input_ids,  :type => Array, :default => []
+  # t.datetime "date"
+  # t.string   "run_by"
+  # t.string   "data_type"
+  # t.text     "history"
+  # t.text     "output_log"
+  # t.text     "parameters"
+  # t.text     "input_ids"
 
   # -- associations
   belongs_to :project

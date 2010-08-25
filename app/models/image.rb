@@ -1,23 +1,22 @@
 # The model to represent an image attachment.
 
 class Image < ActiveRecord::Base
-
-  # -- where to write files
-  #TODO this needs to go into an initializer
+  # -- where to write files - TODO this needs to go into an initializer
   ASSET_PATH = File.join(Rails.root, "assets")
 
   # -- add timestamps and authors for creation and modification
   include Blame
 
-  # --  simple persistent attributes
-  # field :filename,     :type => String
-  # field :stored_path,  :type => String
-  # field :content_type, :type => String
-  # field :size,         :type => Fixnum
-  # field :width,        :type => Fixnum
-  # field :height,       :type => Fixnum
-  # field :caption,      :type => String
-  # field :info,         :type => Hash
+  # t.string   "filename"
+  # t.string   "stored_path"
+  # t.string   "content_type"
+  # t.integer  "size"
+  # t.integer  "width"
+  # t.integer  "height"
+  # t.string   "caption"
+  # t.text     "info"
+  # t.datetime "created_at"
+  # t.datetime "updated_at"
 
   # -- associations
   belongs_to :illustratable, :polymorphic => true

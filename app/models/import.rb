@@ -14,13 +14,14 @@ class Import < ActiveRecord::Base
   # -- add timestamps with user ids
   include Blame
 
-  # -- simple persistent attributes
-  # field :source_timestamp, :type => Time
-  # field :sample_name,      :type => String
-  # field :content,          :type => Hash
-  # field :source_log,       :type => String
-  # field :import_log,       :type => Hash
-  # field :description,      :type => String
+  # t.datetime "source_timestamp"
+  # t.string   "sample_name"
+  # t.text     "content"
+  # t.text     "source_log"
+  # t.text     "import_log"
+  # t.string   "description"
+  # t.datetime "created_at"
+  # t.datetime "updated_at"
 
   # -- associations
   belongs_to :user

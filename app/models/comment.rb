@@ -1,7 +1,9 @@
 class Comment < ActiveRecord::Base
   include Blame
 
-  #field :text, :type => String
+  # t.text     "text"
+  # t.datetime "created_at"
+  # t.datetime "updated_at"
 
   belongs_to :commentable, :polymorphic => true
 
