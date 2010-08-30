@@ -1,0 +1,7 @@
+- stylesheet :forms
+
+= formular_for(@sample) do |form|
+  = form.text_field :name, :required => true if create
+  %p= form.result_buttons
+  .clear
+.clear

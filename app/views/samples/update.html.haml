@@ -1,0 +1,6 @@
+- title "Sample <em>#{h @sample.name}</em>".html_safe
+- stylesheet :tables, :datasets
+
+= render :partial => "properties", :object => @sample
+
+= link_to "Full view", @sample

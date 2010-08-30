@@ -1,0 +1,14 @@
+- title 'Samples'
+- stylesheet :tables
+
+%table.zebra
+  %thead
+    %tr
+      %th Sample
+      %th External ID
+  
+  %tbody
+    - @samples.select(&method(:may_view)).each do |sample|
+      %tr{ :class => cycle('even', 'odd') }
+        %td= link_to(sample.name, sample)
+        %td= sample.external_id

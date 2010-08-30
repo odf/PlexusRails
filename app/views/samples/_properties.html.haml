@@ -1,0 +1,20 @@
+- stylesheet :properties
+- stylesheet :forms
+
+- @sample = properties
+
+#properties.dj-anchor.dj-replace
+  %h2
+    Details:
+    %span.action-links
+      - if may_edit(@sample)
+        %a.dj-link{ :href => edit_sample_url(@sample) } Edit
+        = link_to "Delete", sample_url(@sample), :method => :delete, |
+                  :confirm => "Destroy sample #{h @sample.name}?" |
+
+  .properties
+    %ul.dj-anchor
+      %li
+        %dfn External ID
+        = h(@sample.external_id)
+  = timestamps(@sample)

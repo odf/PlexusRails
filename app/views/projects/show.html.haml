@@ -5,28 +5,5 @@
 = render :partial => "images/on_object", :object => @project
 = render :partial => "comments/on_object", :object => @project
 
-%h2
-  = @project.data_nodes.empty? ? "No Datasets." : "Datasets:"
-  - if may_edit(@project)
-    %span.action-links
-      - if params[:showall]
-        = link_to "Exclude hidden", url_for(:showall => nil)
-      - else
-        = link_to "Include hidden", url_for(:showall => 1)
-
-- @project.nodes_with_levels.each do |v, level, hideable|
-  - node = @project.data_nodes_by_id[v]
-  - if !node.hidden or params[:showall]
-    - graph = @project.graph
-    - locals = { :graph => graph, :level => level, :hideable => hideable }
-    = render :partial => 'data_nodes/dataset', :locals => locals, :object => node
-
 - if may_edit(@project)
-  %p
-    %span#import-link.dj-replace.dj-anchor.action-links
-      %a.dj-link{ :href => new_import_url(:project_id => @project.id) }
-        Import data
-  #import.dj-replace.dj-anchor
-
-%h2 Imports:
-%p= link_to 'Show Imports', imports_url(:project_id => @project.id)
+  = link_to('New sample', new_sample_path(:project_id => @project.id)
