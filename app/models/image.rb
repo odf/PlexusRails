@@ -48,7 +48,7 @@ class Image < ActiveRecord::Base
     caption.blank? ? filename.sub(/\_[^_]*$/, '') : caption
   end
 
-  # Permissions are as in the project this image belongs to.
+  # Permissions are as in the illustratable this image belongs to.
   def allows?(action, user)
     illustratable.allows?(action, user)
   end
