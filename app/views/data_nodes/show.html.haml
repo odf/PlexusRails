@@ -46,7 +46,7 @@
       %pre.code= process_node.history
 
   #predecessors
-    = render :partial => "dataset", |
+    = render :partial => "dataset", :locals => { :graph => @project.graph }, |
              :collection => @data_node.predecessors.resolved |
 
     - unless @data_node.predecessors.missing.empty?
@@ -56,5 +56,6 @@
         %li= v.identifier || v.name
 
   #successors
-    = render :partial => "dataset", :collection => @data_node.successors
+    = render :partial => "dataset", :locals => { :graph => @project.graph }, |
+             :collection => @data_node.successors |
 .clear

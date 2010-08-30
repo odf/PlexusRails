@@ -15,9 +15,10 @@
         = link_to "Include hidden", url_for(:showall => 1)
 
 - @project.nodes_with_levels.each do |v, level, hideable|
-  - node = @project.data_nodes.find(v)
+  - node = @project.data_nodes_by_id[v]
   - if !node.hidden or params[:showall]
-    - locals = { :level => level, :hideable => hideable }
+    - graph = @project.graph
+    - locals = { :graph => graph, :level => level, :hideable => hideable }
     = render :partial => 'data_nodes/dataset', :locals => locals, :object => node
 
 - if may_edit(@project)

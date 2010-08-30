@@ -1,12 +1,13 @@
 - hidden = dataset.hidden ? ' hidden' : ''
 - hideable = hideable ? ' hideable' : ''
-- level = 0 if not defined?(level) or level.nil?
+- level = 0 unless defined?(level) and level
+- graph = dataset.project.graph unless defined?(graph) and graph
 
 %div{ :id => "x#{dataset.id}x", :class => "data-set#{hideable}" }
   %span.predecessors{ :style => "display: none" }
-    == x#{dataset.predecessors.map(&:id).to_a.join('x')}x
+    == x#{graph.pred(dataset.id).to_a.join('x')}x
   %span.successors{ :style => "display: none" }
-    == x#{dataset.successors.map(&:id).to_a.join('x')}x
+    == x#{graph.succ(dataset.id).to_a.join('x')}x
   %a{ :href => data_node_url(dataset) }
     %span{ :class => "data-set-header #{dataset.status}#{hidden}", |
            :style => "margin-left: #{level * 8}pt" } |
