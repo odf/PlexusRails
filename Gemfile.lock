@@ -57,7 +57,6 @@ GEM
     activesupport (3.0.0.rc)
     arel (0.4.0)
       activesupport (>= 3.0.0.beta)
-    bson_ext (1.0.4)
     builder (2.1.2)
     capybara (0.3.9)
       culerity (>= 0.2.4)
@@ -163,7 +162,6 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth
-  bson_ext
   bundler (>= 1.0.0.rc.1)
   capybara
   cucumber

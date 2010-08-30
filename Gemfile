@@ -10,7 +10,6 @@ gem 'mongrel'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 
 gem 'haml'
-gem 'bson_ext'
 gem 'json_pure', :require => 'json'
 gem 'RedCloth'
 gem 'sanitize'
