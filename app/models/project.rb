@@ -76,10 +76,19 @@ class Project < ActiveRecord::Base
 
   # -- methods pertaining to the data relationships graph
 
+  def data_nodes_by_id
+    @nodes ||= Persistent::HashMap.new + data_nodes.map { |v| [v.id, v] }
+  end
+
+  def process_nodes_by_id
+    @procs ||= Persistent::HashMap.new + process_nodes.map { |v| [v.id, v] }
+  end
+
   def graph
-    @graph ||= data_nodes.inject(Persistent::DAG.new) do |gr, v|
-      inputs = v.producer ? v.producer.inputs : []
-      gr.with_vertex(v.id) + inputs.map { |w| [w.id, v.id] }
+    procs = process_nodes_by_id
+    @graph ||= data_nodes_by_id.values.inject(Persistent::DAG.new) do |gr, v|
+      input_ids = v.producer_id ? procs[v.producer_id].input_ids : []
+      gr.with_vertex(v.id) + input_ids.map { |w_id| [w_id, v.id] }
     end
   end
 
@@ -87,15 +96,10 @@ class Project < ActiveRecord::Base
     @bottlenecks ||= graph.bottlenecks
   end
 
-  def nodes_by_id
-    @nodes ||= Persistent::HashMap.new +
-      graph.vertices.map { |n| [n, data_nodes.find(n)] }
-  end
-
   # The list of valid and rejected node ids, with each node listed
   # before its successors.
   def nodes_sorted
-    node_dates = nodes_by_id.apply { |v| (v && v.date) || Time.at(0) }
+    node_dates = data_nodes_by_id.apply { |v| (v && v.date) || Time.at(0) }
 
     visit = proc do |state, v|
       if state.marked?(v)

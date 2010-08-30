@@ -14,8 +14,12 @@ class ProcessNode < ActiveRecord::Base
   has_many :outputs, :class_name => 'DataNode', :foreign_key => 'producer_id'
 
   # -- accessors for input nodes
+  def input_ids
+    (read_attribute(:input_ids) || '').split(' ').map(&:to_i)
+  end
+
   def inputs
-    (input_ids || '').split(' ').map { |v| project.data_nodes.find(v) }
+    input_ids.map { |v| project.data_nodes.find(v) }
   end
 
   def inputs=(list)
