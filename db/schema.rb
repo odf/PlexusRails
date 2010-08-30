@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(:version => 20100830061954) do
   end
 
   create_table "samples", :force => true do |t|
+    t.integer  "project_id"
     t.string   "name"
     t.string   "external_id"
     t.datetime "created_at"

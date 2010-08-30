@@ -27,7 +27,7 @@ class SamplesController < ApplicationController
   end
 
   def new
-    @sample = Sample.new
+    @sample = @project.samples.build
   end
 
   def edit
@@ -41,7 +41,8 @@ class SamplesController < ApplicationController
       @sample = @project.samples.build(params[:sample])
 
       if @sample.save
-        redirect_to @sample, :notice => 'Sample was successfully  created.'
+        redirect_to [@project, @sample],
+          :notice => 'Sample was successfully  created.'
       else
         render :action => 'new', :alert => 'Could not create sample.'
       end

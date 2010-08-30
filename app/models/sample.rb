@@ -1,4 +1,4 @@
-class Project < ActiveRecord::Base
+class Sample < ActiveRecord::Base
   include Blame
 
   # t.string   "name"
@@ -15,7 +15,7 @@ class Project < ActiveRecord::Base
   has_many :imports, :dependent => :destroy
 
   # -- make sure sample names are unique (case-insensitive)
-  validates :name, :presence => true, :uniqueness => { :scope => :project }
+  validates :name, :presence => true, :uniqueness => { :scope => :project_id }
 
   # -- callbacks
   after_validation :generate_name

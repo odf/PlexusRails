@@ -6,4 +6,4 @@
 = render :partial => "comments/on_object", :object => @project
 
 - if may_edit(@project)
-  = link_to('New sample', new_sample_path(:project_id => @project.id)
+  = link_to 'New sample', new_project_sample_path(@project)

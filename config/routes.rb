@@ -4,11 +4,10 @@ PlexusR3::Application.routes.draw do
   resources :projects do
     resources :comments, :nested_in => 'project'
     resources :images, :nested_in => 'project'
-  end
-
-  resources :samples do
-    resources :comments, :nested_in => 'sample'
-    resources :images, :nested_in => 'sample'
+    resources :samples do
+      resources :comments, :nested_in => 'sample'
+      resources :images, :nested_in => 'sample'
+    end
   end
 
   resources :data_nodes do
