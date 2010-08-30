@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(:version => 20100830061954) do
   end
 
   create_table "data_nodes", :force => true do |t|
-    t.integer  "project_id"
+    t.integer  "sample_id"
     t.integer  "producer_id"
     t.string   "fingerprint"
     t.string   "sample"
@@ -66,7 +66,7 @@ ActiveRecord::Schema.define(:version => 20100830061954) do
 
   create_table "imports", :force => true do |t|
     t.integer  "user_id"
-    t.integer  "project_id"
+    t.integer  "sample_id"
     t.datetime "source_timestamp"
     t.string   "sample_name"
     t.text     "content"
@@ -86,7 +86,7 @@ ActiveRecord::Schema.define(:version => 20100830061954) do
   end
 
   create_table "process_nodes", :force => true do |t|
-    t.integer  "project_id"
+    t.integer  "sample_id"
     t.datetime "date"
     t.string   "run_by"
     t.string   "data_type"

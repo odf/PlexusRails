@@ -3,41 +3,40 @@ class ImportsController < ApplicationController
 
   before_authorization_filter :find_resource, :except => [:data_index, :create]
   before_authorization_filter :find_user,     :only   => [:data_index, :create]
-  before_authorization_filter :find_project,  :except => [:show]
+  before_authorization_filter :find_sample,   :except => [:show]
 
-  permit :index               do may_edit           end
-  permit :show                do may_view(@import)  end
-  permit :new                 do may_edit(@project) end
-  permit :data_index, :create do legitimate_user    end
+  permit :index               do may_edit          end
+  permit :show                do may_view(@import) end
+  permit :new                 do may_edit(@sample) end
+  permit :data_index, :create do legitimate_user   end
   
   private
 
-  def find_project
-    query = if params[:project_id]
-              { :id => params[:project_id] }
+  def find_sample
+    query = if params[:sample_id]
+              { :id => params[:sample_id] }
             else
-              { :name => params[:project] }
+              { :name => params[:sample] }
             end
-    @project = Project.where(query).first
+    @sample = Sample.where(query).first
   end
 
   public
 
   def index
-    @imports = @project.imports.select { |i| may_view i }
+    @imports = @sample.imports.select { |i| may_view i }
   end
 
   def show
   end
   
-  #TODO filter nodes by sample once we have introduced them
   def data_index
     respond_to do |format|
       format.json do
         render :json => {
           "Project" => @project && @project.name,
           "Sample"  => @sample && "#{@sample.name} (#{@sample.nickname})",
-          "Nodes"   => @project ? @project.stored_data : [],
+          "Nodes"   => @sample ? @sample.stored_data : [],
           "Status"  => "Success"
         }
       end
@@ -61,9 +60,9 @@ class ImportsController < ApplicationController
       notice = "No data supplied on import."
       import_log = { 'Status' => 'Error', 'Message' => 'No data supplied.' }
     else
-      create_project_if_missing
+      create_sample_if_missing
 
-      @import = @project.imports.build(params[:import])
+      @import = @sample.imports.build(params[:import])
       @import.user = @user
 
       notice = @import.save ? "Import successful." : "Import failed."
@@ -71,18 +70,28 @@ class ImportsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to @project || projects_url, :notice => notice }
+      format.html { redirect_to @sample || samples_url, :notice => notice }
       format.json { render :json => import_log }
     end
   end
 
   private
 
-  def create_project_if_missing
+  def create_sample_if_missing
+    unless @sample
+      find_or_create_project
+      @sample = @project.samples.build(:name => params[:sample])
+      @sample.save!
+    end
+  end
+
+  def find_or_create_project
+    name = params[:project]
+    @project = Project.where(:name => name)
     unless @project
       manager = User.where(:login_name => params[:manager]).first || @user
       @project = Project.new
-      @project.name = params[:project]
+      @project.name = name
       @project.set_role(manager, 'manager')
       @project.save!
     end

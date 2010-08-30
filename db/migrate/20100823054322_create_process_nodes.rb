@@ -1,7 +1,7 @@
 class CreateProcessNodes < ActiveRecord::Migration
   def self.up
     create_table :process_nodes do |t|
-      t.integer  :project_id
+      t.integer  :sample_id
       t.datetime :date
       t.string   :run_by
       t.string   :data_type

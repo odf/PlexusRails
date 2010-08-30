@@ -17,12 +17,12 @@ class DataNode < ActiveRecord::Base
   # t.string   "voxel_unit"
 
   # -- associations
-  belongs_to :project
+  belongs_to :sample
   belongs_to :producer, :class_name => "ProcessNode"
   has_many :comments, :as => :commentable, :dependent => :destroy
   has_many :images, :as => :illustratable, :dependent => :destroy
 
-  # -- fingerprint must be unique within project
+  # -- fingerprint must be unique within sample
   validates :fingerprint,
     :presence => true,
     :uniqueness => { :case_sensitive => false }
@@ -82,24 +82,24 @@ class DataNode < ActiveRecord::Base
   end
 
   def predecessors
-    find_related project.graph.pred(self.id)
+    find_related sample.graph.pred(self.id)
   end
 
   def successors
-    find_related project.graph.succ(self.id)
+    find_related sample.graph.succ(self.id)
   end
 
   def descendants
-    find_related project.graph.reachable(self.id)
+    find_related sample.graph.reachable(self.id)
   end
 
   def ancestors
-    adj = project.graph.method(:pred)
+    adj = sample.graph.method(:pred)
     find_related Persistent::Depth_First_Traversal.new([self.id], &adj)
   end
 
   def hideable?
-    project.bottlenecks.include? self.id
+    sample.bottlenecks.include? self.id
   end
 
   def toggle_visibility
@@ -110,9 +110,9 @@ class DataNode < ActiveRecord::Base
     end
   end
 
-  # -- permissions are as in the project this data node belongs to
+  # -- permissions are as in the sample this data node belongs to
   def allows?(action, user)
-    project.allows?(action, user)
+    sample.allows?(action, user)
   end
 
   private

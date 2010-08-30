@@ -6,6 +6,11 @@ PlexusR3::Application.routes.draw do
     resources :images, :nested_in => 'project'
   end
 
+  resources :samples do
+    resources :comments, :nested_in => 'sample'
+    resources :images, :nested_in => 'sample'
+  end
+
   resources :data_nodes do
     resources :comments, :nested_in => 'data_node'
     resources :images, :nested_in => 'data_node'
@@ -33,9 +38,9 @@ PlexusR3::Application.routes.draw do
   match 'pictures', :to => proc { |env|
     params = env['rack.request.form_hash']
 
-    project = Project.where(:name => params['data_spec']['project']).first
-    params['project_id'] = project.id
-    data_node = project.data_nodes.find(params['data_id'])
+    sample = Sample.where(:name => params['data_spec']['sample']).first
+    params['sample_id'] = sample.id
+    data_node = sample.data_nodes.find(params['data_id'])
     params['data_node_id'] = data_node.id
     params['nested_in'] = 'data_node'
     params['image'] = params['picture']

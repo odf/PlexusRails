@@ -2,7 +2,7 @@ class CreateImports < ActiveRecord::Migration
   def self.up
     create_table :imports do |t|
       t.integer  :user_id
-      t.integer  :project_id
+      t.integer  :sample_id
       t.datetime :source_timestamp
       t.string   :sample_name
       t.text     :content

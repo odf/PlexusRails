@@ -10,7 +10,7 @@ class ProcessNode < ActiveRecord::Base
   # t.text     "input_ids"
 
   # -- associations
-  belongs_to :project
+  belongs_to :sample
   has_many :outputs, :class_name => 'DataNode', :foreign_key => 'producer_id'
 
   # -- accessors for input nodes
@@ -19,7 +19,7 @@ class ProcessNode < ActiveRecord::Base
   end
 
   def inputs
-    input_ids.map { |v| project.data_nodes.find(v) }
+    input_ids.map { |v| sample.data_nodes.find(v) }
   end
 
   def inputs=(list)

@@ -25,7 +25,7 @@ class Import < ActiveRecord::Base
 
   # -- associations
   belongs_to :user
-  belongs_to :project
+  belongs_to :sample
 
   # -- before saving, perform the actions prescribed by this import
   before_save :run_this_import
@@ -55,9 +55,9 @@ class Import < ActiveRecord::Base
     end
   end
 
-  # -- permissions are as in the project this import belongs to
+  # -- permissions are as in the sample this import belongs to
   def allows?(action, user)
-    project.allows?(action, user)
+    sample.allows?(action, user)
   end
 
   private
@@ -74,8 +74,8 @@ class Import < ActiveRecord::Base
     result = {
       'User' => user && user.name,
       'Date' => (source_timestamp or '').to_s,
-      'Project' => project.name,
-      'Sample' => sample_name, # "#{sample.name} (#{sample.nickname})",
+      'Project' => sample.project.name,
+      'Sample' => "#{sample.external_id} (#{sample.name})",
       'Nodes' => [],
       'Status' => 'UNSUPPORTED'
     }
@@ -191,13 +191,13 @@ class Import < ActiveRecord::Base
     for status in %w{valid error}
       # -- look for matching identifiers
       unless ident.blank?
-        nodes = project.data_nodes.where :identifier => ident, :status => status
+        nodes = sample.data_nodes.where :identifier => ident, :status => status
         return nodes unless nodes.empty?
       end
 
       # -- the timestamp must always match precisely
       date = parse_timestamp(entry)
-      candidates = project.data_nodes.where(:status => status).
+      candidates = sample.data_nodes.where(:status => status).
         joins(:producer).where('date = ?', date)
 
       # -- match given node name, then file name, with existing node names
@@ -279,14 +279,14 @@ class Import < ActiveRecord::Base
       md5.update(entry[key] || "")
     end
 
-    process = project.process_nodes.create(:date       => parse_timestamp(entry),
+    process = sample.process_nodes.create(:date       => parse_timestamp(entry),
                                            :data_type  => entry["process"],
                                            :run_by     => entry["run_by"],
                                            :history    => entry["source_text"],
                                            :output_log => entry["output_log"],
                                            :parameters => entry["parameters"])
 
-    node = project.data_nodes.create(:producer_id => process.id,
+    node = sample.data_nodes.create(:producer_id => process.id,
                                      :name        => entry["name"],
                                      :fingerprint => md5.hexdigest,
                                      :sample      => sample_name,
@@ -355,7 +355,7 @@ class Import < ActiveRecord::Base
     # -- each list entry links an internal node id to a list of predecessors
     for (node_id, specs) in predecessors
       # -- locate the specified node
-      node = project.data_nodes.find(node_id)
+      node = sample.data_nodes.find(node_id)
 
       # -- process the given list of predecessors
       for item in specs
@@ -375,7 +375,7 @@ class Import < ActiveRecord::Base
         candidates = if ident == nil
                        @name2node[name]
                      else
-                       project.data_nodes.where(:identifier => ident).to_a
+                       sample.data_nodes.where(:identifier => ident).to_a
                      end
 
         if candidates.size == 1
@@ -386,7 +386,7 @@ class Import < ActiveRecord::Base
           log << "Predecessor #{ident || name} #{msg} for node '#{node.name}'."
           # -- if an external identifier was given, create a placeholder
           if ident
-            pre = project.data_nodes.build(:name       => name,
+            pre = sample.data_nodes.build(:name       => name,
                                            :identifier => ident,
                                            :status     => 'missing')
             pre.save!
@@ -401,7 +401,7 @@ class Import < ActiveRecord::Base
             log << "(WARNING) Making '#{pre.name}' a predecessor of " +
               "'#{node.name}' would create a cycle."
           else
-            project.add_link(pre, node)
+            sample.add_link(pre, node)
           end
         end
       end
@@ -419,14 +419,14 @@ class Import < ActiveRecord::Base
   # _node_:: the DataNode instance to resolve pending references for
   def resolve_if_pending(node)
     # -- load the placeholders for this node into an array
-    pending = project.data_nodes.where(:status => 'missing',
+    pending = sample.data_nodes.where(:status => 'missing',
                                        :identifier => node.identifier).to_a
 
     # -- link the new node to each successor
-    pending.each { |v| v.successors.each { |w| project.add_link(node, w) } }
+    pending.each { |v| v.successors.each { |w| sample.add_link(node, w) } }
 
     # -- remove the placeholders
-    pending.each(&project.method(:destroy_node))
+    pending.each(&sample.method(:destroy_node))
 
     # -- return the number of nodes replaced
     pending.count

@@ -1,7 +1,7 @@
 class CreateDataNodes < ActiveRecord::Migration
   def self.up
     create_table :data_nodes do |t|
-      t.integer  :project_id
+      t.integer  :sample_id
       t.integer  :producer_id
 
       t.string   :fingerprint
