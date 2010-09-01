@@ -35,7 +35,7 @@ class ImportsController < ApplicationController
       format.json do
         render :json => {
           "Project" => @project && @project.name,
-          "Sample"  => @sample && "#{@sample.name} (#{@sample.nickname})",
+          "Sample"  => @sample && "#{@sample.external_id} (#{@sample.name})",
           "Nodes"   => @sample ? @sample.stored_data : [],
           "Status"  => "Success"
         }
@@ -49,7 +49,7 @@ class ImportsController < ApplicationController
   
   def create
     params[:import] ||= {}
-    [:data, :description, :time, :sample, :source_log].each do |key|
+    [:data, :description, :time, :source_log].each do |key|
       params[:import][key] = params[key] if params[:import][key].blank?
     end
 
@@ -87,7 +87,7 @@ class ImportsController < ApplicationController
 
   def find_or_create_project
     name = params[:project]
-    @project = Project.where(:name => name)
+    @project = Project.where(:name => name).first
     unless @project
       manager = User.where(:login_name => params[:manager]).first || @user
       @project = Project.new
