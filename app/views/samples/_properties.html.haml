@@ -8,9 +8,9 @@
     Details:
     %span.action-links
       - if may_edit(@sample)
-        %a.dj-link{ :href => edit_project_sample_url(@sample) }
+        %a.dj-link{ :href => edit_sample_url(@sample) }
           Edit
-        = link_to "Delete", project_sample_url(@sample), |
+        = link_to "Delete", sample_url(@sample), |
                   :method => :delete, |
                   :confirm => "Destroy sample #{h @sample.name}?" |
 

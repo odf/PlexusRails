@@ -7,7 +7,7 @@
   = link_to @sample.project.name, @sample.project
   &mdash;
   %b Sample:
-  = link_to @sample.name, nested_url_for(@sample)
+  = link_to @sample.name, @sample
 
 = render :partial => "images/on_object", :object => @data_node
 = render :partial => "comments/on_object", :object => @data_node

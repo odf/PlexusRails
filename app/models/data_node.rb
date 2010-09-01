@@ -25,7 +25,7 @@ class DataNode < ActiveRecord::Base
   # -- fingerprint must be unique within sample
   validates :fingerprint,
     :presence => true,
-    :uniqueness => { :case_sensitive => false }
+    :uniqueness => { :case_sensitive => false, :scope => :sample_id }
 
   # -- some named scopes
   scope :visible,  where(:hidden => false)

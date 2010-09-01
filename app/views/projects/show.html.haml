@@ -8,7 +8,7 @@
 %h2
   = if @project.samples.empty? then "No Sample." else "Samples:" end
   %span.action-links
-    = link_to "Add one", new_project_sample_path(@project)
+    = link_to "Add one", new_sample_path(:project_id => @project.id)
 
 %table.zebra
   %thead
@@ -19,6 +19,6 @@
   %tbody
     - @project.samples.each do |s|
       %tr
-        %td= link_to s.name, nested_url_for(s)
+        %td= link_to s.name, s
         %td= s.external_id
         %td= s.data_nodes.count
