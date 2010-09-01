@@ -4,10 +4,10 @@
 
 %p
   %b Project:
-  = link_to @project.name, @project
+  = link_to @sample.project.name, @sample.project
   &mdash;
   %b Sample:
-  = @data_node.sample
+  = link_to @sample.name, nested_url_for(@sample)
 
 = render :partial => "images/on_object", :object => @data_node
 = render :partial => "comments/on_object", :object => @data_node
@@ -17,7 +17,7 @@
     %span.action-links
       - text = @data_node.hidden ? "Include Node in" : "Exclude Node from"
       - url = toggle_data_node_url(@data_node)
-      = link_to "#{text} Project View", url, :method => :put
+      = link_to "#{text} Sample View", url, :method => :put
 
 %h2 Details:
 
@@ -46,7 +46,7 @@
       %pre.code= process_node.history
 
   #predecessors
-    = render :partial => "dataset", :locals => { :graph => @project.graph }, |
+    = render :partial => "dataset", :locals => { :graph => @sample.graph }, |
              :collection => @data_node.predecessors.resolved |
 
     - unless @data_node.predecessors.missing.empty?
@@ -56,6 +56,6 @@
         %li= v.identifier || v.name
 
   #successors
-    = render :partial => "dataset", :locals => { :graph => @project.graph }, |
+    = render :partial => "dataset", :locals => { :graph => @sample.graph }, |
              :collection => @data_node.successors |
 .clear

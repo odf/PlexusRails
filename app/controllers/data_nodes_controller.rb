@@ -1,16 +1,16 @@
 class DataNodesController < ApplicationController
   before_authorization_filter :find_resource
-  before_authorization_filter :find_project
+  before_authorization_filter :find_sample
 
   permit :show do may_view(@data_node) end
-  permit :toggle do may_edit(@project) end
+  permit :toggle do may_edit(@sample) end
 
   before_filter :prepare_tabs
 
   private
 
-  def find_project
-    @project = @data_node.project
+  def find_sample
+    @sample = @data_node.sample
   end
 
   def prepare_tabs
