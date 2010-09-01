@@ -10,10 +10,8 @@ documents.
 Persistence
 -----------
 
-We use the document-oriented database MongoDB for data persistence -
-see http://www.mongodb.org/. The Mongoid gem - see http://mongoid.org/
-- provides our integration layer between the database driver and the
-Rails framework.
+The ActiveRecord ORM backed by a conventional SQL database is used for
+data persistence. That is the typical persistence setup for Rails.
 
 
 Testing
@@ -39,7 +37,7 @@ Authorization
 -------------
 
 A white-list approach is used for authorization via the in-house
-verboten gem.  Any page access is forbidden for any user unless
+'verboten' gem.  Any page access is forbidden for any user unless
 explicitly allowed.  Each controller must contains a section defining
 access conditions for its actions via the 'permit' method.  An
 additional method 'before_authorization_filter' is provided for
@@ -50,10 +48,10 @@ Roles and Abilities
 -------------------
 
 There is a pre-defined collection of potential abilities - currently
-login, view, edit, authorize and impersonate - which can be added
-(authorized) or removed (prohibited) for each individual user.  There
-is no explicit assignment of 'roles' to users - a role is simply the
-sum of a particular user's abilities.
+login, view, edit, authorize, upload and impersonate - which can be
+added (authorized) or removed (prohibited) for each individual user.
+There is no explicit assignment of 'roles' to users - a role is simply
+the sum of a particular user's abilities.
 
 
 Templating and Stylesheets
@@ -68,10 +66,10 @@ Forms
 -----
 
 HTML markup for web forms in this application is generated via a
-custom form builder - see lib/nifty_form_builder.rb - which is called
-via 'make_form_for()' instead of 'form_for()'.  The main difference to
-Rails' default generator is the automatic generation of labels and
-usage hints.
+custom form builder as defined in the in-house 'formular' gem.  The
+Rails-typical 'form_for' calls are replaced by 'formular_for'.  The
+main difference to the default Rails form builder is the automatic
+generation of labels and usage hints.
 
 
 Javascript
@@ -80,3 +78,15 @@ Javascript
 We adhere to the principles of unobtrusive Javascript - see
 http://en.wikipedia.org/wiki/Unobtrusive_JavaScript - and make
 extensive use of the jQuery library - see http://jquery.com/.
+
+
+Ajax
+----
+
+The in-house jQuery plugin 'djtch' is used to implement dynamic page
+updates via unobtrusive Javascript. Ajax calls initiated by djtch
+accept regular HTML replies and insert fragments of the returned
+content into the current page based on special markup. Currently, HTML
+class names starting with 'dj-' are used to identify tags of interest
+to the plugin. In the future, djtch will be upgraded to utilize
+user-defined 'data-' attributes as introduced in HTML5.
