@@ -54,6 +54,7 @@
       :margin 0
 
 .data-set-header
+  :position relative
   :display block
   :width 50%
   :border 1px solid
@@ -92,6 +93,8 @@
 .data-set-header .data-set-popup
   :z-index 10
   :position absolute
+  :right 0
+  :width 60%
   :display none
   :font-weight normal
   :font-size 75%
@@ -99,7 +102,7 @@
   :border-width 1px 3px 3px 1px
   :-moz-border-radius 10px
   :padding 0.5em 1em
-  :margin 2em 40% 0 20%
+  :margin 2em 0 0 20%
   :color = !tint2_text
   :background-color = !tint4_background_light
   :border-color #888 #aaa #aaa #888
@@ -109,6 +112,14 @@
     :font-style normal
     :width 6em
     :margin 0 auto 0 0
+
+.data-set-header .data-set-popup.captured
+  :position relative
+  :border none
+  :margin 0
+  :background-color inherit
+  :width 90%
+  :-moz-border-radius 0
 
 .data-set-header.hidden .data-set-popup
   :background-color white

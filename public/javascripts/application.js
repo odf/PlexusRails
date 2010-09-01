@@ -62,18 +62,19 @@
     });
 
     // -- make mouseovers on data sets appear more smoothly
-    jQuery('.data-set-header .data-set-popup', context).hide();
+    jQuery('.data-set-header .data-set-popup', context)
+      .hide().addClass('captured');
     jQuery('.data-set-header', context).hover(function() {
       jQuery(this).find('.data-set-popup').each(function() {
 	jQuery(this).addClass('waiting');
 	setTimeout(function() {
 	  jQuery('.data-set-popup.waiting')
-	    .fadeIn('fast').removeClass('waiting');
-	}, 1000);
+	    .stop(true, true).slideDown('fast').removeClass('waiting');
+	}, 500);
       });
     }, function() {
       jQuery(this).find('.data-set-popup')
-	.fadeOut('fast').removeClass('waiting');
+	.stop(true, true).slideUp('fast').removeClass('waiting');
     });
   }
 

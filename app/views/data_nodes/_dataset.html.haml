@@ -11,6 +11,18 @@
   %a{ :href => data_node_url(dataset) }
     %span{ :class => "data-set-header #{dataset.status}#{hidden}", |
            :style => "margin-left: #{level * 8}pt" } |
+      &nbsp;
+      %dfn= (dataset.data_type || "").underscore.humanize.titleize
+      == (#{h(dataset.last_suffix)})
+      &nbsp;
+      - if dataset.images.empty?
+        &mdash;
+      - else
+        %img{:src => "/images/grains-tiny.png", :alt => ""}
+      &nbsp;
+      = format_time(dataset.date, :mode => :terse)
+      - if dataset.filename
+        &nbsp; &bull;
       %span.data-set-popup
         = dataset.suffix
         - if dataset.status == 'error'
@@ -32,15 +44,3 @@
         - for pic in dataset.images
           %img{ :src => url_for([dataset, pic]), :alt => "", |
                 :width => 80, :height => 80 } |
-      &nbsp;
-      %dfn= (dataset.data_type || "").underscore.humanize.titleize
-      == (#{h(dataset.last_suffix)})
-      &nbsp;
-      - if dataset.images.empty?
-        &mdash;
-      - else
-        %img{:src => "/images/grains-tiny.png", :alt => ""}
-      &nbsp;
-      = format_time(dataset.date, :mode => :terse)
-      - if dataset.filename
-        &nbsp; &bull;
