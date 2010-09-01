@@ -5,5 +5,10 @@
 = render :partial => "images/on_object", :object => @project
 = render :partial => "comments/on_object", :object => @project
 
-- if may_edit(@project)
-  = link_to 'New sample', new_project_sample_path(@project)
+%h2
+  = if @project.samples.empty? then "No Sample." else "Samples:" end
+  %span.action-links
+    = link_to "Add one", new_project_sample_path(@project)
+%ul
+  - @project.samples.each do |s|
+    %li= link_to s.name, nested_url_for(s)

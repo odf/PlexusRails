@@ -57,4 +57,8 @@ module ApplicationHelper
        </a>
      </li>".html_safe
   end
+
+  def nested_url_for(object)
+    url_for(object.is_a?(Sample) ? [object.project, object] : object)
+   end
 end

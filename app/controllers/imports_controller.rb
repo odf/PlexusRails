@@ -70,7 +70,9 @@ class ImportsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to @sample || samples_url, :notice => notice }
+      format.html {
+        redirect_to nested_url_for(@sample) || samples_url, :notice => notice
+      }
       format.json { render :json => import_log }
     end
   end
