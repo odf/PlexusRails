@@ -1,17 +1,20 @@
 - title 'Import'
-- stylesheet :properties
+- stylesheet :properties, :tabs
+- sample = @import.sample
+
+%p
+  %b Project:
+  = link_to sample.project.name, sample.project
+  &mdash;
+  %b Sample:
+  = link_to sample.name, sample
+%br
 
 .properties
   %ul
     %li
       %dfn Uploaded by
       = link_to (@import.user.name, @import.user) if @import.user
-    %li
-      %dfn Project
-      = link_to @import.sample.project.name, @import.sample.project
-    %li
-      %dfn Sample
-      = link_to @import.sample.name || dash, @import.sample
     %li
       %dfn Source Date
       = format_time(@import.source_timestamp) || dash
@@ -23,20 +26,17 @@
   %h2 Description:
   .comment= format_text(@import.description)
 
-- if @import.import_log.blank?
-  %h2 Import log is empty.
-- else
-  %h2 Import Log:
-  .collapsible.comment
-    %tt
-      %small
-        %pre= @import.import_log.to_yaml
+%h2 Details:
+.tabs-container
+  %input{ :type => 'hidden' }
+  %ul
+    = tab_link('#import_log', 'Import Log')
+    = tab_link('#source', 'Full Source')
 
-- if @import.content.blank?
-  %p Source is empty.
-- else
-  %h2 Full Source:
-  .collapsible.comment
-    %tt
-      %small
-        %pre= @import.content.to_yaml
+  #import_log
+    - unless @import.import_log.blank?
+      %pre.code= @import.import_log.to_yaml
+
+  #source
+    - unless @import.content.blank?
+      %pre.code= @import.content.to_yaml

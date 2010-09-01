@@ -1,19 +1,4 @@
 (function() {
-  function toggle(item) {
-    var link = jQuery(item);
-    var placeholder = link.parent().find('.proxy');
-    var content = link.parent().find('.collapsible');
-    if (content.is(':visible')) {
-      content.hide();
-      placeholder.show();
-      link.html('[+]');
-    } else {
-      content.show();
-      placeholder.hide();
-      link.html('[&ndash;]');
-    }
-  }
-
   function select_tab() {
     var link = jQuery(this);
     var ref = link.attr('href');
@@ -42,28 +27,6 @@
       jQuery(this).text(s);
     });
 
-    // -- deals with collapsible page content
-    jQuery('.collapsible', context).wrap("<div/>").each(function() {
-      var content = jQuery(this);
-      content.before('<div class="proxy">&hellip;</div><div class="clear"/>');
-      var link = jQuery('<a href="" class="toggle noprint"/>');
-      content.parent().prepend(link);
-      if (content.hasClass('start-open')) content.hide();
-      toggle(link);
-    });
-    jQuery('.toggle', context).click(function() {
-      toggle(this);
-      return false;
-    });
-    jQuery('.toggle', context).hover(function() {
-      jQuery(this).parent().find('.proxy').addClass('toggle-show');
-      jQuery(this).parent().find('.collapsible').addClass('toggle-hide');
-      return false;
-    }, function() {
-      jQuery(this).parent().find('.proxy').removeClass('toggle-show');
-      jQuery(this).parent().find('.collapsible').removeClass('toggle-hide');
-    });
-
     // -- highlights predecessors and successors of a data set on hover
     jQuery('.data-set', context).hover(function() {
       var related = jQuery(this).find(".predecessors,.successors").text();
@@ -82,7 +45,11 @@
       jQuery('> ul', container).show();
       jQuery('> div', container).hide();
       jQuery('> input:first', container).attr('name', 'active-tab');
-      jQuery('> ul a.current-tab:first', container).each(select_tab);
+      var current = container.find('> ul a.current-tab:first');
+      if (current.length > 0)
+	current.each(select_tab);
+      else
+	container.find('> ul a:first').each(select_tab);
       jQuery('> ul a', container)
 	.each(function() {
 	  var link = jQuery(this);
