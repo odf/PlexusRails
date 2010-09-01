@@ -53,8 +53,8 @@ class ImagesController < ApplicationController
       format.html do
         if status == "Error"
           flash.now[:error] = message
-          flash.now[:object_with_errors] = :picture
-          render :text => '', :layout => true
+          @image = nil
+          render
         else
           flash[:notice] = message
           render

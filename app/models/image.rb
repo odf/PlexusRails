@@ -24,7 +24,8 @@ class Image < ActiveRecord::Base
   # -- filename must be unique within illustratable
   validates :filename,
     :presence => true,
-    :uniqueness => { :case_sensitive => false }
+    :uniqueness => { :case_sensitive => false,
+                     :scope => [:illustratable_id, :illustratable_type] }
 
   # -- these handle the storage of the actual image files
   before_create :store_file

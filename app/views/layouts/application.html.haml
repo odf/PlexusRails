@@ -41,8 +41,8 @@
         - if show_title? and not stripped
           %h1= yield(:title)
   
-        - if flash[:alert] or flash[:error]
-          #errors.dj-replace.dj-anchor
+        #errors.dj-replace.dj-anchor
+          - if flash[:alert] or flash[:error]
             #flash_alert
               %pre= flash[:alert]
               - flash[:alert] = nil
