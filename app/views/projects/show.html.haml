@@ -1,5 +1,5 @@
 - title "Project <em>#{h @project.name}</em>".html_safe
-- stylesheet :tables, :datasets
+- stylesheet :tables
 
 = render :partial => "properties", :object => @project
 = render :partial => "images/on_object", :object => @project
@@ -9,6 +9,16 @@
   = if @project.samples.empty? then "No Sample." else "Samples:" end
   %span.action-links
     = link_to "Add one", new_project_sample_path(@project)
-%ul
-  - @project.samples.each do |s|
-    %li= link_to s.name, nested_url_for(s)
+
+%table.zebra
+  %thead
+    %tr
+      %th Sample
+      %th External ID
+      %th Data Nodes
+  %tbody
+    - @project.samples.each do |s|
+      %tr
+        %td= link_to s.name, nested_url_for(s)
+        %td= s.external_id
+        %td= s.data_nodes.count

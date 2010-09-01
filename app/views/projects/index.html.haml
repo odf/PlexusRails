@@ -6,12 +6,13 @@
     %tr
       %th Project
       %th Organization
-  
+      %th Samples
   %tbody
     - @projects.select(&method(:may_view)).each do |project|
       %tr{ :class => cycle('even', 'odd') }
         %td= link_to(project.name, project)
         %td= project.organization
+        %td= project.samples.count
 
 %br
 = link_to('New project', new_project_path) if may_edit
