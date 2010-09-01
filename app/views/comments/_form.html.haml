@@ -2,8 +2,6 @@
 
 .dj-form
   = formular_for [@commentable, @comment] do |form|
-    - if create
-      = form.hidden_field :author_id
     = form.text_area :text, :cols => 80, :rows => 10, :label => ''
     %br
     = form.result_buttons
