@@ -1,0 +1,193 @@
+A generic metadata input format for Plexus
+==========================================
+
+Plexus metadata import files are encoded in JSON format (see
+http://json.org), which looks very similar to Python data. The main
+differences and restrictions are these:
+
+    - The only legal data types are number, string, array and
+      dictionary (or object in JSON terminology), plus the values
+      null, true and false.
+
+    - Instead of Python's 'None', 'True' and 'False', JSON uses null,
+      true and false.
+
+    - Dictionary keys must be strings.
+
+    - Only the double quote " is allowed as a string delimiter, and
+      strings cannot be concatenated. Line breaks within a string are
+      represented embedded '\n' (newline) characters.
+
+    - Generally. expressions are not allowed as values.
+
+    - Numbers can't be written as octal or hexadecimal.
+
+
+A Plexus import file consists of a JSON-encoded array of dictionaries,
+each of which describes a single dataset by means of a fixed set of
+keys.  Points in time are specified as strings which can take a number
+of formats, but the form "yyyy/mm/dd HH:MM:SS' is preferred.
+
+Optional keys can be left out or assigned the value null.  The
+recognized keys are as follows (please read "mandatory" as "should be
+provided wherever possible, but if there's absolutely no way to get at
+that information, Plexus will still do what it can"):
+
+    "data_file" (fixed-key dictionary, optional):
+            The file that contains the original data, if any. The
+            value is a dictionary with keys "name" and "date" for the
+            filename and modification date. This file should still
+            exist and it should be possible to locate it using the
+            project description on Plexus.
+
+    "data_type" (string, mandatory):
+            The type of the dataset as in Mango, e.g.
+            "Tomographic_Data", "Label_Data".
+
+    "date"      (time, mandatory):
+            The time at which the data was created or last modified.
+
+    "domain"    (fixed-key dictionary, optional):
+            The domain of the data, if it is volume data. Keys are
+            "domain_origin_x", "domain_origin_y", "domain_origin_z",
+            "domain_size_x", "domain_size_y", "domain_size_z",
+            "voxel_size_x", "voxel_size_y", "voxel_size_z" and
+            "voxel_unit", with the obvious value types. Plexus
+            normalizes units on the millimetre and micron scale, but
+            leaves all other units as they are.
+
+    "identifier" (string, mandatory):
+            The unique external identifier of this dataset. For
+            datasets produced by Mango, this is typically composed of
+            a timestamp and the dataset name (see examples at the
+            bottom of this file). This is now the preferred way of
+            identifying datasets within Plexus. Wherever possible,
+            each dataset should be assigned an external identifier and
+            that identifier should be used whenever referring to that
+            dataset.
+
+    "name"       (string, mandatory):
+            The name of the dataset, typically the original filename.
+
+    "output_log" (string, optional):
+            Any useful diagnostic output from the process that created
+            the data.
+
+    "parameters" (free-form dictionary, optional):
+            The parameters to the process that created the data. Keys
+            can be arbitrary strings. Values should be only numbers or
+            strings. If there are many parameters, it might be a good
+            idea to use prefixes for logical grouping, as in
+            "spe_data.DETECTOR_SIZE", "xtc_linearise.RAW_FORMAT".
+
+    "parse_errors" (array of strings, optional):
+            An array of error messages encountered when parsing the
+            metadata in its original form. This is most useful when
+            data is processed automatically via a script or a cron
+            job.
+
+    "predecessors" (array of dictionaries, optional):
+            Datasets used as input when producing this dataset. Each
+            dictionary within the array can have either a key
+            "identifier" or a key "name". In the first case, the
+            associated value is taken to be the external identifier of
+            the input dataset. In the second case, it is understood to
+            refer to an entry in the same import file.
+
+    "process"    (string, mandatory):
+            The name of the process used to produce the data.
+
+    "run_by"     (string, optional):
+            The person who ran the process that created the data,
+            i.e. started the program or performed the experiment.
+
+    "source_text" (string, optional):
+            The metadata for this dataset in its original or most
+            complete accessible form, if it is available as readable
+            text and of a reasonable size for inclusion. Again, this
+            is most useful when the import file is produced
+            automatically from the original metadata specification, or
+            in any other situation where errors or omissions are
+            possible.
+
+
+Example:
+=======
+
+Here's the results of parsing the header data of an actual NetCDF data
+file produced by Mango. Only two of the datasets are shown, and the
+longer string entries have been truncated.
+
+[
+    {
+        "data_file": null, 
+        "data_type": "Tomographic_Data", 
+        "date": "2007/08/12 11:16:21", 
+        "domain": null, 
+        "identifier": "20070812_111621_tomo2048W_SS_AD_MK", 
+        "name": "tomo2048W_SS_AD_MK", 
+        "output_log": "\nMainDriver: elapsed time 1.69231 seconds.\n", 
+        "parameters": {
+            "do_statistics": "False"
+        }, 
+        "parse_errors": [], 
+        "predecessors": [
+            {
+                "message": "History entry missing", 
+                "name": "fiducial2048W_SS"
+            }, 
+            {
+                "identifier": "20070812_111520_tomo2048W_SS_AD"
+            }
+        ], 
+        "process": "Mask_Data", 
+        "run_by": null, 
+        "source_text": "data_directory          /home/110/aps110/workdir/[...]"
+    }, 
+    {
+        "data_file": {
+            "date": "2007/08/12 14:25:53", 
+            "name": "pore_throat_network2048W_SS_AD_MK_SC_IC_IC_EDTv_MA_LFMA_RM_PN"
+        }, 
+        "data_type": "pore_throat_network", 
+        "date": "2007/08/12 14:25:53", 
+        "domain": {
+            "domain_origin_x": 260, 
+            "domain_origin_y": 260, 
+            "domain_origin_z": 60, 
+            "domain_size_x": 1530, 
+            "domain_size_y": 1530, 
+            "domain_size_z": 1900, 
+            "voxel_size_x": 3.3600001335144043, 
+            "voxel_size_y": 3.3600001335144043, 
+            "voxel_size_z": 3.3600001335144043, 
+            "voxel_unit": "micron"
+        }, 
+        "identifier": "20070812_142553_pore_throat_network2048W_SS_AD_MK_SC_IC_IC_EDTv_MA_LFMA_RM_PN", 
+        "name": "pore_throat_network2048W_SS_AD_MK_SC_IC_IC_EDTv_MA_LFMA_RM_PN", 
+        "output_log": "\nThere are 27882 pores and 115301 throats.\n[...]",
+        "parameters": {
+            "add_throat_volumes": "False", 
+            "do_statistics": "False", 
+            "max_joined_throats_area_ratio": 10, 
+            "max_removable_throat_area": 30, 
+            "max_throat_perimeter_fraction": 0.29999999999999999, 
+            "set_porel_inter_volume": "False", 
+            "sort_network": "False", 
+            "write_centres": "False", 
+            "write_subdomains": "False"
+        }, 
+        "parse_errors": [], 
+        "predecessors": [
+            {
+                "identifier": "20070812_124209_distance_map2048W_SS_AD_MK_SC_IC_IC_EDTv"
+            }, 
+            {
+                "identifier": "20070812_141954_labels2048W_SS_AD_MK_SC_IC_IC_EDTv_MA_LFMA_RM"
+            }
+        ], 
+        "process": "Network_From_Labels", 
+        "run_by": null, 
+        "source_text": "file_name_suffix        2048W_SS_AD_MK_SC_IC_IC_[...]"
+    }
+]

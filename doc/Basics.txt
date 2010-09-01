@@ -90,3 +90,10 @@ content into the current page based on special markup. Currently, HTML
 class names starting with 'dj-' are used to identify tags of interest
 to the plugin. In the future, djtch will be upgraded to utilize
 user-defined 'data-' attributes as introduced in HTML5.
+
+
+Data Ingestion
+--------------
+
+Plexus defines a generic data import format based on JSON (see
+import_format.txt).
