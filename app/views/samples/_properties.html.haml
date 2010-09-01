@@ -17,6 +17,9 @@
   .properties
     %ul.dj-anchor
       %li
+        %dfn Project
+        = link_to @project.name, @project
+      %li
         %dfn External ID
         = @sample.external_id
       .clear

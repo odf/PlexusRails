@@ -61,6 +61,6 @@ class SamplesController < ApplicationController
 
   def destroy
     @sample.destroy
-    redirect_to samples_url, :notice => 'Sample successfully deleted.'
+    redirect_to @project, :notice => 'Sample successfully deleted.'
   end
 end

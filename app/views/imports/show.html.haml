@@ -11,7 +11,7 @@
       = link_to @import.sample.project.name, @import.sample.project
     %li
       %dfn Sample
-      = @import.sample_name || dash
+      = link_to @import.sample.name || dash, nested_url_for(@import.sample)
     %li
       %dfn Source Date
       = format_time(@import.source_timestamp) || dash

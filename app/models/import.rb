@@ -15,7 +15,7 @@ class Import < ActiveRecord::Base
   include Blame
 
   # t.datetime "source_timestamp"
-  # t.string   "sample_name"
+  # t.string   "sample_id"
   # t.text     "content"
   # t.text     "source_log"
   # t.text     "import_log"
@@ -38,10 +38,6 @@ class Import < ActiveRecord::Base
   def time=(value)
     time_args = ParseDate::parsedate(value) unless value.blank?
     self.source_timestamp = time_args ? Time.local(*time_args).utc : nil
-  end
-
-  def sample=(value)
-    self.sample_name = value
   end
 
   # -- JSON-powered accessors
@@ -280,21 +276,20 @@ class Import < ActiveRecord::Base
     end
 
     process = sample.process_nodes.create(:date       => parse_timestamp(entry),
-                                           :data_type  => entry["process"],
-                                           :run_by     => entry["run_by"],
-                                           :history    => entry["source_text"],
-                                           :output_log => entry["output_log"],
-                                           :parameters => entry["parameters"])
+                                          :data_type  => entry["process"],
+                                          :run_by     => entry["run_by"],
+                                          :history    => entry["source_text"],
+                                          :output_log => entry["output_log"],
+                                          :parameters => entry["parameters"])
 
     node = sample.data_nodes.create(:producer_id => process.id,
-                                     :name        => entry["name"],
-                                     :fingerprint => md5.hexdigest,
-                                     :sample      => sample_name,
-                                     :data_type   => entry["data_type"],
-                                     :identifier  => entry["identifier"],
-                                     :messages    => messages,
-                                     :status      => status,
-                                     :hidden      => false)
+                                    :name        => entry["name"],
+                                    :fingerprint => md5.hexdigest,
+                                    :data_type   => entry["data_type"],
+                                    :identifier  => entry["identifier"],
+                                    :messages    => messages,
+                                    :status      => status,
+                                    :hidden      => false)
 
     node
   end
