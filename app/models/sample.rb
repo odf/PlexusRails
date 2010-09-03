@@ -28,7 +28,13 @@ class Sample < ActiveRecord::Base
   # -- methods pertaining to the data relationships graph
 
   def data_nodes_by_id
-    @nodes ||= Persistent::HashMap.new + data_nodes.map { |v| [v.id, v] }
+    procs = process_nodes_by_id
+    @nodes ||= Persistent::HashMap.new + data_nodes.map do |v|
+      class << v; attr_accessor :sample, :producer end
+      v.sample = self
+      v.producer = procs[v.producer_id]
+      [v.id, v]
+    end
   end
 
   def process_nodes_by_id
@@ -36,9 +42,8 @@ class Sample < ActiveRecord::Base
   end
 
   def graph
-    procs = process_nodes_by_id
     @graph ||= data_nodes_by_id.values.inject(Persistent::DAG.new) do |gr, v|
-      input_ids = v.producer_id ? procs[v.producer_id].input_ids : []
+      input_ids = v.producer ? v.producer.input_ids : []
       gr.with_vertex(v.id) + input_ids.map { |w_id| [w_id, v.id] }
     end
   end
@@ -50,18 +55,18 @@ class Sample < ActiveRecord::Base
   # The list of valid and rejected node ids, with each node listed
   # before its successors.
   def nodes_sorted
-    node_dates = data_nodes_by_id.apply { |v| (v && v.date) || Time.at(0) }
+    node_date = data_nodes_by_id.apply { |v| v ? v.date : Time.at(0) }
 
     visit = proc do |state, v|
       if state.marked?(v)
         state
       else
-        children = graph.succ(v).sort_by(&node_dates).reverse
+        children = graph.succ(v).sort_by(&node_date).reverse
         children.inject(state.with_mark(v), &visit).after(v)
       end
     end
 
-    sources = graph.sources.sort_by(&node_dates).reverse
+    sources = graph.sources.sort_by(&node_date).reverse
     sources.inject(Persistent::Accumulator.new, &visit)
   end
   
