@@ -57,7 +57,7 @@ class ApplicationController < ActionController::Base
 
   # The logged in user for the current session, or nil if none.
   def current_user
-    User.where(:login_name => session[:user]).first
+    @current_user ||= User.where(:login_name => session[:user]).first
   end
 
   private
@@ -122,6 +122,7 @@ class ApplicationController < ActionController::Base
     reset_session
     session[:user] = user && user.login_name
     session[:ip] = request.remote_ip
+    @current_user = user
   end
 
   # If this returns true, we have a new installation that needs setup.
