@@ -23,6 +23,7 @@
       = format_time(dataset.date, :mode => :terse)
       - if dataset.filename
         &nbsp; &bull;
+      .clear
       %span.data-set-popup
         = dataset.suffix
         - if dataset.status == 'error'
