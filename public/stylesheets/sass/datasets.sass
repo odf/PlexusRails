@@ -87,27 +87,15 @@
 .data-set-header.hidden
   :color = gray
   :background-color = !tint2_background_dark
-  .data-set-popup
-    :color = gray
-  .data-set-popup.captured
-    :background-color inherit
 
 .data-set-header .data-set-popup
-  :z-index 10
-  :position absolute
-  :right 0
-  :width 60%
+  :border none
+  :margin 0
+  :width 90%
   :display none
   :font-weight normal
   :font-size 75%
-  :border-style solid
-  :border-width 1px 3px 3px 1px
-  :-moz-border-radius 10px
   :padding 0.5em 1em
-  :margin 2em 0 0 20%
-  :color = !tint2_text
-  :background-color = !tint4_background_light
-  :border-color #888 #aaa #aaa #888
   dfn
     :float left
     :font-weight bolder
@@ -118,19 +106,8 @@
     :float left
     :display inline
 
-.data-set-header .data-set-popup.captured
-  :position relative
-  :border none
-  :margin 0
-  :background-color inherit
-  :width 90%
-  :-moz-border-radius 0
-
-.data-set-header.hidden .data-set-popup
-  :background-color white
-
 .data-set-header:hover .data-set-popup
-  :display inline
+  :display block
 
 .blurb
   :display inline

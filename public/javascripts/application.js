@@ -51,24 +51,7 @@
 	current.each(select_tab);
       else
 	container.find('> ul a:first').each(select_tab);
-      jQuery('> ul a', container)
-	.each(function() {
-	  var link = jQuery(this);
-	  var container = link.closest('.tabs-container', link);
-	  var err = jQuery('> div' + link.attr('href') + ' .error', container);
-	  if (err.size() > 0) link.addClass("with-error");
-	})
-	.click(function() { jQuery('#flash_notice', context).hide(); })
-	.click(select_tab);
-    });
-
-    // -- make mouseovers on data sets appear more smoothly
-    jQuery('.data-set-header .data-set-popup', context)
-      .hide().addClass('captured');
-    jQuery('.data-set-header', context).hover(function() {
-      jQuery(this).find('.data-set-popup').show();
-    }, function() {
-      jQuery(this).find('.data-set-popup').hide();
+      jQuery('> ul a', container).click(select_tab);
     });
   }
 

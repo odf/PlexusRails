@@ -22,7 +22,6 @@
       = format_time(dataset.date, :mode => :terse)
       - if dataset.filename
         &nbsp; &bull;
-      .clear
       .data-set-popup
         - pic = dataset.images.first
         - if pic
@@ -42,8 +41,7 @@
           %dfn Time:
           = format_time(dataset.date, :mode => :sortable, :zone => true)
           %br
-          - unless dataset.producer.run_by.blank?
-            %dfn Operator:
-            = dataset.producer.run_by
-            %br
+          %dfn Operator:
+          = dataset.producer.run_by || '&mdash;'.html_safe
+          %br
       .clear
