@@ -11,13 +11,6 @@
     return false;
   }
 
-  function slide_it() {
-    jQuery('.data-set-popup.leaving')
-      .removeClass('leaving').stop(true, true).slideUp('fast');
-    jQuery('.data-set-popup.coming')
-      .removeClass('coming').stop(true, true).slideDown('fast');
-  }
-
   function onload(context) {
     fixPage();
 
@@ -36,10 +29,11 @@
 
     // -- highlights predecessors and successors of a data set on hover
     jQuery('.data-set', context).hover(function() {
-      var related = jQuery(this).find(".predecessors,.successors").text();
+      var related =
+	jQuery(this).attr('data-pred') + jQuery(this).attr('data-succ');
       jQuery('.data-set').each(function() {
-	var item = jQuery(this);
-	if (related.indexOf(item.attr('id')) >= 0) item.addClass('highlighted');
+	if (related.indexOf(jQuery(this).attr('id')) >= 0)
+	  jQuery(this).addClass('highlighted');
       });
       return false;
     }, function() {
@@ -72,15 +66,10 @@
     jQuery('.data-set-header .data-set-popup', context)
       .hide().addClass('captured');
     jQuery('.data-set-header', context).hover(function() {
-      jQuery(this).find('.data-set-popup').each(function() {
-	jQuery(this).removeClass('leaving').addClass('coming');
-      });
+      jQuery(this).find('.data-set-popup').show();
     }, function() {
-      jQuery(this).find('.data-set-popup').each(function() {
-	jQuery(this).removeClass('coming').addClass('leaving');
-      });
+      jQuery(this).find('.data-set-popup').hide();
     });
-    setInterval(slide_it, 1000);
   }
 
   function fixPage() {
