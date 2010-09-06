@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'bundler', '1.0.0'
-gem 'rails', '>=3.0.0.rc'
+gem 'rails', '3.0.0'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -24,7 +24,7 @@ group :test do
   gem 'capybara'
   gem 'cucumber-rails'
   gem 'cucumber'
-  gem 'rspec-rails', '>= 2.0.0.beta.8'
+  gem 'rspec-rails', '>= 2.0.0.beta.20'
   gem 'database_cleaner'
   gem 'spork'
   gem 'launchy'    # So you can do Then show me the page
