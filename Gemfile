@@ -1,12 +1,13 @@
 source 'http://rubygems.org'
 
-gem 'bundler', '>=1.0.0.rc.1'
+gem 'bundler', '1.0.0'
 gem 'rails', '>=3.0.0.rc'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'mongrel'
+gem 'mongrel', "1.2.0.pre2"
+
 gem 'sqlite3-ruby', :require => 'sqlite3'
 
 gem 'haml'

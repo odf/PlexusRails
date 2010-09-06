@@ -5,8 +5,9 @@
 # - replaced positional parameters by an option hash
 # - introduced a strength variable and changed iteration count from
 #   1000 to 10**strength
+# - ported to Ruby 1.9.2
 #
-# Olaf Delgado-Friedrichs, 2007-10-12
+# Olaf Delgado-Friedrichs, 2007-10-12 / 2010-09-06
 # ---------------------------------------------------------------------
 
 # Crypt(3) 
@@ -120,7 +121,7 @@ module Crypt
     
     [ [0, 6, 12], [1, 7, 13], [2, 8, 14], [3, 9, 15], [4, 10, 5] ].each do |a, b, c|
       
-      v = final[a] << 16 | final[b] << 8 | final[c]
+      v = final.getbyte(a) << 16 | final.getbyte(b) << 8 | final.getbyte(c)
       
       4.times do
         rearranged += ITOA64[v & 0x3f].chr
@@ -128,7 +129,7 @@ module Crypt
       end
     end
     
-    v = final[11]
+    v = final.getbyte(11)
     
     2.times do
       rearranged += ITOA64[v & 0x3f].chr
