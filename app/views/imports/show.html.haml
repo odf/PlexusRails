@@ -14,7 +14,7 @@
   %ul
     %li
       %dfn Uploaded by
-      = link_to (@import.user.name, @import.user) if @import.user
+      = link_to(@import.user.name, @import.user) if @import.user
     %li
       %dfn Source Date
       = format_time(@import.source_timestamp) || dash
