@@ -16,6 +16,7 @@ class Sample < ActiveRecord::Base
 
   # -- make sure sample names are unique (case-insensitive)
   validates :name, :presence => true, :uniqueness => { :scope => :project_id }
+  validates :external_id, :uniqueness => true
 
   # -- callbacks
   after_validation :generate_name
@@ -113,9 +114,11 @@ class Sample < ActiveRecord::Base
   private
   
   def generate_name
-    if self.name.blank?
-      date = date_received.strftime("%Y%m%d")
-      # self.name = LastUsedSampleName.next(date)
+    if self.external_id.blank? and not self.process_nodes.empty?
+      date = self.process_nodes.order(:date).first.date.strftime("%Y%m%d")
+      last = self.class.where('external_id LIKE ?', "#{date}-%")
+               .order(:external_id).last
+      self.external_id = last ? last.external_id.succ : "#{date}-AA"
     end
   end
 end
