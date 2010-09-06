@@ -59,8 +59,9 @@ class Image < ActiveRecord::Base
 
   def make_path
     on = illustratable
-    File.join([ASSET_PATH, on.class.name.underscore.pluralize, on.id.to_s, 
-               'images', filename])
+    on_type = on.class.name.underscore.pluralize
+    on_id = on.respond_to?(:id_for_assets) ? on.id_for_assets : on.id
+    File.join([ASSET_PATH, on_type, on_id, 'images', filename])
   end
 
   def store_file

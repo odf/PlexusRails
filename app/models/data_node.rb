@@ -109,6 +109,11 @@ class DataNode < ActiveRecord::Base
       node.save!
     end
   end
+ 
+  # -- use a more permanent id to construct file system paths and such
+  def id_for_assets
+    fingerprint
+  end
 
   # -- permissions are as in the sample this data node belongs to
   def allows?(action, user)
