@@ -36,8 +36,7 @@ class Import < ActiveRecord::Base
   end
 
   def time=(value)
-    time_args = ParseDate::parsedate(value) unless value.blank?
-    self.source_timestamp = time_args ? Time.local(*time_args).utc : nil
+    self.source_timestamp = value.blank? ? nil : Time.parse(value).utc
   end
 
   # -- JSON-powered accessors
@@ -104,6 +103,9 @@ class Import < ActiveRecord::Base
 
     # -- set the log attribute
     self.import_log = result
+
+    # -- force save to create external id on sample if missing
+    self.sample.save!
 
   rescue Exception => ex
     result ||= {}
