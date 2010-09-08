@@ -42,6 +42,11 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # -- use a more permanent id to construct file system paths and such
+  def id_for_assets
+    name
+  end
+
   # -- pseudo-attribute for editing memberships and roles
   attr_accessor :_manager
 
