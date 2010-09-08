@@ -58,9 +58,7 @@ class ImportsController < ApplicationController
       import_log = { 'Status' => 'Error', 'Message' => 'No data supplied.' }
     else
       create_sample_if_missing
-
-      @import = @sample.imports.build(params[:import])
-      @import.user = @user
+      @import = @sample.imports.build(params[:import].merge({:user => @user}))
 
       notice = @import.save ? "Import successful." : "Import failed."
       import_log = @import.import_log

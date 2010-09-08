@@ -16,14 +16,20 @@ class Sample < ActiveRecord::Base
 
   # -- make sure sample names are unique (case-insensitive)
   validates :name, :presence => true, :uniqueness => { :scope => :project_id }
-  validates :external_id, :uniqueness => true
+  validates :external_id, :presence => true,
+                          :uniqueness => { :case_sensitive => false }
 
   # -- callbacks
-  after_validation :generate_name
+  before_validation :generate_name
 
   # -- permissions are as in the project this sample belongs to
   def allows?(action, user)
     project.allows?(action, user)
+  end
+
+  # -- use a more permanent id to construct file system paths and such
+  def id_for_assets
+    external_id
   end
 
   # -- methods pertaining to the data relationships graph
@@ -82,6 +88,8 @@ class Sample < ActiveRecord::Base
     nodes_sorted.map { |v| [v, level[v], bottlenecks.include?(v)] }
   end
 
+  # -- other methods
+
   def stored_data()
     good_nodes = data_nodes.valid.reject do |node|
       node.filename.blank? and node.images.empty?
@@ -114,10 +122,10 @@ class Sample < ActiveRecord::Base
   private
   
   def generate_name
-    if self.external_id.blank? and not self.process_nodes.empty?
-      date = self.process_nodes.order(:date).first.date.strftime("%Y%m%d")
+    if self.external_id.blank?
+      date = Date.today.strftime("%Y%m%d")
       last = self.class.where('external_id LIKE ?', "#{date}-%")
-               .order(:external_id).last
+                       .order(:external_id).last
       self.external_id = last ? last.external_id.succ : "#{date}-AA"
     end
   end

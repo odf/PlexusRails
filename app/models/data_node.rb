@@ -22,10 +22,9 @@ class DataNode < ActiveRecord::Base
   has_many :comments, :as => :commentable, :dependent => :destroy
   has_many :images, :as => :illustratable, :dependent => :destroy
 
-  # -- fingerprint must be unique within sample
-  validates :fingerprint,
-    :presence => true,
-    :uniqueness => { :case_sensitive => false, :scope => :sample_id }
+  # -- fingerprint must be unique
+  validates :fingerprint, :presence => true,
+                          :uniqueness => { :case_sensitive => false }
 
   # -- some named scopes
   scope :visible,  where(:hidden => false)
