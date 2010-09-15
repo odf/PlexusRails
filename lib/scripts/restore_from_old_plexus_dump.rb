@@ -10,32 +10,33 @@ class GenericLoader
 
   def restore_table(model_name, *associations)
     puts "Restoring #{model_name}..."
-    specific = "restore_#{model_name.pluralize.underscore}"
-    if self.respond_to?(specific)
-      self.send(specific, associations)
+
+    assoc = associations.map { |attr, options| keyed_dependency(attr, options) }
+    assoc = Hash[*assoc.flatten]
+    table_name = model_name.underscore.pluralize
+    mapping = (@id_mapping[table_name] ||= {})
+    rows = read_data(table_name)
+
+    if self.respond_to?("restore_#{table_name}")
+      self.send("restore_#{table_name}", rows, mapping, assoc)
     else
-      default_restore_table(model_name, *associations)
+      default_restore_table(model_name.classify, rows, mapping, assoc)
     end
   end
 
   private
-  def default_restore_table(model_name, *associations, &block)
-    model = model_name.classify.constantize
-    table_name = model_name.underscore.pluralize
-    mapping = (@id_mapping[table_name] ||= {})
-    assoc = associations.map { |attr, options| keyed_dependency(attr, options) }
-    assoc = Hash[*assoc.flatten]
+  def default_restore_table(model_name, rows, mapping, associations, &block)
+    model = model_name.constantize
 
     attr_protected  = model.read_inheritable_attribute("attr_protected")
     attr_accessible = model.read_inheritable_attribute("attr_accessible")
     model.write_inheritable_attribute("attr_protected",  nil)
     model.write_inheritable_attribute("attr_accessible", nil)
 
-    rows = read_data(table_name)
     count = 0
     model.transaction do
       rows.each do |item|
-        instance = model.new(mapped_attributes(item, assoc))
+        instance = model.new(mapped_attributes(item, associations))
         if (not block) or block.call(instance)
           instance.save!
           mapping[item['id']] = instance.id
@@ -94,16 +95,34 @@ class Loader < GenericLoader
       dependencies.each do |entry|
         method_name = "restore_#{entry[0].pluralize.underscore}"
         unless method_defined?(method_name)
-          define_method(method_name) { |args| puts "  (ignored)" }
+          define_method(method_name) { |a, b, c| puts "  (ignored)" }
         end
       end
     end
   end
 
-  def restore_users(associations)
-    default_restore_table('User', *associations) do |user|
+  def restore_users(*args)
+    default_restore_table('User', *args) do |user|
       user.abilities = []
       user.login_name != "bootstrap"
+    end
+    puts "  done!"
+  end
+
+  def restore_permissions(rows, mapping, associations)
+    count = 0
+    User.transaction do
+      rows.each do |item|
+        attr = mapped_attributes(item, associations)
+        user = User.find_by_id(attr["user_id"])
+        if user
+          ability = attr["ability_name"].sub(/update/, 'upload')
+          user.send(User.ability_setter(ability), '1')
+          user.save!
+        end
+        count += 1
+        puts "    #{count}/#{rows.length}" if count % 1000 == 0
+      end
     end
     puts "  done!"
   end
