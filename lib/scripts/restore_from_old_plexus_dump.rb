@@ -98,7 +98,7 @@ class Loader < GenericLoader
       dependencies.each do |entry|
         method_name = "restore_#{entry[0].pluralize.underscore}"
         unless method_defined?(method_name)
-          define_method(method_name) { |a, b, c| puts "  (ignored)" }
+          define_method(method_name) { |a, b, c| puts '  (ignored)' }
         end
       end
     end
@@ -106,7 +106,7 @@ class Loader < GenericLoader
 
   def restore_users(*args)
     default_restore_table('User', *args) do |attr|
-      (attr["login_name"] != "bootstrap") && attr.merge("abilities" => [])
+      (attr['login_name'] != 'bootstrap') && attr.merge('abilities' => [])
     end
   end
 
@@ -115,9 +115,9 @@ class Loader < GenericLoader
     User.transaction do
       rows.each do |item|
         attr = mapped_attributes(item, associations)
-        user = User.find_by_id(attr["user_id"])
+        user = User.find_by_id(attr['user_id'])
         if user
-          ability = attr["ability_name"].sub(/update/, 'upload')
+          ability = attr['ability_name'].sub(/update/, 'upload')
           user.send(User.ability_setter(ability), '1')
           user.save!
         end
@@ -132,6 +132,14 @@ class Loader < GenericLoader
       attr.select { |key, val| %w{name organization}.include? key }
     end
   end
+
+  def restore_project_memberships(*args)
+    default_restore_table('Membership', *args) do |attr|
+      attr.merge('role' => 'client')
+    end
+  end
+
+  #TODO - restore project managers
 end
 
 
