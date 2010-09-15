@@ -22,6 +22,8 @@ class GenericLoader
     else
       default_restore_table(model_name.classify, rows, mapping, assoc)
     end
+
+    puts "  done!"
   end
 
   private
@@ -36,9 +38,10 @@ class GenericLoader
     count = 0
     model.transaction do
       rows.each do |item|
-        instance = model.new(mapped_attributes(item, associations))
-        if (not block) or block.call(instance)
-          instance.save!
+        attr = mapped_attributes(item, associations)
+        attr = block.call(attr) if block
+        if attr
+          instance = model.create(attr)
           mapping[item['id']] = instance.id
         end
         count += 1
@@ -102,11 +105,9 @@ class Loader < GenericLoader
   end
 
   def restore_users(*args)
-    default_restore_table('User', *args) do |user|
-      user.abilities = []
-      user.login_name != "bootstrap"
+    default_restore_table('User', *args) do |attr|
+      (attr["login_name"] != "bootstrap") && attr.merge("abilities" => [])
     end
-    puts "  done!"
   end
 
   def restore_permissions(rows, mapping, associations)
@@ -124,7 +125,12 @@ class Loader < GenericLoader
         puts "    #{count}/#{rows.length}" if count % 1000 == 0
       end
     end
-    puts "  done!"
+  end
+
+  def restore_projects(*args)
+    default_restore_table('Project', *args) do |attr|
+      attr.select { |key, val| %w{name organization}.include? key }
+    end
   end
 end
 
