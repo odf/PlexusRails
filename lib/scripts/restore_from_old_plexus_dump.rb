@@ -127,7 +127,23 @@ class Loader < GenericLoader
     end
   end
 
+  def restore_activity_logs(rows, mapping, associations)
+    count = 0
+    User.transaction do
+      rows.each do |item|
+        attr = mapped_attributes(item, associations)
+        user = User.find_by_id(attr['user_id'])
+        if user and not attr['timestamp'].blank?
+          user.log_activity(Time.parse(attr['timestamp']))
+        end
+        count += 1
+        puts "    #{count}/#{rows.length}" if count % 1000 == 0
+      end
+    end
+  end
+
   def restore_projects(*args)
+    #TODO - restore project managers
     default_restore_table('Project', *args) do |attr|
       attr.select { |key, val| %w{name organization}.include? key }
     end
@@ -139,7 +155,41 @@ class Loader < GenericLoader
     end
   end
 
-  #TODO - restore project managers
+  def restore_samples(*args)
+    #TODO - restore extra information as annotations
+    default_restore_table('Sample', *args) do |attr|
+      {
+        'name'        => attr['nickname'],
+        'external_id' => attr['name'],
+        'project_id'  => attr['project_id']
+      }
+    end
+  end
+
+  def restore_process_nodes(*args)
+    default_restore_table('ProcessNode', *args)
+  end
+
+  def restore_domains(rows, mapping, associations)
+    #TODO - map to data node columns
+    count = 0
+    @domains = []
+
+    rows.each do |item|
+      mapping[item['id']] = @domains.count
+      @domains << item.reject { |k| k == 'id' }
+      count += 1
+      puts "    #{count}/#{rows.length}" if count % 1000 == 0
+    end
+  end
+
+  def restore_data_nodes(*args)
+    default_restore_table('DataNode', *args) do |attr|
+      attr.reject { |k| %w{process_node_id domain_id}.include? k }.
+        merge({ 'producer_id' => attr['process_node_id'] }).
+        merge(attr['domain_id'].blank? ? {} : @domains[attr['domain_id']])
+    end
+  end
 end
 
 
