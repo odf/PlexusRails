@@ -199,6 +199,12 @@ class Loader < GenericLoader
         merge({ 'producer_id' => attr['process_node_id'] }).
         merge(attr['domain_id'].blank? ? {} : @domains[attr['domain_id']])
     end
+
+    ProcessNode.transaction do
+      DataNode.all.each do |v|
+        v.producer.update_attribute(:sample, v.sample) if v.producer
+      end
+    end
   end
 end
 
