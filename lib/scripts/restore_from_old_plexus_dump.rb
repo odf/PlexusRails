@@ -41,7 +41,8 @@ class GenericLoader
         attr = mapped_attributes(item, associations)
         attr = block.call(attr) if block
         if attr
-          instance = model.create(attr)
+          instance = model.new(attr)
+          instance.save!(:validate => false)
           mapping[item['id']] = instance.id
         end
         count += 1
@@ -171,19 +172,28 @@ class Loader < GenericLoader
   end
 
   def restore_domains(rows, mapping, associations)
-    #TODO - map to data node columns
     count = 0
     @domains = []
 
+    def grab(item, base_key)
+      %w{x y z}.map { |axis| item["#{base_key}_#{axis}"] }
+    end
+
     rows.each do |item|
       mapping[item['id']] = @domains.count
-      @domains << item.reject { |k| k == 'id' }
+      @domains << {
+        'domain_origin' => grab(item, 'domain_origin'),
+        'domain_size'   => grab(item, 'domain_size'),
+        'voxel_size'    => grab(item, 'voxel_size'),
+        'voxel_unit'    => item['voxel_unit']
+      }
       count += 1
       puts "    #{count}/#{rows.length}" if count % 1000 == 0
     end
   end
 
   def restore_data_nodes(*args)
+    #TODO - add fingerprints
     default_restore_table('DataNode', *args) do |attr|
       attr.reject { |k| %w{process_node_id domain_id}.include? k }.
         merge({ 'producer_id' => attr['process_node_id'] }).
