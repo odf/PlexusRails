@@ -46,20 +46,20 @@
       %br/
       %li
         %dfn Origin
-        - x = data_node.domain_origin_x
-        - y = data_node.domain_origin_y
-        - z = data_node.domain_origin_z
+        - x = @data_node.domain_origin_x
+        - y = @data_node.domain_origin_y
+        - z = @data_node.domain_origin_z
         == (#{x}, #{y}, #{z})
       %li
         %dfn Size
-        - x = data_node.domain_size_x
-        - y = data_node.domain_size_y
-        - z = data_node.domain_size_z
+        - x = @data_node.domain_size_x
+        - y = @data_node.domain_size_y
+        - z = @data_node.domain_size_z
         == #{x} &times; #{y} &times; #{z}
       %li
-        - unit = h(data_node.voxel_unit).sub(/\Amicron\Z/, "&micro;").html_safe
+        - unit = h(@data_node.voxel_unit).sub(/\Amicron\Z/, "&micro;").html_safe
         %dfn== Voxel size (#{unit})
-        - x = "%.2f" % data_node.voxel_size_x
-        - y = "%.2f" % data_node.voxel_size_y
-        - z = "%.2f" % data_node.voxel_size_z
+        - x = "%.2f" % @data_node.voxel_size_x
+        - y = "%.2f" % @data_node.voxel_size_y
+        - z = "%.2f" % @data_node.voxel_size_z
         == #{x} &times; #{y} &times; #{z}

@@ -116,6 +116,16 @@ class Loader < GenericLoader
     end
   end
 
+  def restore_all
+    dependencies = read_data('__dependencies')
+
+    # - Project depends on User, but has no explicit 'has_many' in old Plexus
+    restore_table(*dependencies.assoc('User'))
+
+    # - restore all remaining tables after User is done
+    dependencies.each { |item| restore_table(*item) unless item[0] == 'User' }
+  end
+
   def restore_users(*args)
     default_restore_table('User', *args) do |attr|
       (attr['login_name'] != 'bootstrap') && attr.merge('abilities' => [])
@@ -146,16 +156,26 @@ class Loader < GenericLoader
     end
   end
 
-  def restore_projects(*args)
-    #TODO - restore project managers
-    default_restore_table('Project', *args) do |attr|
+  def restore_projects(rows, mapping, associations)
+    managers = {}
+
+    default_restore_table('Project', rows, mapping, associations) do |attr|
+      managers[attr['id']] = attr['local_manager']
       attr.select { |key, val| %w{name organization}.include? key }
     end
+
+    @managers = managers.map { |k,v| [@id_mapping['projects'][k], v] }
   end
 
   def restore_project_memberships(*args)
     default_restore_table('Membership', *args) do |attr|
       attr.merge('role' => 'client')
+    end
+
+    @managers.each do |k,v|
+      project = Project.find(k)
+      user = User.find_by_id(v)
+      project.set_role(user, 'manager') if project and user
     end
   end
 
@@ -218,17 +238,17 @@ class Loader < GenericLoader
   end
 
   def restore_process_attributes(*args)
-    @parameters = {}
+    parameters = {}
 
     custom_restore_table(*args) do |attr|
       val = attr['numerical_value']
       val = attr['text_value'] if val.nil?
-      (@parameters[attr['process_node_id']] ||= {})[attr['name']] = val
+      (parameters[attr['process_node_id']] ||= {})[attr['name']] = val
     end
 
     ProcessNode.transaction do
       ProcessNode.all.each do |p|
-        p.update_attribute(:parameters, @parameters[p.id] || {})
+        p.update_attribute(:parameters, parameters[p.id] || {})
       end
     end
   end
