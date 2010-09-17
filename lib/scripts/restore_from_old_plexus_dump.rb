@@ -54,6 +54,17 @@ class GenericLoader
     model.write_inheritable_attribute("attr_accessible", attr_accessible)
   end
 
+  def custom_restore_table(rows, mapping, associations, &block)
+    raise "Needs a block" unless block
+
+    count = 0
+    rows.each do |item|
+      block.call(mapped_attributes(item, associations))
+      count += 1
+      puts "    #{count}/#{rows.length}" if count % 1000 == 0
+    end
+  end
+
   def read_data(name)
     filename = "#{@path}/#{name}.json.gz"
     JSON::load(Zlib::GzipReader.open(filename) { |gz| gz.read })
@@ -111,34 +122,26 @@ class Loader < GenericLoader
     end
   end
 
-  def restore_permissions(rows, mapping, associations)
-    count = 0
+  def restore_permissions(*args)
     User.transaction do
-      rows.each do |item|
-        attr = mapped_attributes(item, associations)
+      custom_restore_table(*args) do |attr|
         user = User.find_by_id(attr['user_id'])
         if user
           ability = attr['ability_name'].sub(/update/, 'upload')
           user.send(User.ability_setter(ability), '1')
           user.save!
         end
-        count += 1
-        puts "    #{count}/#{rows.length}" if count % 1000 == 0
       end
     end
   end
 
-  def restore_activity_logs(rows, mapping, associations)
-    count = 0
+  def restore_activity_logs(*args)
     User.transaction do
-      rows.each do |item|
-        attr = mapped_attributes(item, associations)
+      custom_restore_table(*args) do |attr|
         user = User.find_by_id(attr['user_id'])
         if user and not attr['timestamp'].blank?
           user.log_activity(Time.parse(attr['timestamp']))
         end
-        count += 1
-        puts "    #{count}/#{rows.length}" if count % 1000 == 0
       end
     end
   end
@@ -172,14 +175,13 @@ class Loader < GenericLoader
   end
 
   def restore_domains(rows, mapping, associations)
-    count = 0
-    @domains = []
-
     def grab(item, base_key)
       %w{x y z}.map { |axis| item["#{base_key}_#{axis}"] }
     end
 
-    rows.each do |item|
+    @domains = []
+
+    custom_restore_table(rows, mapping, associations) do |item|
       mapping[item['id']] = @domains.count
       @domains << {
         'domain_origin' => grab(item, 'domain_origin'),
@@ -187,8 +189,6 @@ class Loader < GenericLoader
         'voxel_size'    => grab(item, 'voxel_size'),
         'voxel_unit'    => item['voxel_unit']
       }
-      count += 1
-      puts "    #{count}/#{rows.length}" if count % 1000 == 0
     end
   end
 
@@ -206,6 +206,46 @@ class Loader < GenericLoader
       end
     end
   end
+
+  def restore_input_links(*args)
+    ProcessNode.transaction do
+      custom_restore_table(*args) do |attr|
+        data = DataNode.find(attr['data_node_id'])
+        process = ProcessNode.find(attr['process_node_id'])
+        process.add_input(data) if data and process
+      end
+    end
+  end
+
+  def restore_process_attributes(*args)
+    @parameters = {}
+
+    custom_restore_table(*args) do |attr|
+      val = attr['numerical_value']
+      val = attr['text_value'] if val.nil?
+      (@parameters[attr['process_node_id']] ||= {})[attr['name']] = val
+    end
+
+    ProcessNode.transaction do
+      ProcessNode.all.each do |p|
+        p.update_attribute(:parameters, @parameters[p.id] || {})
+      end
+    end
+  end
+
+  #TODO - restore_imports
+
+  #TODO - restore_data_logs (needs a model to write to)
+
+  #TODO - restore_data_pictures
+
+  #TODO - restore_comments
+
+  #TODO - restore_access_restrictions (Projects only)
+
+  #TODO - restore_external_resources
+
+  #TODO - restore_version_stamps
 end
 
 
