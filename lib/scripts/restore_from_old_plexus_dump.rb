@@ -259,12 +259,22 @@ class Loader < GenericLoader
     default_restore_table('Image', *args) do |attr|
       unless attr['data_node_id'].blank? or attr['storage_path'].blank?
         extra = {
-          :stored_path => attr['storage_path'],
-          :illustratable_id => attr['data_node_id'],
+          :stored_path        => attr['storage_path'],
+          :illustratable_id   => attr['data_node_id'],
           :illustratable_type => 'DataNode'
         }
         attr.reject { |k| excluded.include? k }.merge(extra)
       end
+    end
+  end
+
+  def restore_comments(*args)
+    default_restore_table('Comment', *args) do |attr|
+      {
+        :text             => attr['value'],
+        :commentable_id   => attr['asset_id'],
+        :commentable_type => attr['asset_type']
+      }
     end
   end
 
@@ -273,8 +283,6 @@ class Loader < GenericLoader
   #TODO - restore_imports
 
   #TODO - restore_data_logs (needs a model to write to)
-
-  #TODO - restore_comments
 
   #TODO - restore_access_restrictions (Projects only)
 
