@@ -67,9 +67,12 @@ class Image < ActiveRecord::Base
   def store_file
     raise "No directory #{ASSET_PATH}." unless File.directory?(ASSET_PATH)
 
-    self.stored_path = make_path
-    FileUtils.mkpath(File.dirname(stored_path))
-    File.open(stored_path, "wb") { |fp| fp.write(@content) }
+    if self.stored_path.blank?
+      path = make_path
+      FileUtils.mkpath(File.dirname(path))
+      File.open(path, "wb") { |fp| fp.write(@content) }
+      self.stored_path = path
+    end
   end
 
   def delete_file
