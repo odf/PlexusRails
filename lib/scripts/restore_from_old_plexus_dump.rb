@@ -253,11 +253,26 @@ class Loader < GenericLoader
     end
   end
 
+  def restore_data_pictures(*args)
+    excluded = %w{storage_path data_node_id parent_id thumbnail process_node_id}
+
+    default_restore_table('Image', *args) do |attr|
+      unless attr['data_node_id'].blank? or attr['storage_path'].blank?
+        extra = {
+          :stored_path => attr['storage_path'],
+          :illustratable_id => attr['data_node_id'],
+          :illustratable_type => 'DataNode'
+        }
+        attr.reject { |k| excluded.include? k }.merge(extra)
+      end
+    end
+  end
+
+  #TODO - restore_data_attachments
+
   #TODO - restore_imports
 
   #TODO - restore_data_logs (needs a model to write to)
-
-  #TODO - restore_data_pictures
 
   #TODO - restore_comments
 
