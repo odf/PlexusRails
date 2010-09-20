@@ -227,6 +227,19 @@ class Loader < GenericLoader
     end
   end
 
+  def restore_external_resources(*args)
+    DataNode.transaction do
+      custom_restore_table(*args) do |attr|
+        node = DataNode.find_by_id(attr['data_node_id'])
+        if node
+          node.filename = attr['name']
+          node.synchronized_at = attr['synchronized_at']
+          node.save!(:validate => false)
+        end
+      end
+    end
+  end
+
   def restore_input_links(*args)
     ProcessNode.transaction do
       custom_restore_table(*args) do |attr|
