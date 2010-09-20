@@ -12,7 +12,7 @@
   %tbody
     - @imports.select(&method(:may_view)).each do |import|
       %tr
-        %td= import.user.name
+        %td= import.user.name if import.user
         %td= import.sample_name
         %td= format_time import.source_timestamp
         %td= '' || import.created_at

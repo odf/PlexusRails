@@ -42,7 +42,11 @@ class Import < ActiveRecord::Base
   # -- JSON-powered accessors
   [:content, :import_log].each do |attr|
     define_method(attr) do
-      JSON::load(read_attribute(attr) || "{}")
+      begin
+        JSON::load((read_attribute(attr) || "{}").strip)
+      rescue
+        read_attribute(attr) || ""
+      end
     end
 
     define_method("#{attr}=") do |data|
