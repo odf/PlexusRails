@@ -291,15 +291,35 @@ class Loader < GenericLoader
     end
   end
 
-  #TODO - restore_data_attachments
+  def restore_imports(rows, mapping, associations)
+    excluded = %w{replace content import_log}
 
-  #TODO - restore_imports
+    Import.transaction do
+      custom_restore_table(rows, mapping, associations) do |item|
+        attr = item.reject { |k| excluded.include? k }
+        if attr
+          instance = Import.new(attr)
+          [:content, :import_log].each do |key|
+            instance.instance_eval { write_attribute(key, item[key]) }
+          end
+          instance.save!(:validate => false)
+          mapping[item['id']] = instance.id
+        end
+      end
+    end
+  end
+
+  # def restore_imports(*args)
+  #   default_restore_table('Import', *args) do |attr|
+  #     attr.reject { |k| k == 'replace' }
+  #   end
+  # end
 
   #TODO - restore_data_logs (needs a model to write to)
 
   #TODO - restore_access_restrictions (Projects only)
 
-  #TODO - restore_external_resources
+  #TODO - restore_data_attachments
 
   #TODO - restore_version_stamps
 end
