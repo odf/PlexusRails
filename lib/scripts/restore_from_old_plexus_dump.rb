@@ -299,7 +299,7 @@ class Loader < GenericLoader
         attr = item.reject { |k| excluded.include? k }
         if attr
           instance = Import.new(attr)
-          [:content, :import_log].each do |key|
+          %w{content import_log}.each do |key|
             instance.instance_eval { write_attribute(key, item[key]) }
           end
           instance.save!(:validate => false)
