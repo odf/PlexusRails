@@ -36,7 +36,7 @@ class Sample < ActiveRecord::Base
 
   def data_nodes_by_id
     procs = process_nodes_by_id
-    @nodes ||= Persistent::HashMap.new + data_nodes.map do |v|
+    @nodes ||= Pazy::HashMap.new + data_nodes.map do |v|
       class << v; attr_accessor :sample, :producer end
       v.sample = self
       v.producer = procs[v.producer_id]
@@ -45,11 +45,11 @@ class Sample < ActiveRecord::Base
   end
 
   def process_nodes_by_id
-    @procs ||= Persistent::HashMap.new + process_nodes.map { |v| [v.id, v] }
+    @procs ||= Pazy::HashMap.new + process_nodes.map { |v| [v.id, v] }
   end
 
   def graph
-    @graph ||= data_nodes_by_id.values.inject(Persistent::DAG.new) do |gr, v|
+    @graph ||= data_nodes_by_id.values.inject(Pazy::DAG.new) do |gr, v|
       input_ids = v.producer ? v.producer.input_ids : []
       gr.with_vertex(v.id) + input_ids.map { |w_id| [w_id, v.id] }
     end
@@ -74,14 +74,14 @@ class Sample < ActiveRecord::Base
     end
 
     sources = graph.sources.sort_by(&node_date).reverse
-    sources.inject(Persistent::Accumulator.new, &visit)
+    sources.inject(Pazy::Accumulator.new, &visit)
   end
   
   # A list of node id/level pairs, selected and ordered as in
   # nodes_sorted, where the level of a node is one higher than the
   # maximum level of any of its predecessors.
   def nodes_with_levels
-    level = nodes_sorted.inject(Persistent::HashMap.new) do |h, v|
+    level = nodes_sorted.inject(Pazy::HashMap.new) do |h, v|
       h.with(v, 1 + (graph.pred(v).map { |w| h[w] }.compact.max || -1))
     end
 

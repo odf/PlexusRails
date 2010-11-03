@@ -94,7 +94,7 @@ class DataNode < ActiveRecord::Base
 
   def ancestors
     adj = sample.graph.method(:pred)
-    find_related Persistent::Depth_First_Traversal.new([self.id], &adj)
+    find_related Pazy::Depth_First_Traversal.new([self.id], &adj)
   end
 
   def hideable?

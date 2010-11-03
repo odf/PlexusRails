@@ -1,13 +1,8 @@
 source 'http://rubygems.org'
 
-gem 'bundler', '1.0.0'
-gem 'rails', '3.0.0'
+gem 'rails', '~> 3.0.1'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
-gem 'mongrel', "1.2.0.pre2"
-
+gem 'mongrel', '~> 1.2.0.pre2'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 
 gem 'haml'
@@ -15,10 +10,12 @@ gem 'json_pure', :require => 'json'
 gem 'RedCloth'
 gem 'sanitize'
 
-gem 'lazy',       :git => "#{ENV['HOME']}/Rails/my-gems/lazy"
-gem 'persistent', :git => "#{ENV['HOME']}/Rails/my-gems/persistent"
-gem 'formular',   :git => "#{ENV['HOME']}/Rails/my-gems/formular"
-gem 'verboten',   :git => "#{ENV['HOME']}/Rails/my-gems/verboten"
+# -- gems stored locally
+gem 'formular',       :git => "#{ENV['HOME']}/Rails/my-gems/formular"
+
+# -- ANUSF gems on github
+gem 'pazy',           :git => 'git@github.com:ANUSF/pazy.git'
+gem 'verboten',       :git => 'git@github.com:odf/verboten.git'
 
 group :test do
   gem 'capybara'

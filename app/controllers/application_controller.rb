@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   around_filter :validate_session
 
   # -- manage authorization via the 'verboten' gem
-  forbid_everything
+  include Verboten
   
   # -- define methods for inquiring the permissions of the current user
   def method_missing(name, *args)
