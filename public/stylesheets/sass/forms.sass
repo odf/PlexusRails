@@ -7,8 +7,8 @@ fieldset form
     :bottom 1em
   :border 2px solid
   :padding 1em 3em
-  :background-color = !tint1_background_light
-  :border-color = !tint2_background_darker
+  :background-color $tint1_background_light
+  :border-color $tint2_background_darker
   p, .form-field, .submit
     :text-align left
     :padding 0.3em 0
@@ -23,7 +23,7 @@ fieldset form
       :font
         :weight normal
         :size 85%
-      :color = !signal_color
+      :color $signal_color
   input
     :float left
     :display block
@@ -31,7 +31,7 @@ fieldset form
     :display none
   .with_error input
     :outline solid 1px
-      :color = !signal_color
+      :color $signal_color
 
 .submit input
   :margin-right 0.5em
@@ -42,9 +42,9 @@ form table
   :text-align left
   :display inline-block
   thead
-    :background-color = !tint1_background_dark
+    :background-color $tint1_background_dark
     :border 1px solid
-      :color = !tint2_background_darker
+      :color $tint2_background_darker
   th
     :color black
     :background-color inherit

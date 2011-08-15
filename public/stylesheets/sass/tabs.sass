@@ -41,7 +41,7 @@
         :background url(../images/corner-eee.png) no-repeat right top
     a:hover
       :background #888
-      :color = white
+      :color white
       span
         :background-image url(../images/corner-888.png)
     a.current-tab
@@ -51,6 +51,6 @@
       span
         :background-image url(../images/corner-white.png)
     a.with-error,a.with-error:hover
-      :color = !signal_color
+      :color $signal_color
   .properties >ul
     :width auto

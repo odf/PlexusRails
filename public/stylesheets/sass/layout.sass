@@ -9,13 +9,13 @@ body
   :font-family verdana, arial, helvetica, sans-serif
   :background url(../images/bg.png)
 
-  :color = !standard_text_color
-  :background-color = !tint4_background_dark
+  :color $standard_text_color
+  :background-color $tint4_background_dark
 
 #page
   :padding 25px 40px 20px 40px
   :border 2px solid
-  :background-color = !standard_background
+  :background-color $standard_background
   :border-color #999 #777 #777 #999
 #navigation
   :display inline
@@ -41,12 +41,12 @@ body
       :padding 3px 6px
       :border solid
       :border-width 0 0 1px 1px
-      :color = !tint2_text
-      :background-color = "transparent"
-      :border-color = #aaa
+      :color $tint2_text
+      :background-color "transparent"
+      :border-color #aaa
     a:hover
-      :color = white
-      :background-color = #888
+      :color white
+      :background-color #888
 
 #header
   :position relative
@@ -58,8 +58,8 @@ body
   :border-width 0 0 1px 0
   :background url(../images/header_gradient.png)
 
-  :background-color = !tint3_background_light
-  :border-color = #aaa
+  :background-color $tint3_background_light
+  :border-color #aaa
   img
     :margin 0
     :position absolute
@@ -76,14 +76,14 @@ body
 #content
   :padding 40px 0
   :position relative
-  :background-color = !standard_background
+  :background-color $standard_background
 
 #footer
   :padding 10px 40px
   :text-align center
   :border 1px solid
-  :background-color = !tint3_background_light
-  :border-color = !tint3_background_light
+  :background-color $tint3_background_light
+  :border-color $tint3_background_light
   :border-top-color #aaa
 
 #logo
@@ -106,27 +106,27 @@ body
 
 #time-display
   :float right
-  :color = !info_color
+  :color $info_color
 
 #notice
   :float left
-  :color = !notice_color
+  :color $notice_color
 
 #flash_alert
   :display block
   :clear both
   :margin 0.7em 3em 2em
   :padding 0.3em 1em
-  :background-color = !tint3_background_light
+  :background-color $tint3_background_light
   :border 2px solid
-  :border-color = !signal_color
+  :border-color $signal_color
   h2
     :text-align left
     :font-weight bold
     :padding 5px 5px 5px 15px
     :font-size 12px
     :margin -0.3em -1em
-    :background-color = !tint2_background_dark
+    :background-color $tint2_background_dark
   p
     :margin-bottom 0
     :padding 5px

@@ -5,7 +5,7 @@ table
   :padding 0
   :empty-cells show
   :border 1px solid
-  :border-color = !tint1_text_alternate
+  :border-color $tint1_text_alternate
   :border-collapse collapse
   :font-size 90%
   :line-height 135%
@@ -20,17 +20,17 @@ th
   :padding 5px 12px
   :vertical-align middle
   :font-weight bold
-  :color = !tint2_text
-  :background-color = !tint2_background_medium
+  :color $tint2_text
+  :background-color $tint2_background_medium
   :border-color #ccc
-  :border-bottom-color = !tint2_text
+  :border-bottom-color $tint2_text
   a:link, a:visited
     :color inherit
     :text-decoration underline
     :padding 0
     :border none
   a:hover
-    :color = !standard_text_color
+    :color $standard_text_color
 
 td
   :border-style solid
@@ -38,9 +38,9 @@ td
   :padding 5px 12px
   :vertical-align middle
   :font-weight normal
-  :color = !standard_text_color
-  :background-color = !tint1_background_light
+  :color $standard_text_color
+  :background-color $tint1_background_light
   :border-color #ccc
 
 .even td
-  :background-color = !tint1_background_dark
+  :background-color $tint1_background_dark

@@ -8,7 +8,7 @@
     :margin 0
     :padding 0.6em 2em
     :line-height 140%
-    :background-color = !tint1_background_light
+    :background-color $tint1_background_light
     :border-color #ccc
     li
       :margin 0.2em 0
@@ -17,15 +17,15 @@
       a:link, a:visited, a:hover, a:active
         :margin-left -4px
         :line-height 160%
-        :color = !tint2_text
-        :border-color = !tint2_text
+        :color $tint2_text
+        :border-color $tint2_text
       ul
         :list-style disc
-        :margin-left = !list_indent
+        :margin-left $list_indent
     dfn
       :display block
       :float left
       :width 10em
       :font-weight bolder
       :font-style italic
-      :color = !tint2_text
+      :color $tint2_text

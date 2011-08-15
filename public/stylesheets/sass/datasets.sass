@@ -17,10 +17,10 @@
       :margin 0
   a:hover
     .data-set-header
-      :color = !tint2_text
-      :background-color = !tint1_background_light
+      :color $tint2_text
+      :background-color $tint1_background_light
     .data-set-header.hidden
-      :background-color = !tint2_background_light
+      :background-color $tint2_background_light
 
 .data-set-header
   :position relative
@@ -30,7 +30,7 @@
   :font-size 90%
   :padding 5px 12px
   :margin -1px 0 0 0
-  :background-color = !tint1_background_dark
+  :background-color $tint1_background_dark
   :border-color #aaa
   dfn
     :margin-right 0.7em
@@ -43,19 +43,19 @@
     :width 1px
 
 .highlighted .data-set-header
-  :background-color = !tint1_background_light
+  :background-color $tint1_background_light
 
 .highlighted .data-set-header.hidden
-  :background-color = !tint2_background_light
+  :background-color $tint2_background_light
 
 .data-set-header.error
-  :color = red
+  :color red
   .data-set-popup
-    :color = red
+    :color red
 
 .data-set-header.hidden
-  :color = gray
-  :background-color = !tint2_background_dark
+  :color gray
+  :background-color $tint2_background_dark
 
 .data-set-header .data-set-popup
   :border none
