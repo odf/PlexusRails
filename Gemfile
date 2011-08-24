@@ -9,12 +9,8 @@ gem 'haml'
 gem 'sass'
 gem 'RedCloth'
 
-#gem 'json_pure', :require => 'json'
-#gem 'sanitize'
-
 # -- ANUSF gems on github
 gem 'pazy',     :git => 'git@github.com:ANUSF/pazy.git'
-gem 'verboten', :git => 'git@github.com:ANUSF/verboten.git'
 gem 'formular', :git => 'git@github.com:ANUSF/formular.git'
 
 group :test do

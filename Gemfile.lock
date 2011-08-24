@@ -11,12 +11,6 @@ GIT
   specs:
     pazy (0.1.0)
 
-GIT
-  remote: git@github.com:ANUSF/verboten.git
-  revision: 078a09c30de9769f918048b50435be76cbafdb33
-  specs:
-    verboten (0.1.0)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -160,4 +154,3 @@ DEPENDENCIES
   sqlite3
   steak
   test-unit
-  verboten!
