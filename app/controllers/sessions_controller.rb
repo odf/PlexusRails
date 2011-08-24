@@ -5,7 +5,7 @@ class SessionsController < ApplicationController
   before_filter :if => :bootstrapping? do
     redirect_to new_user_url, :notice => 'Please create a first user account.'
   end
-  before_filter :redirect_to_ssl, :except => :destroy
+  #before_filter :redirect_to_ssl, :except => :destroy
 
   private
   
