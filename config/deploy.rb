@@ -4,7 +4,7 @@ require 'capistrano/ext/multistage'
 set :application, "Plexus on Rails 3"
 set(:repository) do
   git_user = Capistrano::CLI.ui.ask "User to access git repository:"
-  "git+ssh://#{git_user}@dc.anu.edu.au/projects/d59/usr/oxd900/git/PlexusR3.git"
+  "git+ssh://#{git_user}@dc.anu.edu.au//projects/d59/usr/oxd900/git/PlexusR3"
 end
 
 set :scm, :git

@@ -1,12 +1,12 @@
 GIT
-  remote: git@github.com:ANUSF/formular.git
+  remote: git://github.com/ANUSF/formular.git
   revision: c23e2b5ae5cddbdebacfa705f4b7632a58ec10b4
   specs:
     formular (0.1.1)
       haml
 
 GIT
-  remote: git@github.com:ANUSF/pazy.git
+  remote: git://github.com/ANUSF/pazy.git
   revision: 891a81b7d710d5581c6891b56f7d21588d6dfabb
   specs:
     pazy (0.1.0)

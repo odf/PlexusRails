@@ -11,8 +11,8 @@ gem 'RedCloth'
 gem 'capistrano-ext'
 
 # -- ANUSF gems on github
-gem 'pazy',     :git => 'git@github.com:ANUSF/pazy.git'
-gem 'formular', :git => 'git@github.com:ANUSF/formular.git'
+gem 'pazy',     :git => 'git://github.com/ANUSF/pazy.git'
+gem 'formular', :git => 'git://github.com/ANUSF/formular.git'
 
 group :test do
   gem 'test-unit'
