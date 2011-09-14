@@ -41,7 +41,7 @@ after 'deploy:update', :deploy_log
 
 desc "create additional shared directories during setup"
 task :create_extra_dirs, :roles => :app do
-  #run "mkdir -p #{shared_path}/assets"
+  run "mkdir -p #{shared_path}/db"
 end
 
 task :echo_ruby_env do
@@ -51,7 +51,7 @@ task :echo_ruby_env do
 end
 
 task :symlinks, :roles => :app do
-  #run "ln -nfs #{shared_path}/db/* #{current_path}/db/"
+  run "ln -nfs #{shared_path}/db/* #{current_path}/db/"
 end
 
 task :deploy_log, :roles => :app do
