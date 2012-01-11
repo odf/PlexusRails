@@ -36,7 +36,7 @@ PlexusR3::Application.routes.draw do
   match 'samples/stored_data', :to => 'imports#data_index'
 
   match 'pictures', :to => proc { |env|
-    params = env['rack.request.form_hash']
+    params = Rack::Request.new env
 
     sample = Sample.where(:name => params['data_spec']['sample']).first
     params['sample_id'] = sample.id
