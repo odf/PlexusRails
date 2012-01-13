@@ -71,7 +71,8 @@ class Image < ActiveRecord::Base
     on = illustratable
     on_type = on.class.name.underscore.pluralize
     on_id = on.respond_to?(:id_for_assets) ? on.id_for_assets : on.id.to_s
-    File.join([ASSET_PATH, on_type, on_id, 'images', filename])
+    File.join([ASSET_PATH, on_type,
+               on_id[0..1], on_id[2..3], on_id, 'images', filename])
   end
 
   def store_file
