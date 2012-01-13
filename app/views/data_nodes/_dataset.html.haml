@@ -25,7 +25,8 @@
       .data-set-popup
         - pic = dataset.images.first
         - if pic
-          %img{ :src => url_for([dataset, pic]), :alt => "", |
+          - thumbnail = pic.thumbnail(80,80) || pic
+          %img{ :src => url_for([dataset, thumbnail]), :alt => "", |
                 :width => 80, :height => 80 } |
         .blurb
           = dataset.suffix

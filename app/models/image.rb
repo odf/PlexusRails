@@ -27,9 +27,14 @@ class Image < ActiveRecord::Base
     :uniqueness => { :case_sensitive => false,
                      :scope => [:illustratable_id, :illustratable_type] }
 
+  # -- scopes for selecting main images and thumbnails
+  scope :main,      where("filename not like '!_!_%' escape '!'")
+  scope :thumbnail, where("filename like '!_!_%' escape '!'")
+
   # -- these handle the storage of the actual image files
   before_create :store_file
   before_destroy :delete_file
+  #TODO when deleting, also remove associated thumbnails
 
   # Pseudo-attribute for getting the uploaded data in.
   def uploaded_data=(uploaded)
@@ -52,6 +57,11 @@ class Image < ActiveRecord::Base
   # Permissions are as in the illustratable this image belongs to.
   def allows?(action, user)
     illustratable.allows?(action, user)
+  end
+
+  def thumbnail(width, height)
+    name = "__#{width}x#{height}__#{filename}"
+    illustratable.images.thumbnail.where(:filename => name).first
   end
 
   # -- the methods for storing and deleting files are private
