@@ -77,6 +77,11 @@
 .data-set-header:hover .data-set-popup {
   display: block; }
 
+.data-set-popup {
+  height: 80px;
+  min-height: 80px;
+}
+
 .blurb {
   display: inline;
   float: left;
