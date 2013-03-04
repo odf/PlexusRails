@@ -1,26 +1,15 @@
 require 'machinist/active_record'
-require 'sham'
 require 'ffaker'
 
-Before { Sham.reset } # reset Shams in between scenarios
-
-Sham.login_name { Faker::Name.first_name }
-Sham.password   { (1..10).map { ('a'..'z').to_a.sample}.join }
-Sham.first_name { Faker::Name.first_name }
-Sham.last_name  { Faker::Name.last_name }
-Sham.email      { Faker::Internet.email }
-
 User.blueprint do
-  login_name
-  password
-  password_confirmation { self.password }
-  first_name
-  last_name
-  email
+  login_name             { Faker::Name.first_name }
+  password { (1..10).map { ('a'..'z').to_a.sample}.join }
+  password_confirmation  { object.password }
+  first_name             { Faker::Name.first_name }
+  last_name              { Faker::Name.last_name }
+  email                  { Faker::Internet.email }
 end
 
-Sham.name           { Faker::Company.name }
-
 Project.blueprint do
-  name
+  name                   { Faker::Company.name }
 end

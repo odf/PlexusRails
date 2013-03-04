@@ -15,11 +15,11 @@ Given /^no users exist$/ do
 end
 
 Given /^a user "([a-z0-9.-]+)" exists$/ do |name|
-  @user = User.make :login_name => name
+  @user = User.make! :login_name => name
 end
 
 Given /^a user "([a-z0-9.-]+)" exists with password "(.+)"$/ do |name, passwd|
-  @user = User.make :login_name => name, :password => passwd
+  @user = User.make! :login_name => name, :password => passwd
 end
 
 Given /^the user may (.+)$/ do |activities|

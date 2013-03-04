@@ -1,9 +1,9 @@
 source 'http://rubygems.org'
 
-gem 'rails', '~> 3.0.9'
+gem 'rails', '~> 3.1.11'
 
 gem 'mongrel', '~> 1.2.0.pre2'
-gem 'sqlite3-ruby', '~> 1.2.5', :require => 'sqlite3' # for CentOS 5.5
+gem 'sqlite3'
 
 gem 'haml'
 gem 'sass'
@@ -16,10 +16,9 @@ gem 'formular', :git => 'git://github.com/ANUSF/formular.git'
 
 group :test do
   gem 'cucumber-rails'
-  gem 'test-unit'
+  #gem 'test-unit'
   gem 'capybara'
   gem 'rspec-rails'
-  gem 'steak'
   gem 'simplecov', :require => false
   gem 'database_cleaner'
   gem 'selenium-webdriver'
