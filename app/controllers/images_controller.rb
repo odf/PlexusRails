@@ -25,10 +25,13 @@ class ImagesController < ApplicationController
   public
 
   def show
-    send_data(@image.data,
+    #send_data(@image.data,
+    send_file(@image.stored_path,
               :filename => @image.filename,
               :type => @image.content_type,
-              :disposition => "inline")
+              :disposition => "inline",
+              :stream => true,
+              :buffer_size => 1024 * 1024)
   end
 
   def new
