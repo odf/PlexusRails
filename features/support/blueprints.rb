@@ -1,11 +1,11 @@
 require 'machinist/active_record'
 require 'sham'
-require 'faker'
+require 'ffaker'
 
 Before { Sham.reset } # reset Shams in between scenarios
 
 Sham.login_name { Faker::Name.first_name }
-Sham.password   { (1..10).map { ('a'..'z').to_a.rand}.join }
+Sham.password   { (1..10).map { ('a'..'z').to_a.sample}.join }
 Sham.first_name { Faker::Name.first_name }
 Sham.last_name  { Faker::Name.last_name }
 Sham.email      { Faker::Internet.email }

@@ -15,6 +15,7 @@ gem 'pazy',     :git => 'git://github.com/ANUSF/pazy.git'
 gem 'formular', :git => 'git://github.com/ANUSF/formular.git'
 
 group :test do
+  gem 'cucumber-rails'
   gem 'test-unit'
   gem 'capybara'
   gem 'rspec-rails'

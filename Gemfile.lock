@@ -61,6 +61,16 @@ GEM
       xpath (~> 0.1.4)
     childprocess (0.2.1)
       ffi (~> 1.0.6)
+    cucumber (1.0.6)
+      builder (>= 2.1.2)
+      diff-lcs (>= 1.1.2)
+      gherkin (~> 2.4.18)
+      json (>= 1.4.6)
+      term-ansicolor (>= 1.0.6)
+    cucumber-rails (1.0.2)
+      capybara (>= 1.0.0)
+      cucumber (~> 1.0.0)
+      nokogiri (>= 1.4.6)
     daemons (1.0.10)
     database_cleaner (0.6.7)
     diff-lcs (1.1.2)
@@ -69,9 +79,12 @@ GEM
     ffaker (1.8.0)
     ffi (1.0.9)
     gem_plugin (0.2.3)
+    gherkin (2.4.21)
+      json (>= 1.4.6)
     haml (3.1.2)
     highline (1.6.2)
     i18n (0.5.0)
+    json (1.7.7)
     json_pure (1.5.3)
     machinist (1.0.6)
     mail (2.2.19)
@@ -140,6 +153,7 @@ GEM
     steak (2.0.0)
       capybara (>= 1.0.0)
       rspec-rails (>= 2.5.0)
+    term-ansicolor (1.0.7)
     test-unit (2.3.2)
     thor (0.14.6)
     treetop (1.4.10)
@@ -156,6 +170,7 @@ DEPENDENCIES
   RedCloth
   capistrano-ext
   capybara
+  cucumber-rails
   database_cleaner
   ffaker
   formular!

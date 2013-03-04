@@ -7,7 +7,7 @@ def login(name, passwd)
   visit login_path
   fill_in 'Login name', :with => name
   fill_in 'Password', :with => passwd
-  click 'Login'
+  click_button 'Login'
 end
 
 Given /^no users exist$/ do
