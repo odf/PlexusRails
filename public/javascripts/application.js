@@ -1,7 +1,8 @@
 (function() {
-  function select_tab() {
+  select_tab = function() {
     var link = jQuery(this);
     var ref = link.attr('href');
+    console.log("Selected tab " + ref);
     var container = link.closest('.tabs-container', link);
     jQuery('> div', container).hide();
     jQuery('> div' + ref, container).show();
@@ -11,7 +12,7 @@
     return false;
   }
 
-  function onload(context) {
+  onload = function(context) {
     fixPage();
 
     // -- some text cosmetics:
@@ -51,11 +52,13 @@
 	current.each(select_tab);
       else
 	container.find('> ul a:first').each(select_tab);
-      jQuery('> ul a', container).click(select_tab);
+      //jQuery('> ul a', container).click(select_tab);
+      jQuery('> ul li', container).click(function() {
+        alert("Clicked a tab"); });
     });
   }
 
-  function fixPage() {
+  fixPage = function() {
     jQuery('table.zebra')
       .find('tr:nth-child(odd)').removeClass('odd').addClass('even').end()
       .find('tr:nth-child(even)').removeClass('even').addClass('odd');
