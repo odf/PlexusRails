@@ -38,18 +38,18 @@
         display: block;
         margin: -1px;
         padding: 3px 6px;
-        background: url(../images/corner-eee.png) no-repeat right top; } }
+        background: url(corner-eee.png) no-repeat right top; } }
     a:hover {
       background: #888888;
       color: white;
       span {
-        background-image: url(../images/corner-888.png); } }
+        background-image: url(corner-888.png); } }
     a.current-tab {
       background: white;
       border-bottom-color: white;
       color: black;
       span {
-        background-image: url(../images/corner-white.png); } }
+        background-image: url(corner-white.png); } }
     a.with-error,a.with-error:hover {
       color: $signal_color; } }
   .properties >ul {

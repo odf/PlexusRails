@@ -17,7 +17,7 @@
       - if dataset.images.empty?
         &mdash;
       - else
-        %img{:src => "/images/grains-tiny.png", :alt => ""}
+        = image_tag("grains-tiny.png", :alt => "")
       &nbsp;
       = format_time(dataset.date, :mode => :terse)
       - if dataset.filename

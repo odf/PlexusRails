@@ -21,4 +21,13 @@ PlexusR3::Application.configure do
 
   # Log deprecation warnings
   config.active_support.deprecation = :log
+
+  # Get rid of SQL logs
+  config.log_level = :info
+
+  # Do not compress assets
+  config.assets.compress = false
+
+  # Expands the lines which load the assets
+  config.assets.debug = true
 end

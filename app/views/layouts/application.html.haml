@@ -8,9 +8,7 @@
     = csrf_meta_tag
     - unless stripped
       = stylesheet_link_tag 'application'
-      = javascript_include_tag 'jquery'
-      = javascript_include_tag 'jquery.form', 'jquery.djtch'
-      = javascript_include_tag 'rails', 'application'
+      = javascript_include_tag 'application'
       = yield(:head)
   %body
     #page
@@ -24,9 +22,9 @@
             - else
               %li= link_to "Login", login_url
         #header
-          %img{ :src => "/images/grains-with-gradient.png", :alt => "" }
+          = image_tag("grains-with-gradient.png", :alt => "")
           #logo
-            %img{ :src => "/images/logo-with-gradient.png", :alt => "PLEXUS" }
+            = image_tag("logo-with-gradient.png", :alt => "PLEXUS")
         .clear
   
       #status-line
