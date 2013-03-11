@@ -30,4 +30,5 @@ group :test, :development do
   gem 'selenium-webdriver'
   gem 'machinist'
   gem 'ffaker'
+  gem 'launchy'
 end
