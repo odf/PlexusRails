@@ -16,16 +16,16 @@
         %th Read/Write
         %th Manage
     %tbody
-      - form.fields_for :roles do |fields|
-        - user = fields.object.user
+      = form.fields_for :roles do |role_fields|
+        - user = role_fields.object.user
         %tr
           %td
-            = fields.hidden_field :user_id
+            = role_fields.hidden_field :user_id
             = link_to user.name, user
-          %td= fields.radio_button :role, '', :label => ''
-          %td= fields.radio_button :role, 'client', :label => ''
-          %td= fields.radio_button :role, 'contributor', :label => ''
-          %td= fields.radio_button :role, 'manager', :label => ''
+          %td= role_fields.radio_button :role, '', :label => ''
+          %td= role_fields.radio_button :role, 'client', :label => ''
+          %td= role_fields.radio_button :role, 'contributor', :label => ''
+          %td= role_fields.radio_button :role, 'manager', :label => ''
 
   %p= form.result_buttons
   .clear
