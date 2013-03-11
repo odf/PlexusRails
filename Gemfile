@@ -21,9 +21,8 @@ gem 'capistrano-ext'
 gem 'pazy',     :git => 'git://github.com/ANUSF/pazy.git'
 gem 'formular', :git => 'git://github.com/ANUSF/formular.git'
 
-group :test do
+group :test, :development do
   gem 'cucumber-rails'
-  #gem 'test-unit'
   gem 'capybara'
   gem 'rspec-rails'
   gem 'simplecov', :require => false

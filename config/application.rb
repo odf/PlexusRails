@@ -29,7 +29,7 @@ module PlexusR3
     config.generators do |g|
       g.orm :active_record
       g.template_engine :haml
-    #   g.test_framework :rspec, :fixture => true, :views => false
+      g.test_framework :rspec, :fixture => true, :views => false
     #   g.fixture_replacement :machinist, :dir => "spec/factories"
     end
 
