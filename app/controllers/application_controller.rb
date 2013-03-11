@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def respond_to?(name)
+  def responds_to?(name)
     name.to_s.starts_with?('may_') or super
   end
 
