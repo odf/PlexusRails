@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe 'With no user' do
-  describe 'login' do
+describe 'Login' do
+  describe 'with no user account existing' do
     it 'redirects to the new user page' do
       visit login_path
 
@@ -9,19 +9,17 @@ describe 'With no user' do
       page.should have_content('Please create a first user account')
     end
   end
-end
 
-describe 'With a user' do
-  before(:all) do
-    @user = User.make! :login_name => 'olaf', :password => 'geheim'
-  end
+  describe 'with a user account existing' do
+    before(:all) do
+      @user = User.make! :login_name => 'olaf', :password => 'geheim'
+    end
 
-  after(:all) do
-    @user.destroy
-  end
+    after(:all) do
+      @user.destroy
+    end
 
-  describe 'login' do
-    it 'accepts user with a correct name and password' do
+    it 'succeeds if a correct name and password are given' do
       visit login_path
       fill_in 'Login name', :with => 'olaf'
       fill_in 'Password', :with => 'geheim'
@@ -31,7 +29,7 @@ describe 'With a user' do
       page.should have_content('Welcome')
     end
 
-    it 'rejects user with a correct name, but incorrect password' do
+    it 'fails if a correct name, but incorrect password are given' do
       visit login_path
       fill_in 'Login name', :with => 'olaf'
       fill_in 'Password', :with => 'secret'
@@ -41,7 +39,7 @@ describe 'With a user' do
       page.should have_content('Invalid')
     end
 
-    it 'rejects user with an incorrect name' do
+    it 'fails if an incorrect name is given' do
       visit login_path
       fill_in 'Login name', :with => 'loaf'
       fill_in 'Password', :with => 'geheim'
