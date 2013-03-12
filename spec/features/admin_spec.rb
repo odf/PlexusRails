@@ -59,5 +59,63 @@ describe 'A user logged in as administrator' do
     staff.may_view.should be_true
     staff.may_authorize.should be_true
     staff.may_edit.should be_false
+
+    staff.destroy
+  end
+
+  it 'can not assign rights to themselves' do
+    visit edit_user_path(@admin.id)
+
+    page.should_not have_content('May login')
+  end
+end
+
+describe 'A user logged in as non-administrator' do
+  before(:all) do
+    @staff = User.make!
+    @staff.may_login = true
+    @staff.may_view = true
+    @staff.may_edit = true
+    @staff.save
+  end
+
+  after(:all) do
+    @staff.destroy
+  end
+
+  before(:each) do
+    visit login_path
+    fill_in 'Login name', :with => @staff.login_name
+    fill_in 'Password', :with => @staff.password
+    click_button 'Login'
+  end
+
+  after(:each) do
+    visit logout_path
+  end
+
+  it 'cannot create an account' do
+    visit new_user_path
+
+    page.should have_content('Access denied')
+    page.should_not have_content('Login name')
+  end
+
+  it 'cannot edit other users' do
+    client = User.make!
+
+    visit edit_user_path(client.id)
+
+    page.should have_content('Access denied')
+    page.should_not have_content('Login name')
+
+    client.destroy
+  end
+
+  it 'can not assign rights to themselves' do
+    visit edit_user_path(@staff.id)
+
+    page.should have_content('Editing user ' + @staff.login_name)
+    page.should_not have_content('May login')
   end
 end
