@@ -18,17 +18,18 @@ gem 'RedCloth'
 gem 'capistrano-ext'
 
 # -- ANUSF gems on github
+
 gem 'pazy',     :git => 'git://github.com/ANUSF/pazy.git'
 gem 'formular', :git => 'git://github.com/ANUSF/formular.git'
 
-group :test, :development do
-  #gem 'cucumber-rails'
-  gem 'rspec-rails'
+# -- Testing support
+
+gem 'rspec-rails', :group => [:test, :development]
+
+group :test do
   gem 'capybara'
-  gem 'simplecov', :require => false
-  gem 'database_cleaner'
-  #gem 'selenium-webdriver'
   gem 'machinist'
   gem 'ffaker'
   gem 'launchy'
+  gem 'simplecov', :require => false
 end
