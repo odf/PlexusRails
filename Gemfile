@@ -17,11 +17,6 @@ gem 'haml'
 gem 'RedCloth'
 gem 'capistrano-ext'
 
-# -- ANUSF gems on github
-
-gem 'pazy',     :git => 'git://github.com/ANUSF/pazy.git'
-gem 'formular', :git => 'git://github.com/ANUSF/formular.git'
-
 # -- Testing support
 
 gem 'rspec-rails', :group => [:test, :development]
