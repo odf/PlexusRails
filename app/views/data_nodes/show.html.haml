@@ -22,7 +22,7 @@
 %h2 Details:
 
 .tabs-container
-  %input{ :type => 'hidden' }
+  %input{ :name => 'active_tab', :type => 'hidden' }
   %ul
     = tab_link('#general', 'General')
     = tab_link('#predecessors', 'Predecessors')
