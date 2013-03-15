@@ -7,7 +7,7 @@ class ImagesController < ApplicationController
   permit :show                    do may_view(@image)         end
   permit :edit, :update, :destroy do may_edit(@image)         end
   permit :new                     do may_edit(@illustratable) end
-  permit :create                  do legitimate_user          end
+  permit :create                  do legitimate_uploader      end
 
   before_filter :only => [:create, :update] do
     if params[:result] == 'Cancel'
@@ -20,12 +20,16 @@ class ImagesController < ApplicationController
 
   def find_illustratable
     find_resource :parent_as => 'illustratable'
+
+    if @illustratable == nil
+      sample = Sample.where(:name => params[:data_spec][:sample]).first
+      @illustratable = sample.data_nodes.find params[:data_id]
+    end
   end
 
   public
 
   def show
-    #send_data(@image.data,
     send_file(@image.stored_path,
               :filename => @image.filename,
               :type => @image.content_type,
@@ -42,7 +46,7 @@ class ImagesController < ApplicationController
   end
   
   def create
-    @image = @illustratable.images.build(params[:image])
+    @image = @illustratable.images.build(params[:image] || params[:picture])
     if @image.save
       status = "Success"
       message = "Image successfully added."

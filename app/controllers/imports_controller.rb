@@ -5,10 +5,10 @@ class ImportsController < ApplicationController
   before_authorization_filter :find_user,     :only   => [:data_index, :create]
   before_authorization_filter :find_sample,   :except => [:show]
 
-  permit :index               do may_edit          end
-  permit :show                do may_view(@import) end
-  permit :new                 do may_edit(@sample) end
-  permit :data_index, :create do legitimate_user   end
+  permit :index               do may_edit            end
+  permit :show                do may_view(@import)   end
+  permit :new                 do may_edit(@sample)   end
+  permit :data_index, :create do legitimate_uploader end
   
   private
 

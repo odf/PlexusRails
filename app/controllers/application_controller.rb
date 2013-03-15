@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def legitimate_user
+  def legitimate_uploader
     if @project
       @project.allows?(:upload, @user)
     else

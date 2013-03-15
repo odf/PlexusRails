@@ -35,16 +35,5 @@ PlexusR3::Application.routes.draw do
   match 'imports', :to => 'imports#create'
   match 'samples/stored_data', :to => 'imports#data_index'
 
-  match 'pictures', :to => proc { |env|
-    params = Rack::Request.new env
-
-    sample = Sample.where(:name => params['data_spec']['sample']).first
-    params['sample_id'] = sample.id
-    data_node = sample.data_nodes.find(params['data_id'])
-    params['data_node_id'] = data_node.id
-    params['nested_in'] = 'data_node'
-    params['image'] = params['picture']
-
-    ImagesController.action(:create).call(env)
-  }
+  match 'pictures', :to => 'images#create'
 end
