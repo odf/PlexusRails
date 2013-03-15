@@ -4,7 +4,6 @@ tab_change_handler = (event) ->
   target = $(event.target)
   container = target.parent().closest('div')
   container.find('input').val('#' + target.attr('id'))
-  console.log('Selected tab #' + target.attr('id'))
 
 fixPage = ->
   $('.properties dfn,.attachments dfn').each (i) ->
