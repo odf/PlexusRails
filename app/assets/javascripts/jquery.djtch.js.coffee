@@ -18,6 +18,7 @@ $.djtch =
 anchor = (seed, item) ->
   id = $(item).attr('id')
   pattern = '.dj-anchor' + (if id then '#' + id else '')
+  context = seed
 
   while context and context.length > 0
     res = if context.is(pattern) then context else context.find(pattern)
