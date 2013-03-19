@@ -72,11 +72,8 @@ handlers =
   deleteLinkClicked: ->
     link = $(this)
     if confirm(link.attr('confirm') || 'Really delete this?')
-      $.post(
-        link.attr('href'),
-        $.param { '_method': 'delete' },
-        (html, status) ->
-          update(link, html))
+      $.post(link.attr('href'), $.param { '_method': 'delete' })
+        .done (html, status) -> update(link, html)
     false
 
   activeScroll: (event) ->
@@ -87,11 +84,7 @@ handlers =
     if link && link.attr('href')
       if win.scrollTop() + 1.1 * win.height() > doc.height()
         stopScrollHandler()
-        $.get(
-          link.attr('href'),
-          (html) ->
-            update(link, html)
-        )
+        $.get link.attr('href'), (html) -> update(link, html)
     else
       stopScrollHandler()
 
