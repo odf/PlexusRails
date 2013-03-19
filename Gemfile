@@ -13,6 +13,7 @@ end
 
 gem 'jquery-rails'
 
+gem 'simple_form'
 gem 'haml'
 gem 'RedCloth'
 gem 'capistrano-ext'

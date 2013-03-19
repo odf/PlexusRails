@@ -1,10 +1,11 @@
 - stylesheet :forms
 
 .dj-form
-  = formular_for [@commentable, @comment] do |form|
-    = form.text_area :text, :cols => 80, :rows => 10, :label => ''
+  = simple_form_for [@commentable, @comment] do |form|
+    = form.input :text, :label => false, :input_html => { rows: 10, cols: 80 }
     %br
-    = form.result_buttons
+    = form.submit 'Save', :name => 'result'
+    = form.submit 'Cancel', :name => 'result'
 
 .note
   (See
