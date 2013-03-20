@@ -1,11 +1,14 @@
 - title 'New Import'
 - stylesheet :forms
+- desc_format = { rows: 5, cols: 80 }
 
 #import-link.dj-replace.dj-anchor
 
 %fieldset#import.dj-replace.dj-form.dj-anchor
-  = formular_for @import, :html => {:multipart => true} do |form|
+  = simple_form_for @import, :html => {:multipart => true} do |form|
     %input{ :type => 'hidden', :name => 'sample_id', :value => @sample.id }
-    %p= form.file_field :data, :label => 'JSON Data'
-    = form.text_area :description, :rows => 5, :cols => 80
-    %p= form.result_buttons
+    %p= form.input :data, :as => :file, :label => 'JSON Data'
+    = form.input :description, :as => :text, :input_html => desc_format
+    %br
+    = form.submit 'Save', :name => 'result'
+    = form.submit 'Cancel', :name => 'result'

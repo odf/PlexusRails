@@ -1,9 +1,13 @@
 - stylesheet :forms
 - project_id = @sample.project.id
 
-= formular_for(@sample) do |form|
+= simple_form_for @sample do |form|
+  %i (Nothing to edit here at the moment.)
+  %br
   %input{ :type => 'hidden', :name => 'project_id', :value => "#{project_id}" }
-  = form.text_field :name, :required => true if create
-  %p= form.result_buttons
+  %br
+  = form.submit 'Save', :name => 'result'
+  = form.submit 'Cancel', :name => 'result'
   .clear
+
 .clear

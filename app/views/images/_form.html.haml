@@ -1,11 +1,13 @@
 - target = [@illustratable, @image]
+- caption_format = { rows: 5, cols: 80 }
 
 %fieldset.dj-form
-  = formular_for target, :html => {:multipart => true}  do |form|
-    %p= form.file_field :uploaded_data, :label => 'Image file'
-    = form.text_area :caption, :cols => 80, :rows => 5
+  = simple_form_for target, :html => {:multipart => true} do |form|
+    %p= form.input :uploaded_data, :as => :file, :label => 'Image file'
+    = form.input :caption, :as => :text, :input_html => caption_format
     %br
-    = form.result_buttons
+    = form.submit 'Save', :name => 'result'
+    = form.submit 'Cancel', :name => 'result'
 
 .note
   (See
