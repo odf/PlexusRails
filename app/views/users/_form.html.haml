@@ -1,18 +1,21 @@
 - stylesheet :forms
 
-= formular_for(@user) do |f|
-  = f.text_field :login_name, :required => true if create
-  = f.text_field :first_name, :required => true
-  = f.text_field :last_name, :required => true
-  = f.text_field :organization
-  = f.text_field :email, :required => true
-  = f.text_field :homepage
-  = f.password_field :password, :required => true
-  = f.password_field :password_confirmation, :label => "Confirm password", |
-                                             :required => true |
+= simple_form_for @user do |f|
+  = f.input :login_name
+  = f.input :first_name
+  = f.input :last_name
+  = f.input :organization
+  = f.input :email
+  = f.input :homepage
+  = f.input :password
+  = f.input :password_confirmation, :label => 'Confirm password'
+
   - User::ABILITIES.each do |a|
     - if can_authorize?(@user, a)
-      %p= f.check_box User.ability_getter(a)
-  %p= f.result_buttons
+      %p= f.input User.ability_getter(a), :as => :boolean
+
+  %br
+  = f.submit 'Save', :name => 'result'
+  = f.submit 'Cancel', :name => 'result'
   .clear
 .clear

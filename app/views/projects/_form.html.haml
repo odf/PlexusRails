@@ -1,9 +1,9 @@
 - stylesheet :forms
 - stylesheet :tables
 
-= formular_for(@project) do |form|
-  = form.text_field :name, :required => true if create
-  = form.text_field :organization
+= simple_form_for @project do |form|
+  = form.input :name
+  = form.input :organization
  
   %p
     %label Members:
@@ -20,13 +20,15 @@
         - user = role_fields.object.user
         %tr
           %td
-            = role_fields.hidden_field :user_id
+            = role_fields.input :user_id, :as => :hidden
             = link_to user.name, user
           %td= role_fields.radio_button :role, '', :label => ''
           %td= role_fields.radio_button :role, 'client', :label => ''
           %td= role_fields.radio_button :role, 'contributor', :label => ''
           %td= role_fields.radio_button :role, 'manager', :label => ''
 
-  %p= form.result_buttons
+  %br
+  = form.submit 'Save', :name => 'result'
+  = form.submit 'Cancel', :name => 'result'
   .clear
 .clear

@@ -41,8 +41,9 @@ class User < ActiveRecord::Base
       :with => /\A([a-z0-9.-]*)?\Z/i,
       :message => 'may only contain letters, digits, hyphens and dots'
     },
-    :length => { :minimum => 3, :maximum => 40 }
-  
+    :length => { :minimum => 3, :maximum => 40 },
+    :presence => { :on => :create }
+
   validates :first_name, :presence => true
   validates :last_name, :presence => true
   
@@ -55,6 +56,9 @@ class User < ActiveRecord::Base
     :with => /\A(http:\/\/[A-Z0-9.-]+\.[A-Z]{2,4}(\/[A-Z0-9.-~]*)*)?\Z/i,
     :message => 'does not look like a URL'
   }
+
+  validates :password, :presence => { :on => :create }
+  validates :password_confirmation, :presence => { :on => :create }
 
   validates_each :password do |user, attr, value|
     if value.blank?
