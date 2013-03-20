@@ -9,7 +9,7 @@ fieldset form {
   padding: 1em 3em;
   background-color: $tint1_background_light;
   border-color: $tint2_background_darker;
-  p, .form-field, .submit {
+  p, .input, .submit {
     text-align: left;
     padding: 0.3em 0;
     clear: both; }
@@ -19,19 +19,18 @@ fieldset form {
     display: inline;
     margin-right: 0.5em;
     font-weight: bolder;
-    em, .error {
-      font: {
-        weight: normal;
-        size: 85%; };
-      color: $signal_color; } }
+    abbr[title=required] {
+      font-weight: normal;
+      color: $signal_color;
+      position: relative;
+      float: right; } }
   input {
     float: left;
     display: block; }
   input[type='hidden'] {
     display: none; }
-  .with_error input {
-    outline: solid 1px {
-      color: $signal_color; }; } }
+  span.error {
+    color: $signal_color; } }
 
 .submit input {
   margin-right: 0.5em; }

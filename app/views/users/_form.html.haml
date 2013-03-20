@@ -12,7 +12,7 @@
 
   - User::ABILITIES.each do |a|
     - if can_authorize?(@user, a)
-      %p= f.input User.ability_getter(a), :as => :boolean
+      = f.input User.ability_getter(a), :as => :boolean
 
   %br
   = f.submit 'Save', :name => 'result'
