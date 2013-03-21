@@ -2,13 +2,10 @@ require 'bundler/capistrano'
 require 'capistrano/ext/multistage'
 
 set :application, "Plexus on Rails 3"
-set(:repository) do
-  git_user = Capistrano::CLI.ui.ask "User to access git repository:"
-  "git+ssh://#{git_user}@dc.anu.edu.au//projects/d59/usr/oxd900/git/PlexusR3"
-end
+set :repository, "git@github.com:odf/PlexusRails.git"
 
 set :scm, :git
-set :deploy_via, :export
+set :deploy_via, :remote_cache
 
 default_run_options[:pty] = true
 default_run_options[:tty] = true
@@ -19,10 +16,8 @@ ssh_options[:forward_agent] = true
 ssh_options[:compression] = false
 
 namespace :deploy do
-  task :start do
-  end
-  task :stop do
-  end
+  task :start do ; end
+  task :stop do ; end
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "touch #{File.join(current_path,'tmp','restart.txt')}"
   end
@@ -33,6 +28,7 @@ set(:branch) do
 end
 
 after 'deploy:setup', :create_extra_dirs
+after 'deploy:setup', :copy_secrets
 
 before 'deploy:update_code', :echo_ruby_env
 
@@ -41,7 +37,14 @@ after 'deploy:update', :deploy_log
 
 desc "create additional shared directories during setup"
 task :create_extra_dirs, :roles => :app do
-  run "mkdir -p #{shared_path}/db"
+  run "mkdir -m 0755 -p #{shared_path}/db"
+end
+
+desc "copy the secret configuration file to the server"
+task :copy_secrets, :roles => :app do
+  prompt = "Specify a secrets.rb file to copy to the server:"
+  path = Capistrano::CLI.ui.ask prompt
+  put File.read("#{path}"), "#{shared_path}/secrets.rb", :mode => 0600
 end
 
 task :echo_ruby_env do
@@ -52,6 +55,7 @@ end
 
 task :symlinks, :roles => :app do
   run "ln -nfs #{shared_path}/db/* #{current_path}/db/"
+  run "ln -nfs #{shared_path}/secrets.rb #{current_path}/config/initializers"  
 end
 
 task :deploy_log, :roles => :app do

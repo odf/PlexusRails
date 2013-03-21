@@ -12,3 +12,4 @@
 /data
 .rvmrc
 .sass-cache
+/config/initializers/secrets*.rb
