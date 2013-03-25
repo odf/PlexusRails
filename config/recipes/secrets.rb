@@ -1,3 +1,5 @@
+require 'securerandom'
+
 namespace :secrets do
   desc "Create a secret token for this deployment"
   task :setup, roles: :app do
