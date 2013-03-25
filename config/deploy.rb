@@ -10,7 +10,7 @@ load "config/recipes/check"
 
 server "vagrant", :web, :app, :db, primary: true
 
-set :user,        "deployer"
+set :user,        "vagrant"
 set :application, "Plexus-I"
 set :deploy_to,   "/home/#{user}/apps/#{application}"
 set :deploy_via, :remote_cache
