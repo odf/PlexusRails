@@ -30,7 +30,7 @@ class ImagesController < ApplicationController
   public
 
   def show
-    send_file(@image.stored_path,
+    send_file(@image.computed_path,
               :filename => @image.filename,
               :type => @image.content_type,
               :disposition => "inline",

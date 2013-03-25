@@ -26,7 +26,7 @@
         - pic = dataset.images.first
         - if pic
           - thumbnail = pic.thumbnail(80,80) || pic
-          %img{ :src => url_for([dataset, thumbnail]), :alt => "", |
+          %img{ :src => nested_url_for([dataset, thumbnail]), :alt => "", |
                 :width => 80, :height => 80 } |
         .blurb
           = dataset.suffix

@@ -46,7 +46,7 @@ class Image < ActiveRecord::Base
 
   # Getting the data out.
   def data
-    File.open(stored_path) { |fp| fp.read }
+    File.open(computed_path) { |fp| fp.read }
   end
   
   # This method returns the caption, if any, or else the filename.
@@ -62,6 +62,10 @@ class Image < ActiveRecord::Base
   def thumbnail(width, height)
     name = "__#{width}x#{height}__#{filename}"
     illustratable.images.thumbnail.where(:filename => name).first
+  end
+
+  def computed_path
+    make_path
   end
 
   # -- the methods for storing and deleting files are private
