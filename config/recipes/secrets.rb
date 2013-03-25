@@ -4,6 +4,7 @@ namespace :secrets do
   desc "Create a secret token for this deployment"
   task :setup, roles: :app do
     template "secret_token.rb.erb", "#{shared_path}/secret_token.rb"
+    run "chmod 0600 #{shared_path}/secret_token.rb"
   end
   after "deploy:setup", "secrets:setup"
 
