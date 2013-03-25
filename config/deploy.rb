@@ -32,7 +32,9 @@ after "deploy", "deploy:cleanup" # keep only the last 5 releases
 after 'deploy:setup', :create_extra_dirs
 after 'deploy:setup', :copy_secrets
 
-after 'deploy:update', :make_symlinks
+before 'deploy:assets:update_asset_mtimes', :symlink_secrets
+
+after 'deploy:update', :symlink_db
 
 desc "create additional shared directories during setup"
 task :create_extra_dirs, :roles => :app do
@@ -46,7 +48,10 @@ task :copy_secrets, :roles => :app do
   put File.read("#{path}"), "#{shared_path}/secrets.rb", :mode => 0600
 end
 
-task :make_symlinks, :roles => :app do
+task :symlink_secrets, :roles => :app do
+  run "ln -nfs #{shared_path}/secrets.rb #{release_path}/config/initializers"  
+end
+
+task :symlink_db, :roles => :app do
   run "ln -nfs #{shared_path}/db/* #{current_path}/db/"
-  run "ln -nfs #{shared_path}/secrets.rb #{current_path}/config/initializers"  
 end
