@@ -32,7 +32,7 @@ after "deploy", "deploy:cleanup" # keep only the last 5 releases
 after 'deploy:setup', :create_extra_dirs
 after 'deploy:setup', :copy_secrets
 
-after 'deploy:update_code', :make_symlinks
+before 'deploy:assets:update_asset_mtimes', :make_symlinks
 
 desc "create additional shared directories during setup"
 task :create_extra_dirs, :roles => :app do
