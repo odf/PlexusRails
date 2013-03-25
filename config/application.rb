@@ -13,7 +13,7 @@ module PlexusR3
   class Application < Rails::Application
     # Secrets could be required for database.yml, which is
     # loaded before the config/initializers directory.
-    require File.expand_path('../initializers/secrets', __FILE__)
+    #require File.expand_path('../initializers/secrets', __FILE__)
 
     config.time_zone = 'Canberra'
 
