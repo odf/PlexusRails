@@ -8,6 +8,7 @@ load "config/recipes/sqlite3"
 load "config/recipes/nodejs"
 load "config/recipes/rbenv"
 load "config/recipes/check"
+load "config/recipes/secrets"
 
 server "vagrant", :web, :app, :db, primary: true
 
@@ -28,28 +29,12 @@ ssh_options[:forward_agent] = true
 
 after "deploy", "deploy:cleanup" # keep only the last 5 releases
 
-
 after 'deploy:setup', :create_extra_dirs
-after 'deploy:setup', :copy_secrets
-
-before 'deploy:assets:update_asset_mtimes', :symlink_secrets
-
 after 'deploy:update', :symlink_db
 
 desc "create additional shared directories during setup"
 task :create_extra_dirs, :roles => :app do
   run "mkdir -m 0755 -p #{shared_path}/db"
-end
-
-desc "copy the secret configuration file to the server"
-task :copy_secrets, :roles => :app do
-  prompt = "Specify a secrets.rb file to copy to the server:"
-  path = Capistrano::CLI.ui.ask prompt
-  put File.read("#{path}"), "#{shared_path}/secrets.rb", :mode => 0600
-end
-
-task :symlink_secrets, :roles => :app do
-  run "ln -nfs #{shared_path}/secrets.rb #{release_path}/config/initializers"  
 end
 
 task :symlink_db, :roles => :app do
