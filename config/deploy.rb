@@ -1,39 +1,37 @@
 require 'bundler/capistrano'
-require 'capistrano/ext/multistage'
 
-set :application, "Plexus on Rails 3"
-set :repository, "git@github.com:odf/PlexusRails.git"
+load "config/recipes/base"
+load "config/recipes/nginx"
+load "config/recipes/unicorn"
+#load "config/recipes/postgresql"
+load "config/recipes/nodejs"
+load "config/recipes/rbenv"
+load "config/recipes/check"
+
+server "vagrant", :web, :app, :db, primary: true
+
+set :user,        "deployer"
+set :application, "Plexus-I"
+set :deploy_to,   "/home/#{user}/apps/#{application}"
+set :deploy_via, :remote_cache
+set :use_sudo,    false
 
 set :scm, :git
-set :deploy_via, :remote_cache
+set :repository, "git@github.com:odf/PlexusRails.git"
+set :branch,     "master"
+
+set :rails_env, "production" # needed by migrations?
 
 default_run_options[:pty] = true
-default_run_options[:tty] = true
-
-ssh_options[:paranoid] = false
-ssh_options[:port] = 22
 ssh_options[:forward_agent] = true
-ssh_options[:compression] = false
 
-namespace :deploy do
-  task :start do ; end
-  task :stop do ; end
-  task :restart, :roles => :app, :except => { :no_release => true } do
-    run "touch #{File.join(current_path,'tmp','restart.txt')}"
-  end
-end
+after "deploy", "deploy:cleanup" # keep only the last 5 releases
 
-set(:branch) do
-  Capistrano::CLI.ui.ask "Specify a tag name to deploy:"
-end
 
 after 'deploy:setup', :create_extra_dirs
 after 'deploy:setup', :copy_secrets
 
-before 'deploy:update_code', :echo_ruby_env
-
 after 'deploy:update', :symlinks
-after 'deploy:update', :deploy_log
 
 desc "create additional shared directories during setup"
 task :create_extra_dirs, :roles => :app do
@@ -47,18 +45,7 @@ task :copy_secrets, :roles => :app do
   put File.read("#{path}"), "#{shared_path}/secrets.rb", :mode => 0600
 end
 
-task :echo_ruby_env do
-  puts "Checking ruby env ..."
-  run "ruby -v"
-  run "export RAILS_ENV='#{rails_env}'"
-end
-
 task :symlinks, :roles => :app do
   run "ln -nfs #{shared_path}/db/* #{current_path}/db/"
   run "ln -nfs #{shared_path}/secrets.rb #{current_path}/config/initializers"  
-end
-
-task :deploy_log, :roles => :app do
-  run "touch #{current_path}/tmp/deploy-log.txt"
-  run "echo \"Deployed at #{Time.now.strftime('%Y-%m-%d %I:%M')}\" > #{current_path}/tmp/deploy-log.txt"
 end
