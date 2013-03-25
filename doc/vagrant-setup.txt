@@ -1,0 +1,52 @@
+# ======================================================================
+# Setting up a simulated Rails production machine under Vagrant
+#
+# VirtualBox version: 4.2.10
+# Vagrant version: 1.0.7
+#
+# Client OS: Ubuntu 12.04 (precise)
+# Source: http://files.vagrantup.com/precise32.box
+# ======================================================================
+
+# -- Update package information and upgrade packages
+#    (rebooting the VM may be necessary after the upgrade)
+sudo apt-get update
+sudo apt-get upgrade
+
+# -- Install some basic necessities
+sudo apt-get install build-essential curl git-core sqlite3 libsqlite3-dev
+
+# -- Rails wants a Javascript runtime, so we might as well install Node
+sudo apt-get install nodejs
+
+# -- Install rbenv in order to use more up-to-date Ruby versions
+git clone git://github.com/sstephenson/rbenv.git ~/.rbenv
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.profile
+echo 'eval "$(rbenv init -)"' >> ~/.profile
+
+# -- Restart the shell to make the rbenv command available
+exec $SHELL -l
+
+# -- Install ruby-build as an rbenv plugin so that we can build Ruby from source
+git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+
+# -- Install the latest Ruby 1.9.3 and make it the global default
+rbenv install 1.9.3-p392
+rbenv rehash
+rbenv global 1.9.3-p392
+
+# -- Go to the Rails application's top directory
+cd /vagrant
+
+# -- Install Bundler
+gem install bundler
+
+# -- Make the bundle command available via rbenv
+rbenv rehash
+
+# -- Install only the gems we need in production
+bundle install --without development test
+
+# -- Run Rails in development mode
+#    (forward port 3000 in Vagrantfile to test with host machine's browser)
+bundle exec rails s
