@@ -7,7 +7,7 @@ namespace :storage do
 
   desc "Link the data directory into the the current application path"
   task :symlink, roles: :app do
-    run "ln -nfs #{shared_path}/data #{current_path}"
+    run "ln -nfs #{shared_path}/data #{current_path}/"
   end
   after "deploy:update", "storage:symlink"
 end
