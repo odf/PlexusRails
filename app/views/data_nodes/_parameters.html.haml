@@ -1,5 +1,3 @@
-- stylesheet :parameters
-
 - entries = @data_node.producer.parameters.map { |key, value| |
               [ key.humanize.titleize.gsub(/\./, ': '), value ] |
             }.sort.partition { |a| a[1].to_s.size <= 80 and a[1] !~ /.\n./ } |

@@ -10,16 +10,6 @@ module LayoutHelper
     @show_title
   end
   
-  def stylesheet(*args)
-    #args = args.map { |arg| h(arg.to_s) }
-    #content_for(:head) { stylesheet_link_tag(*args) }
-  end
-  
-  def javascript(*args)
-    args = args.map { |arg| arg == :defaults ? arg : h(arg.to_s) }
-    content_for(:head) { javascript_include_tag(*args) }
-  end
-
   def strip_html(text)
     text.gsub(/<\/?[^>]*>/, "").gsub(/&[^;]*;/, "")
   end
