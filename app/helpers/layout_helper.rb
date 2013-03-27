@@ -11,8 +11,8 @@ module LayoutHelper
   end
   
   def stylesheet(*args)
-    args = args.map { |arg| h(arg.to_s) }
-    content_for(:head) { stylesheet_link_tag(*args) }
+    #args = args.map { |arg| h(arg.to_s) }
+    #content_for(:head) { stylesheet_link_tag(*args) }
   end
   
   def javascript(*args)
