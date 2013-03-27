@@ -64,13 +64,12 @@ class ApplicationController < ActionController::Base
 
   def find_user
     @user = current_user || authenticated_user
-    Rails.logger.warn "user = #{@user.login_name}"
   end
 
   def authenticated_user
-    if request.ssl? or not Rails.env.production?
+    #if request.ssl? or not Rails.env.production?
       User.authenticate(params[:user] || {})
-    end
+    #end
   end
 
   def legitimate_uploader
