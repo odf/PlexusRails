@@ -4,4 +4,5 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random, 
 # no regular words or you'll be exposed to dictionary attacks.
-PlexusR3::Application.config.secret_token = "this is a placeholder"
+PlexusR3::Application.config.secret_token =
+  "this placeholder needs to be replaced with a random string in production"
