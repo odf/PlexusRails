@@ -3,12 +3,12 @@ require 'bundler/capistrano'
 load "config/recipes/base"
 load "config/recipes/nginx"
 load "config/recipes/unicorn"
-#load "config/recipes/postgresql"
 load "config/recipes/sqlite3"
 load "config/recipes/nodejs"
 load "config/recipes/rbenv"
 load "config/recipes/check"
 load "config/recipes/secrets"
+load "config/recipes/storage"
 
 server "vagrant", :web, :app, :db, primary: true
 

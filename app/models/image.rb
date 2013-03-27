@@ -2,7 +2,7 @@
 
 class Image < ActiveRecord::Base
   # -- where to write files - TODO this needs to go into an initializer
-  ASSET_PATH = File.join(Rails.root, "assets")
+  DATA_PATH = File.join(Rails.root, "data")
 
   # -- add timestamps and authors for creation and modification
   include Blame
@@ -75,12 +75,12 @@ class Image < ActiveRecord::Base
     on = illustratable
     on_type = on.class.name.underscore.pluralize
     on_id = on.respond_to?(:id_for_assets) ? on.id_for_assets : on.id.to_s
-    File.join([ASSET_PATH, on_type,
+    File.join([DATA_PATH, on_type,
                on_id[0..1], on_id[2..3], on_id, 'images', filename])
   end
 
   def store_file
-    raise "No directory #{ASSET_PATH}." unless File.directory?(ASSET_PATH)
+    raise "No directory #{DATA_PATH}." unless File.directory?(DATA_PATH)
 
     if self.stored_path.blank?
       path = make_path

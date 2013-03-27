@@ -8,7 +8,6 @@
 /tmp/**/*
 /public/stylesheets/*.css
 /doc/app
-/assets
 /data
 .rvmrc
 .sass-cache
