@@ -1,6 +1,7 @@
 require 'bundler/capistrano'
 
 load "config/recipes/base"
+load "config/recipes/ssl"
 load "config/recipes/nginx"
 load "config/recipes/unicorn"
 load "config/recipes/sqlite3"
@@ -26,8 +27,8 @@ set :db_name, "production.sqlite3"
 set :rails_env, "production" # needed by migrations?
 
 set :use_https, "yes"
-set :ssl_cert_path, "/home/#{user}/ssl/#{user}.crt"
-set :ssl_cert_key_path, "/home/#{user}/ssl/#{user}.key"
+set :generate_self_signed_ssl_cert, "yes"
+set :ssl_path, "/home/#{user}/ssl"
 
 default_run_options[:pty] = true
 ssh_options[:forward_agent] = true
