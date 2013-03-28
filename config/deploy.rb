@@ -25,6 +25,10 @@ set :branch,     "master"
 set :db_name, "production.sqlite3"
 set :rails_env, "production" # needed by migrations?
 
+set :use_https, "yes"
+set :ssl_cert_path, "/home/#{user}/ssl/#{user}.crt"
+set :ssl_cert_key_path, "/home/#{user}/ssl/#{user}.key"
+
 default_run_options[:pty] = true
 ssh_options[:forward_agent] = true
 
