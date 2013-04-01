@@ -23,9 +23,6 @@ set :scm, :git
 set :repository, "git@github.com:odf/PlexusRails.git"
 set :branch,     "master"
 
-set :db_name, "production.sqlite3"
-set :rails_env, "production" # needed by migrations?
-
 set :use_https, "yes"
 set :generate_self_signed_ssl_cert, "yes"
 set :ssl_path, "/home/#{user}/ssl"
