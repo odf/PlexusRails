@@ -10,7 +10,11 @@ end
 namespace :deploy do
   desc "Install everything onto the server"
   task :install do
-    run "#{sudo} apt-get -y update"
-    run "#{sudo} apt-get -y install python-software-properties"
+    if os_type == 'redhat'
+      run "#{sudo} yum -y install curl git-core wget" 
+    elsif os_type == 'debian'
+      run "#{sudo} apt-get -y update"
+      run "#{sudo} apt-get -y install python-software-properties curl git-core"
+    end
   end
 end

@@ -1,12 +1,14 @@
 require 'bundler/capistrano'
 
+set :os_type, "redhat"
+
 load "config/recipes/base"
 load "config/recipes/ssl"
 load "config/recipes/nginx"
 load "config/recipes/unicorn"
 load "config/recipes/sqlite3"
 load "config/recipes/nodejs"
-load "config/recipes/rbenv"
+#load "config/recipes/rbenv"
 load "config/recipes/check"
 load "config/recipes/secrets"
 load "config/recipes/storage"

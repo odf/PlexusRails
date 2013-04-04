@@ -1,9 +1,15 @@
 namespace :nginx do
   desc "Install latest stable release of nginx"
   task :install, roles: :web do
-    run "#{sudo} add-apt-repository -y ppa:nginx/stable"
-    run "#{sudo} apt-get -y update"
-    run "#{sudo} apt-get -y install nginx"
+    if os_type == 'debian'
+      run "#{sudo} add-apt-repository -y ppa:nginx/stable"
+      run "#{sudo} apt-get -y update"
+      run "#{sudo} apt-get -y install nginx"
+    elsif os_type == 'redhat'
+      template "nginx_yum_repo.erb", "/tmp/nginx.repo"
+      run "#{sudo} mv /tmp/nginx.repo /etc/yum.repos.d/nginx.repo"
+      run "#{sudo} yum -y install nginx"
+    end
   end
   after "deploy:install", "nginx:install"
 
