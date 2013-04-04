@@ -15,6 +15,12 @@ namespace :nginx do
 
   desc "Setup nginx configuration for this application"
   task :setup, roles: :web do
+    if os_type == 'redhat'
+      run "#{sudo} mkdir -p /etc/nginx/sites-enabled"
+      run "echo 'include /etc/nginx/sites-enabled/*;' >/tmp/nginx.conf"
+      run "#{sudo} mv /tmp/nginx.conf /etc/nginx/conf.d/default.conf"
+    end
+
     template "nginx_unicorn.erb", "/tmp/nginx_conf"
     run "#{sudo} mv /tmp/nginx_conf /etc/nginx/sites-enabled/#{application}"
     run "#{sudo} rm -f /etc/nginx/sites-enabled/default"
