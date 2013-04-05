@@ -12,6 +12,7 @@ namespace :nodejs do
       run "rm -f #{name}.tar.gz"
       run "mkdir -p bin"
       run "ln -nfs $HOME/#{name}/bin/node $HOME/bin/node"
+      run "echo 'export PATH=$PATH:$HOME/bin' >>.bashrc"
     end
   end
   after "deploy:install", "nodejs:install"
