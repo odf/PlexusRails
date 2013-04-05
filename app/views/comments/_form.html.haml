@@ -1,6 +1,8 @@
+- text_format = { :rows => 5, :cols => 80 }
+
 .dj-form
   = simple_form_for [@commentable, @comment] do |form|
-    = form.input :text, :label => false, :input_html => { rows: 10, cols: 80 }
+    = form.input :text, :label => false, :input_html => text_format
     %br
     = form.submit 'Save', :name => 'result'
     = form.submit 'Cancel', :name => 'result'

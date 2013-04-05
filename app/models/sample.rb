@@ -124,8 +124,8 @@ class Sample < ActiveRecord::Base
   def generate_name
     if self.external_id.blank?
       date = Date.today.strftime("%Y%m%d")
-      last = self.class.where('external_id LIKE ?', "#{date}-%")
-                       .order(:external_id).last
+      last = self.class.where('external_id LIKE ?', "#{date}-%").
+                        order(:external_id).last
       self.external_id = last ? last.external_id.succ : "#{date}-AA"
     end
   end
