@@ -15,6 +15,8 @@ namespace :nginx do
 
   desc "Setup nginx configuration for this application"
   task :setup, roles: :web do
+    run "chmod +x $HOME" # Nginx needs permission to read static assets
+
     if os_type == 'redhat'
       run "#{sudo} mkdir -p /etc/nginx/sites-enabled"
       run "echo 'include /etc/nginx/sites-enabled/*;' >/tmp/nginx.conf"
