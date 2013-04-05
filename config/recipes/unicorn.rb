@@ -12,14 +12,23 @@ namespace :unicorn do
     template "unicorn_init.erb", "/tmp/unicorn_init"
     run "chmod +x /tmp/unicorn_init"
     run "#{sudo} mv /tmp/unicorn_init /etc/init.d/unicorn_#{application}"
-    run "#{sudo} update-rc.d -f unicorn_#{application} defaults"
+
+    if os_type == 'debian'
+      run "#{sudo} update-rc.d -f unicorn_#{application} defaults"
+    elsif os_type == 'redhat'
+      run "#{sudo} chkconfig --add unicorn_#{application}"
+    end
   end
   after "deploy:setup", "unicorn:setup"
 
   %w[start stop restart].each do |command|
     desc "#{command} unicorn"
     task command, roles: :app do
-      run "service unicorn_#{application} #{command}"
+      if os_type == 'debian'
+        run "/usr/sbin/service unicorn_#{application} #{command}"
+      elsif os_type == 'redhat'
+        run "/sbin/service unicorn_#{application} #{command}"
+      end
     end
     after "deploy:#{command}", "unicorn:#{command}"
   end
