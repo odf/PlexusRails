@@ -2,9 +2,13 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 3.2.0'
 
-gem 'thin'
+group :test, :development do
+  gem 'thin'
+  gem 'sqlite3'
+end
+
 gem 'unicorn'
-gem 'sqlite3'
+gem 'pg'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.3'
