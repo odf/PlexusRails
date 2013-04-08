@@ -6,7 +6,7 @@ load "config/recipes/base"
 load "config/recipes/ssl"
 load "config/recipes/nginx"
 load "config/recipes/unicorn"
-load "config/recipes/sqlite3"
+load "config/recipes/postgresql"
 load "config/recipes/nodejs"
 #load "config/recipes/rbenv"
 load "config/recipes/bundler"
@@ -17,7 +17,7 @@ load "config/recipes/storage"
 server "vagrant", :web, :app, :db, primary: true
 
 set :user,        "vagrant"
-set :application, "Plexus-I"
+set :application, "plexus1"
 set :deploy_to,   "/home/#{user}/apps/#{application}"
 set :deploy_via, :remote_cache
 set :use_sudo,    false
