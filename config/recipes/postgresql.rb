@@ -14,17 +14,17 @@ namespace :postgresql do
       # Install postgresql
       run "#{sudo} yum -y install postgresql-server postgresql-devel"
 
-      # Initialize and start the service, and make it start on reboot
-      run "#{sudo} service postgresql initdb"
-      run "#{sudo} service postgresql start"
-      run "#{sudo} chkconfig --add postgresql"
-      run "#{sudo} chkconfig postgresql on"
-
       # Enable password authorization
       run "#{sudo} sed '/^[^#]/ s/ident/md5/' /var/lib/pgsql/data/pg_hba.conf >/tmp/pg_hba.conf"
       run "#{sudo} chown postgres.postgres /tmp/pg_hba.conf"
       run "#{sudo} chmod 600 /tmp/pg_hba.conf"
       run "#{sudo} mv /tmp/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf"
+
+      # Initialize and start the service, and make it start on reboot
+      run "#{sudo} service postgresql initdb"
+      run "#{sudo} service postgresql start"
+      run "#{sudo} chkconfig --add postgresql"
+      run "#{sudo} chkconfig postgresql on"
     end
   end
   after "deploy:install", "postgresql:install"
