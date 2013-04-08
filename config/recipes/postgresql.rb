@@ -11,8 +11,9 @@ namespace :postgresql do
       run "#{sudo} apt-get -y update"
       run "#{sudo} apt-get -y install postgresql libpq-dev"
     elsif os_type == 'redhat'
-      # Install postgresql
+      # Install and initialize PostgreSQL
       run "#{sudo} yum -y install postgresql-server postgresql-devel"
+      run "#{sudo} service postgresql initdb"
 
       # Enable password authorization
       run "#{sudo} sed '/^[^#]/ s/ident/md5/' /var/lib/pgsql/data/pg_hba.conf >/tmp/pg_hba.conf"
@@ -20,8 +21,7 @@ namespace :postgresql do
       run "#{sudo} chmod 600 /tmp/pg_hba.conf"
       run "#{sudo} mv /tmp/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf"
 
-      # Initialize and start the service, and make it start on reboot
-      run "#{sudo} service postgresql initdb"
+      # Initialize and start the postgresql service, and make it start on reboot
       run "#{sudo} service postgresql start"
       run "#{sudo} chkconfig --add postgresql"
       run "#{sudo} chkconfig postgresql on"
