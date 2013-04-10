@@ -1,6 +1,6 @@
 set_default(:postgresql_host, "localhost")
 set_default(:postgresql_user) { application }
-set_default(:postgresql_password) { Capistrano::CLI.password_prompt "PostgreSQL Password: " }
+set_default(:postgresql_password) { SecureRandom.base64(10) }
 set_default(:postgresql_database) { "#{application}_production" }
 
 namespace :postgresql do
@@ -15,8 +15,8 @@ namespace :postgresql do
       run "#{sudo} yum -y install postgresql-server postgresql-devel"
       run "#{sudo} service postgresql initdb"
 
-      # Enable password authorization
-      run "#{sudo} sed '/^[^#]/ s/ident/md5/' /var/lib/pgsql/data/pg_hba.conf >/tmp/pg_hba.conf"
+      # Configure authentication
+      template "postgresql_hba.conf.erb", "/tmp/pg_hba.conf"
       run "#{sudo} chown postgres.postgres /tmp/pg_hba.conf"
       run "#{sudo} chmod 600 /tmp/pg_hba.conf"
       run "#{sudo} mv /tmp/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf"
