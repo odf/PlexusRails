@@ -1,5 +1,5 @@
 # Let the admin account in locally without a password
 local all postgres ident
 
-# Rails, on the other hand, seems to insist on using passwords
-local <%= postgresql_database %> <%= postgresql_user %> md5
+# Authentication for Rails connectiong to the application's database
+host <%= postgresql_database %> <%= postgresql_user %> ::1/128 md5
