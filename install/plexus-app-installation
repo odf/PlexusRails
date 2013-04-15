@@ -8,7 +8,7 @@ PLEXUS=$HOME/apps/plexus1
 
 # -- Download the application code from github
 
-# TODO: support updating the application if already installed
+rm -rf $PLEXUS/current
 #git clone git@github.com:odf/PlexusRails.git $PLEXUS/current
 git clone /vagrant $PLEXUS/current
 
@@ -38,6 +38,7 @@ bundle install --path $PLEXUS/shared/bundle --deployment --quiet \
 
 # -- Precompile Javascript and CSS files
 
+export PATH=$PATH:$HOME/bin
 bundle exec rake RAILS_ENV=production RAILS_GROUPS=assets assets:precompile
 
 
