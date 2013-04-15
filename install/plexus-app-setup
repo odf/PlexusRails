@@ -1,0 +1,61 @@
+# ----------------------------------------------------------------------
+# Non-privileged setup for the Plexus application.
+#
+# These commands need to be executed under the plexus1 user account.
+# ----------------------------------------------------------------------
+
+# -- Install Node.js
+
+cd $HOME
+wget http://nodejs.org/dist/v0.10.3/node-v0.10.3-linux-x86.tar.gz
+tar xzf node-v0.10.3-linux-x86.tar.gz
+rm -f node-v0.10.3-linux-x86.tar.gz
+mkdir -p bin
+ln -nfs $HOME/node-v0.10.3-linux-x86/bin/node $HOME/bin/node
+echo 'export PATH=$PATH:$HOME/bin' >>.bashrc
+
+
+# -- Create directories for the Plexus application
+
+mkdir -p $HOME/apps/plexus1
+cd $HOME/apps/plexus1
+mkdir -p shared/system shared/log shared/pids shared/public/assets
+mkdir -m 0700 -p shared/config shared/data
+
+
+# -- Configure Unicorn
+
+cat >$HOME/apps/plexus1/shared/config/unicorn.rb <<EOF
+working_directory "$HOME/apps/plexus1/current"
+pid "$HOME/apps/plexus1/current/tmp/pids/unicorn.pid"
+stderr_path "$HOME/apps/plexus1/current/log/unicorn.log"
+stdout_path "$HOME/apps/plexus1/current/log/unicorn.log"
+
+listen "/tmp/unicorn.plexus1.sock"
+worker_processes 2
+timeout 30
+EOF
+
+
+# -- Create a database configuration file to be used by Plexus
+
+cat >$HOME/apps/plexus1/shared/config/database.yml <<EOF
+production:
+  adapter: postgresql
+  encoding: unicode
+  database: plexus1_production
+  pool: 5
+  username: plexus1
+  password: '`cat $HOME/db_passwd`'
+  host: localhost
+EOF
+
+
+# -- Create a file with a secret connection token for Plexus (use a fairly
+#    long random string).
+
+TOKEN=`ruby -r securerandom -e 'puts SecureRandom.hex(128)'`
+
+cat >$HOME/apps/plexus1/shared/config/secret_token.rb <<EOF
+Rails.application.config.secret_token = "$TOKEN"
+EOF

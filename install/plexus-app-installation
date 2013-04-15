@@ -1,0 +1,50 @@
+# ----------------------------------------------------------------------
+# Installing the Plexus application.
+#
+# These commands need to be executed under the plexus1 user account.
+# ----------------------------------------------------------------------
+
+# -- Download the application code from github
+
+cd $HOME/apps/plexus1
+# TODO: support updating the application if already installed
+git clone git@github.com:odf/PlexusRails.git current
+
+
+# -- Create symbolic links
+
+mkdir -p current/public current/tmp
+ln -nsf shared/data current/data
+ln -nsf shared/assets current/public/assets
+ln -nsf shared/system current/public/system
+ln -nsf shared/log current/log
+ln -nsf shared/pids current/tmp/pids
+ln -nsf shared/config/database.yml current/config/database.yml
+ln -nsf shared/config/secret_token.rb current/config/initializers/secret_token.rb
+
+
+# -- Change into the source directory
+
+cd current
+
+
+# -- Install or update theRuby gems (libraries) required by the application
+
+bundle install --path ../shared/bundle --deployment --quiet \
+               --without development test
+
+
+# -- Precompile Javascript and CSS files
+
+bundle exec rake RAILS_ENV=production RAILS_GROUPS=assets assets:precompile
+cp ../shared/assets/manifest.yml assets_manifest.yml
+
+
+# -- Create the database tables
+
+bundle exec rake RAILS_ENV=production db:migrate
+
+
+# -- Start the Unicorn server that handles requests for the application
+
+/sbin/service unicorn_plexus1 start
