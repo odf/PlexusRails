@@ -19,7 +19,7 @@ echo 'export PATH=$PATH:$HOME/bin' >>.bashrc
 
 mkdir -p $HOME/apps/plexus1
 cd $HOME/apps/plexus1
-mkdir -p shared/system shared/log shared/pids shared/public/assets
+mkdir -p shared/system shared/log shared/pids
 mkdir -m 0700 -p shared/config shared/data
 
 

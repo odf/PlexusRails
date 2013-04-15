@@ -160,7 +160,7 @@ set -e
 TIMEOUT=\${TIMEOUT-60}
 APP_ROOT=/home/plexus1/apps/plexus1/current
 PID=/home/plexus1/apps/plexus1/current/tmp/pids/unicorn.pid
-CMD="cd /home/plexus1/apps/plexus1/current; bundle exec unicorn -D -c /home/plexus1/apps/plexus1/current/config/unicorn.config -E production"
+CMD="cd /home/plexus1/apps/plexus1/current; bundle exec unicorn -D -c /home/plexus1/apps/plexus1/current/config/unicorn.rb -E production"
 AS_USER=plexus1
 set -u
 
