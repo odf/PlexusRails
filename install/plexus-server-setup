@@ -6,9 +6,10 @@
 
 # -- Create a user account plexus1 to run the application under
 
-adduser --home=/home/plexus1 --shell=/bin/bash plexus1
-chmod +x /home/plexus1
-
+id plexus1 >/dev/null 2>&1 || (
+   adduser --home=/home/plexus1 --shell=/bin/bash plexus1
+   chmod +x /home/plexus1
+)
 
 # -- Install some basic necessary packages
 
@@ -42,13 +43,17 @@ chmod 600 /tmp/pg_hba.conf
 mv /tmp/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf
 service postgresql restart
 
-PASSWD=`ruby -r securerandom -e 'puts SecureRandom.base64(10)'`
-echo $PASSWD >/home/plexus1/db_passwd
-chmod 0400 /home/plexus1/db_passwd
-chown plexus1.plexus1 /home/plexus1/db_passwd
+sudo -u postgres psql -c "select 1 from pg_roles where rolname='plexus1'" | grep -q 1 || (
+    PASSWD=`ruby -r securerandom -e 'puts SecureRandom.base64(10)'`
+    echo $PASSWD >/home/plexus1/db_passwd
+    chmod 0400 /home/plexus1/db_passwd
+    chown plexus1.plexus1 /home/plexus1/db_passwd
 
-sudo -u postgres psql -c "create user plexus1 with password '$PASSWD';"
-sudo -u postgres psql -c "create database plexus1_production owner plexus1;"
+    sudo -u postgres psql -c "create user plexus1 with password '$PASSWD';"
+)
+
+sudo -u postgres psql -c "select 1 from pg_database where datname='plexus1_production'" | grep -q 1 ||
+    sudo -u postgres psql -c "create database plexus1_production owner plexus1;"
 
 
 # -- For testing/staging: create a self-signed SSL certificate.
@@ -56,7 +61,8 @@ sudo -u postgres psql -c "create database plexus1_production owner plexus1;"
 #    When a properly signed certificate is available, place the corresponding
 #    .crt and .key files under /home/plexus1/ssl and restart nginx.
 
-openssl req -new -nodes -keyout /tmp/ssl.key -out /tmp/ssl.csr <<EOF
+[ -e /home/plexus1/ssl/plexus1.crt ] || (
+    openssl req -new -nodes -keyout /tmp/ssl.key -out /tmp/ssl.csr <<EOF
 AU
 ACT
 Canberra
@@ -68,19 +74,19 @@ Self-signed Plexus I SSL certificate for local testing
 
 EOF
 
-openssl x509 -req -days 365 -in /tmp/ssl.csr -signkey /tmp/ssl.key \
-        -out /tmp/ssl.crt
+    openssl x509 -req -days 365 -in /tmp/ssl.csr -signkey /tmp/ssl.key \
+            -out /tmp/ssl.crt
 
-chmod 0400 /tmp/ssl.crt
-chown plexus1.plexus1 /tmp/ssl.crt
-chmod 0400 /tmp/ssl.key
-chown plexus1.plexus1 /tmp/ssl.key
-mkdir -p /home/plexus1/ssl
-chown plexus1.plexus1 /home/plexus1/ssl
-mv -n /tmp/ssl.crt /home/plexus1/ssl/plexus1.crt
-mv -n /tmp/ssl.key /home/plexus1/ssl/plexus1.key
-rm -f /tmp/ssl.txt /tmp/ssl.csr /tmp/ssl.crt /tmp/ssl.key
-
+    chmod 0400 /tmp/ssl.crt
+    chown plexus1.plexus1 /tmp/ssl.crt
+    chmod 0400 /tmp/ssl.key
+    chown plexus1.plexus1 /tmp/ssl.key
+    mkdir -p /home/plexus1/ssl
+    chown plexus1.plexus1 /home/plexus1/ssl
+    mv -n /tmp/ssl.crt /home/plexus1/ssl/plexus1.crt
+    mv -n /tmp/ssl.key /home/plexus1/ssl/plexus1.key
+    rm -f /tmp/ssl.txt /tmp/ssl.csr /tmp/ssl.crt /tmp/ssl.key
+)
 
 # -- Install and configure Nginx
 
