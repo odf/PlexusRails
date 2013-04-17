@@ -2,22 +2,22 @@
 
 1. Copy the scripts in this directory to the target machine and log in.
 
-2. Execute the first script, plexus-server-setup, with root privileges:
+2. Execute the first script, `plexus-server-setup`, with root privileges:
 
-     sudo ./plexus-server-setup
+    `sudo ./plexus-server-setup`
 
-3. Assume the identity of the plexus1 user, created by the previous
-script. You need to use the su command, as that account has no password:
+3. Assume the identity of the `plexus1` user, created by the previous
+script. You need to use the `su` command, as that account has no password:
 
-     sudo su plexus1
+    `sudo su plexus1`
 
 4. Execute the second script:
 
-     ./plexus-app-setup
+    `./plexus-app-setup`
 
 5. Finally, execute the third script:
 
-     ./plexus-app-installation
+    `./plexus-app-installation`
 
 6. When a new version of the Plexus code is available, repeat only steps 3 and
 5 to install it. Your existing data will be preserved.
