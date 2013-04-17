@@ -2,7 +2,10 @@
 
 These scripts are intended for a Redhat-like Linux distribution. In particular,
 `yum` is used to install software packages. The scripts have been tested with
-CentOS 6.4 and may not work on older systems.
+a fresh CentOS 6.4 installation and may not work on older systems. If the
+objective is to install Plexus on a machine that is also used for other
+purposes, it is not recommended to execute the scripts directly, but instead
+each action should be verified first and applied manually.
 
 1. Copy the scripts in this directory to the target machine and log in.
 
