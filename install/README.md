@@ -1,5 +1,9 @@
 # Using the installation scripts
 
+These scripts are intended for a Redhat-like Linux distribution. In particular,
+`yum` is used to install software packages. The scripts have been tested with
+CentOS 6.4 and may not work on older systems.
+
 1. Copy the scripts in this directory to the target machine and log in.
 
 2. Execute the first script, `plexus-server-setup`, with root privileges:
