@@ -30,10 +30,16 @@ class GenericLoader
   def default_restore_table(model_name, rows, mapping, associations, &block)
     model = model_name.constantize
 
-    attr_protected  = model.read_inheritable_attribute("attr_protected")
-    attr_accessible = model.read_inheritable_attribute("attr_accessible")
-    model.write_inheritable_attribute("attr_protected",  nil)
-    model.write_inheritable_attribute("attr_accessible", nil)
+    model.class_attribute :attr_protected
+    model.class_attribute :attr_accessible
+
+    attr_protected = model.attr_protected
+    attr_accessible = model.attr_accessible
+
+    # attr_protected  = model.read_inheritable_attribute("attr_protected")
+    # attr_accessible = model.read_inheritable_attribute("attr_accessible")
+    # model.write_inheritable_attribute("attr_protected",  nil)
+    # model.write_inheritable_attribute("attr_accessible", nil)
 
     count = 0
     model.transaction do
@@ -50,8 +56,11 @@ class GenericLoader
       end
     end
 
-    model.write_inheritable_attribute("attr_protected",  attr_protected)
-    model.write_inheritable_attribute("attr_accessible", attr_accessible)
+    model.attr_protected = attr_protected
+    model.attr_accessible = attr_accessible
+
+    # model.write_inheritable_attribute("attr_protected",  attr_protected)
+    # model.write_inheritable_attribute("attr_accessible", attr_accessible)
   end
 
   def custom_restore_table(rows, mapping, associations, &block)
@@ -325,4 +334,4 @@ class Loader < GenericLoader
 end
 
 
-Loader.new(:path => ARGV[0]).restore_all
+Loader.new(:path => ARGV[2]).restore_all
