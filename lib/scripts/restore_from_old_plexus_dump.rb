@@ -170,7 +170,9 @@ class Loader < GenericLoader
 
     default_restore_table('Project', rows, mapping, associations) do |attr|
       managers[attr['id']] = attr['local_manager']
-      attr.select { |key, val| %w{name organization}.include? key }
+      Hash[*attr.select { |key, val|
+             %w{name organization}.include? key
+           }.flatten]
     end
 
     @managers = managers.map { |k,v| [@id_mapping['projects'][k], v] }
