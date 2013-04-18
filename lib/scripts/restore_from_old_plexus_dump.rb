@@ -36,11 +36,6 @@ class GenericLoader
     attr_protected = model.attr_protected
     attr_accessible = model.attr_accessible
 
-    # attr_protected  = model.read_inheritable_attribute("attr_protected")
-    # attr_accessible = model.read_inheritable_attribute("attr_accessible")
-    # model.write_inheritable_attribute("attr_protected",  nil)
-    # model.write_inheritable_attribute("attr_accessible", nil)
-
     count = 0
     model.transaction do
       rows.each do |item|
@@ -58,9 +53,6 @@ class GenericLoader
 
     model.attr_protected = attr_protected
     model.attr_accessible = attr_accessible
-
-    # model.write_inheritable_attribute("attr_protected",  attr_protected)
-    # model.write_inheritable_attribute("attr_accessible", attr_accessible)
   end
 
   def custom_restore_table(rows, mapping, associations, &block)
