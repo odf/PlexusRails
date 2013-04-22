@@ -279,7 +279,7 @@ class Loader < GenericLoader
           :illustratable_id   => attr['data_node_id'],
           :illustratable_type => 'DataNode'
         }
-        attr.reject { |k| excluded.include? k }.merge(extra)
+        attr.reject { |k, v| excluded.include? k }.merge(extra)
       end
     end
   end
@@ -299,7 +299,7 @@ class Loader < GenericLoader
 
     Import.transaction do
       custom_restore_table(rows, mapping, associations) do |item|
-        attr = item.reject { |k| excluded.include? k }
+        attr = item.reject { |k, v| excluded.include? k }
         if attr
           instance = Import.new(attr)
           %w{content import_log}.each do |key|
