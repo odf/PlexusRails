@@ -5,6 +5,7 @@ gem 'rails', '~> 3.2.0'
 group :test, :development do
   gem 'thin'
   gem 'sqlite3'
+  gem 'mysql2'
 end
 
 gem 'unicorn'
