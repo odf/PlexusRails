@@ -294,27 +294,21 @@ class Loader < GenericLoader
     end
   end
 
-  def restore_imports(rows, mapping, associations)
-    excluded = %w{replace content import_log}
+  # def restore_imports(rows, mapping, associations)
+  #   excluded = %w{replace content import_log}
 
-    Import.transaction do
-      custom_restore_table(rows, mapping, associations) do |item|
-        attr = item.reject { |k, v| excluded.include? k }
-        if attr
-          instance = Import.new(attr)
-          %w{content import_log}.each do |key|
-            instance.instance_eval { write_attribute(key, item[key]) }
-          end
-          instance.save!(:validate => false)
-          mapping[item['id']] = instance.id
-        end
-      end
-    end
-  end
-
-  # def restore_imports(*args)
-  #   default_restore_table('Import', *args) do |attr|
-  #     attr.reject { |k| k == 'replace' }
+  #   Import.transaction do
+  #     custom_restore_table(rows, mapping, associations) do |item|
+  #       attr = item.reject { |k, v| excluded.include? k }
+  #       if attr
+  #         instance = Import.new(attr)
+  #         %w{content import_log}.each do |key|
+  #           instance.instance_eval { write_attribute(key, item[key]) }
+  #         end
+  #         instance.save!(:validate => false)
+  #         mapping[item['id']] = instance.id
+  #       end
+  #     end
   #   end
   # end
 
