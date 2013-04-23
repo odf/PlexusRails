@@ -218,7 +218,7 @@ class Loader < GenericLoader
   def restore_data_nodes(*args)
     #TODO - add fingerprints
     default_restore_table('DataNode', *args) do |attr|
-      attr.reject { |k| %w{process_node_id domain_id}.include? k }.
+      attr.reject { |k, v| %w{process_node_id domain_id}.include? k }.
         merge({ 'producer_id' => attr['process_node_id'] }).
         merge(attr['domain_id'].blank? ? {} : @domains[attr['domain_id']])
     end
