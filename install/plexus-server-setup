@@ -40,6 +40,7 @@ EOF
 
 chown postgres.postgres /tmp/pg_hba.conf
 chmod 600 /tmp/pg_hba.conf
+chcon --type=postgresql_db_t /tmp/pg_hba.conf
 mv /tmp/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf
 service postgresql restart
 
