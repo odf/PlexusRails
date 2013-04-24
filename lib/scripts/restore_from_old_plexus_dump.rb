@@ -294,23 +294,23 @@ class Loader < GenericLoader
     end
   end
 
-  # def restore_imports(rows, mapping, associations)
-  #   excluded = %w{replace content import_log}
+  def restore_imports(rows, mapping, associations)
+    excluded = %w{replace content import_log}
 
-  #   Import.transaction do
-  #     custom_restore_table(rows, mapping, associations) do |item|
-  #       attr = item.reject { |k, v| excluded.include? k }
-  #       if attr
-  #         instance = Import.new(attr)
-  #         %w{content import_log}.each do |key|
-  #           instance.instance_eval { write_attribute(key, item[key]) }
-  #         end
-  #         instance.save!(:validate => false)
-  #         mapping[item['id']] = instance.id
-  #       end
-  #     end
-  #   end
-  # end
+    Import.transaction do
+      custom_restore_table(rows, mapping, associations) do |item|
+        attr = item.reject { |k, v| excluded.include? k }
+        if attr
+          instance = Import.new(attr)
+          %w{content import_log}.each do |key|
+            instance.instance_eval { write_attribute(key, item[key]) }
+          end
+          instance.save!(:validate => false)
+          mapping[item['id']] = instance.id
+        end
+      end
+    end
+  end
 
   #TODO - restore_data_logs (needs a model to write to)
 
