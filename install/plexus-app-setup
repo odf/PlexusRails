@@ -6,12 +6,16 @@
 
 # -- Install Node.js
 
+NODE_VERSION=v0.10.5
+NODE_ARCH="x86" && [ `arch` = "x86_64" ] && NODE_ARCH="x64"
+NODE_DIR=node-${NODE_VERSION}-linux-${NODE_ARCH}
+
 cd $HOME
-wget http://nodejs.org/dist/v0.10.3/node-v0.10.3-linux-x86.tar.gz
-tar xzf node-v0.10.3-linux-x86.tar.gz
-rm -f node-v0.10.3-linux-x86.tar.gz
+wget http://nodejs.org/dist/${NODE_VERSION}/${NODE_DIR}.tar.gz
+tar xzf ${NODE_DIR}.tar.gz
+rm -f ${NODE_DIR}.tar.gz
 mkdir -p bin
-ln -nfs $HOME/node-v0.10.3-linux-x86/bin/node $HOME/bin/node
+ln -nfs $HOME/${NODE_DIR}/bin/node $HOME/bin/node
 echo 'export PATH=$PATH:$HOME/bin' >>.bashrc
 
 
