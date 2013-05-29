@@ -13,6 +13,7 @@ class ImportsController < ApplicationController
   private
 
   def find_sample
+    @project ||= Project.where(:name => params[:project])
     sid = params[:sample_id]
     @sample = if sid
                 Sample.where(:id => sid).first
