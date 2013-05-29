@@ -16,7 +16,7 @@
       %th External ID
       %th Data Nodes
   %tbody
-    - @project.samples.each do |s|
+    - @project.samples.order(:name).each do |s|
       %tr
         %td= link_to s.name, s
         %td= s.external_id
