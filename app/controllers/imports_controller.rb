@@ -14,8 +14,11 @@ class ImportsController < ApplicationController
 
   def find_sample
     sid = params[:sample_id]
-    query = sid ? { :id => sid } : { :name => params[:sample] }
-    @sample = Sample.where(query).first
+    @sample = if sid
+                Sample.where(:id => sid).first
+              else
+                @project.samples.where(:name => params[:sample]).first
+              end
   end
 
   public
