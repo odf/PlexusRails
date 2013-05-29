@@ -76,8 +76,9 @@ class ImportsController < ApplicationController
   private
 
   def create_sample_if_missing
+    find_or_create_project
+    @sample = @project.samples.where(:name => params[:sample]).first
     unless @sample
-      find_or_create_project
       @sample = @project.samples.build(:name => params[:sample])
       @sample.save!
     end
