@@ -3,7 +3,7 @@ class ImportsController < ApplicationController
 
   before_authorization_filter :find_resource, :except => [:data_index, :create]
   before_authorization_filter :find_user,     :only   => [:data_index, :create]
-  before_authorization_filter :find_sample,   :except => [:show]
+  before_authorization_filter :find_sample,   :only   => [:index]
 
   permit :index               do may_edit            end
   permit :show                do may_view(@import)   end
@@ -13,7 +13,6 @@ class ImportsController < ApplicationController
   private
 
   def find_sample
-    @project ||= Project.where(:name => params[:project]).first
     sid = params[:sample_id]
     @sample = if sid
                 Sample.where(:id => sid).first
