@@ -62,7 +62,7 @@ class Sample < ActiveRecord::Base
   # The list of valid and rejected node ids, with each node listed
   # before its successors.
   def nodes_sorted
-    node_date = data_nodes_by_id.apply { |v| v ? v.date : Time.at(0) }
+    node_date = data_nodes_by_id.apply { |v| (v && v.date) || Time.at(0) }
 
     visit = proc do |state, v|
       if state.marked?(v)
