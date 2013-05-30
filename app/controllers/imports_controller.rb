@@ -1,9 +1,9 @@
 class ImportsController < ApplicationController
   protect_from_forgery :except => [ :data_index, :create ]
 
-  before_authorization_filter :find_resource, :except => [:data_index, :create]
-  before_authorization_filter :find_user,     :only   => [:data_index, :create]
-  before_authorization_filter :find_sample,   :only   => [:index]
+  before_authorization_filter :find_resource, :only => [:index, :show, :new]
+  before_authorization_filter :find_user,     :only => [:data_index, :create]
+  before_authorization_filter :find_sample,   :only => [:index, :data_index]
 
   permit :index               do may_edit            end
   permit :show                do may_view(@import)   end
@@ -12,11 +12,21 @@ class ImportsController < ApplicationController
   
   private
 
+  def find_project
+    pid = params[:project_id]
+    @project = if pid
+                 Project.where(:id => pid).first
+               else
+                 Project.where(:name => params[:project]).first
+               end
+  end
+
   def find_sample
     sid = params[:sample_id]
     @sample = if sid
                 Sample.where(:id => sid).first
               else
+                find_project
                 @project.samples.where(:name => params[:sample]).first
               end
   end
