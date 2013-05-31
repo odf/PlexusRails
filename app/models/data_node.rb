@@ -47,12 +47,6 @@ class DataNode < ActiveRecord::Base
       define_method "#{attr}_#{axis_name}" do
         self.send(attr)[axis_index]
       end
-
-      define_method "#{attr}_#{axis_name}=" do |value|
-        tmp = self.send(attr)
-        tmp[axis_index] = value
-        self.send("#{attr}=", tmp)
-      end
     end
   end
 

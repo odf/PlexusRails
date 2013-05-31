@@ -315,8 +315,19 @@ class Import < ActiveRecord::Base
     }
 
     # -- update the data domain if necessary
-    if entry["domain"] && !node.domain_origin
-      node.attributes = entry["domain"]
+    if entry["domain"] && node.domain_origin.empty?
+      d = entry["domain"]
+      node.domain_origin = [d["domain_origin_x"] || '?',
+                            d["domain_origin_y"] || '?',
+                            d["domain_origin_z"] || '?']
+      node.domain_size = [d["domain_size_x"] || '?',
+                          d["domain_size_y"] || '?',
+                          d["domain_size_z"] || '?']
+      node.voxel_size = [d["voxel_size_x"] || '?',
+                         d["voxel_size_y"] || '?',
+                         d["voxel_size_z"] || '?']
+      node.voxel_unit = d["voxel_unit"]
+
       info[:messages] << "Domain information added."
     end
 
