@@ -29,7 +29,7 @@ gem 'capistrano'
 gem 'rspec-rails', :group => [:test, :development]
 
 group :test do
-  gem 'capybara'
+  gem 'capybara', '~> 1.1.4' # Need to support Ruby 1.8.7, so capybara 2 is out
   gem 'machinist'
   gem 'ffaker'
   gem 'launchy'
