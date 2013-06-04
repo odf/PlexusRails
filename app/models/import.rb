@@ -266,6 +266,13 @@ class Import < ActiveRecord::Base
       end
     end
 
+    # -- check for uniqueness of fingerprint
+    fp = fingerprint(entry, problems.empty?)
+    found = DataNode.where("sample_id != ? AND fingerprint = ?", sample.id, fp)
+    if found.count > 0
+      problems << "(ERROR) Duplicates fingerprint from different sample"
+    end
+
     # -- return the list of inconsistency messages
     problems
   end
@@ -278,17 +285,6 @@ class Import < ActiveRecord::Base
   # _valid_:: a boolean indicating whether the node is valid
   # _messages_:: string of error and warning messages for this node
   def create_node(entry, valid, messages)
-    require 'digest/md5'
-
-    status = valid ? 'valid' : 'error'
-
-    md5 = Digest::MD5.new
-    for key in %w{name identifier date data_type process source_text}
-      md5.update(entry[key] || "")
-    end
-
-    md5.update status unless valid
-
     process = sample.process_nodes.create(:date       => parse_timestamp(entry),
                                           :data_type  => entry["process"],
                                           :run_by     => entry["run_by"],
@@ -298,14 +294,26 @@ class Import < ActiveRecord::Base
 
     node = sample.data_nodes.create(:producer_id => process.id,
                                     :name        => entry["name"],
-                                    :fingerprint => md5.hexdigest,
+                                    :fingerprint => fingerprint(entry, valid),
                                     :data_type   => entry["data_type"],
                                     :identifier  => entry["identifier"],
                                     :messages    => messages,
-                                    :status      => status,
+                                    :status      => valid ? 'valid' : 'error',
                                     :hidden      => false)
 
     node
+  end
+
+  def fingerprint(entry, valid)
+    require 'digest/md5'
+
+    md5 = Digest::MD5.new
+    for key in %w{name identifier date data_type process source_text}
+      md5.update(entry[key] || "")
+    end
+    md5.update 'error' unless valid
+
+    md5.hexdigest
   end
 
   # Updates an existing DataNode instance with the given information.
