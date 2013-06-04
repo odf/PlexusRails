@@ -311,7 +311,7 @@ class Import < ActiveRecord::Base
     for key in %w{name identifier date data_type process source_text}
       md5.update(entry[key] || "")
     end
-    md5.update 'error' unless valid
+    md5.update "error sample=#{sample}" unless valid
 
     md5.hexdigest
   end
