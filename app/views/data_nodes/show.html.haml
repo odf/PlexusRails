@@ -11,6 +11,10 @@
 = render :partial => "images/on_object", :object => @data_node
 = render :partial => "comments/on_object", :object => @data_node
 
+- unless @data_node.messages.empty?
+  %h2 Import Messages:
+  = format_text @data_node.messages.split("\n").map { |t| '* ' + t }.join("\n") 
+
 - if @data_node.hideable?
   %h2
     %span.action-links
