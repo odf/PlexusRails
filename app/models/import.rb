@@ -136,8 +136,7 @@ class Import < ActiveRecord::Base
     msgs_for_node = (entry["parse_errors"] + problems).join("\n")
 
     # -- create the node if it doesn't exist
-    if existing.empty? or (not valid and
-                           not existing.find { |v| v.messages == msgs_for_node })
+    if existing.empty? or (not valid and not find_rejected(entry, msgs_for_node))
       node = create_node(entry, valid, msgs_for_node)
       messages << "Node created."
       if resolve_if_pending(node) > 0
@@ -216,6 +215,12 @@ class Import < ActiveRecord::Base
     return []
   end
 
+  def find_rejected(entry, msgs)
+    sample.data_nodes.where(:identifier => entry['identifier'],
+                            :status => 'error',
+                            :messages => msgs)
+  end
+
   # Checks for inconsistencies between a data node descriptor and a
   # list of existing DataNode instances in the database.
   #
@@ -281,6 +286,8 @@ class Import < ActiveRecord::Base
     for key in %w{name identifier date data_type process source_text}
       md5.update(entry[key] || "")
     end
+
+    md5.update status unless valid
 
     process = sample.process_nodes.create(:date       => parse_timestamp(entry),
                                           :data_type  => entry["process"],
