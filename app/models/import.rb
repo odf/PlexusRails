@@ -268,9 +268,14 @@ class Import < ActiveRecord::Base
 
     # -- check for uniqueness of fingerprint
     fp = fingerprint(entry, problems.empty?)
-    found = DataNode.where("sample_id != ? AND fingerprint = ?", sample.id, fp)
+    found =
+      DataNode.where("fingerprint = ? AND sample_id != ? AND status = 'valid'",
+                     fp, sample.id)
     if found.count > 0
-      problems << "(ERROR) Duplicates fingerprint from different sample"
+      other = found.first
+      problems << ("(ERROR) Duplicates dataset '#{other.name}'" +
+                   " from sample '#{other.sample.name}'" +
+                   " in project '#{other.sample.project.name}'")
     end
 
     # -- return the list of inconsistency messages
@@ -311,7 +316,7 @@ class Import < ActiveRecord::Base
     for key in %w{name identifier date data_type process source_text}
       md5.update(entry[key] || "")
     end
-    md5.update "error sample=#{sample}" unless valid
+    md5.update "error #{sample}" unless valid
 
     md5.hexdigest
   end
