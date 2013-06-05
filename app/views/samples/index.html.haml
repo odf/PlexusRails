@@ -4,11 +4,11 @@
   %thead
     %tr
       %th Sample
-      %th External ID
-      %td Data Nodes
+      -# %th External ID
+      %th Data Nodes
   %tbody
     - @samples.select(&method(:may_view)).each do |sample|
       %tr{ :class => cycle('even', 'odd') }
         %td= link_to(sample.name, sample)
-        %td= sample.external_id
+        -# %td= sample.external_id
         %td= sample.data_nodes.count

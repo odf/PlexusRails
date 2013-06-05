@@ -13,11 +13,11 @@
   %thead
     %tr
       %th Sample
-      %th External ID
+      -# %th External ID
       %th Data Nodes
   %tbody
     - @project.samples.order(:name).each do |s|
       %tr
         %td= link_to s.name, s
-        %td= s.external_id
+        -# %td= s.external_id
         %td= s.data_nodes.count
