@@ -24,7 +24,7 @@ class Sample < ActiveRecord::Base
 
   # -- permissions are as in the project this sample belongs to
   def allows?(action, user)
-    project.allows?(action, user)
+    project && project.allows?(action, user)
   end
 
   # -- use a more permanent id to construct file system paths and such
