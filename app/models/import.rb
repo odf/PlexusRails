@@ -419,14 +419,7 @@ class Import < ActiveRecord::Base
           msg = candidates.empty? ? "not found" : "ambigous"
           log << "Predecessor #{ident || name} #{msg} for node '#{node.name}'."
           # -- if an external identifier was given, create a placeholder
-          if ident
-            pre = sample.data_nodes.build(:name       => name,
-                                           :identifier => ident,
-                                           :status     => 'missing')
-            pre.save!
-          else
-            pre = nil
-          end
+          pre = if ident then make_placeholder(name, ident) end
         end
 
         if pre
@@ -443,6 +436,22 @@ class Import < ActiveRecord::Base
 
     # -- return the error log
     log
+  end
+
+  def make_placeholder(name, identifier)
+    require 'digest/md5'
+
+    md5 = Digest::MD5.new
+    md5.update name
+    md5.update identifier
+    md5.update "missing"
+
+    res = sample.data_nodes.build(:name        => name,
+                                  :identifier  => ident,
+                                  :status      => 'missing',
+                                  :fingerprint => md5.hexdigest)
+    res.save!
+    res
   end
 
   # Replaces any references to placeholder ("missing") data nodes with
