@@ -447,7 +447,7 @@ class Import < ActiveRecord::Base
     md5.update "missing"
 
     res = sample.data_nodes.build(:name        => name,
-                                  :identifier  => ident,
+                                  :identifier  => identifier,
                                   :status      => 'missing',
                                   :fingerprint => md5.hexdigest)
     res.save!
