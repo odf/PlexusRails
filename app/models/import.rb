@@ -442,7 +442,7 @@ class Import < ActiveRecord::Base
     require 'digest/md5'
 
     md5 = Digest::MD5.new
-    md5.update name
+    md5.update name if name
     md5.update identifier
     md5.update "missing"
 
