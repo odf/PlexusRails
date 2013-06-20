@@ -445,6 +445,7 @@ class Import < ActiveRecord::Base
     md5.update name if name
     md5.update identifier
     md5.update "missing"
+    md5.update sample.name
 
     res = sample.data_nodes.build(:name        => name,
                                   :identifier  => identifier,

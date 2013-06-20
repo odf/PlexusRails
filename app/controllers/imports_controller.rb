@@ -3,7 +3,7 @@ class ImportsController < ApplicationController
 
   before_authorization_filter :find_resource, :only => [:index, :show, :new]
   before_authorization_filter :find_user,     :only => [:data_index, :create]
-  before_authorization_filter :find_sample,   :only => [:index, :data_index]
+  before_authorization_filter :find_sample
 
   permit :index               do may_edit            end
   permit :show                do may_view(@import)   end
@@ -25,6 +25,7 @@ class ImportsController < ApplicationController
     sid = params[:sample_id]
     if sid
       @sample = Sample.where(:id => sid).first
+      @project = @sample && @sample.project
     else
       find_project
       @sample =
@@ -87,6 +88,8 @@ class ImportsController < ApplicationController
   private
 
   def create_sample_if_missing
+    return if @sample
+
     find_or_create_project
     @sample = @project.samples.where(:name => params[:sample]).first
     unless @sample
@@ -96,6 +99,8 @@ class ImportsController < ApplicationController
   end
 
   def find_or_create_project
+    return if @project
+
     name = params[:project]
     @project = Project.where(:name => name).first
     unless @project
