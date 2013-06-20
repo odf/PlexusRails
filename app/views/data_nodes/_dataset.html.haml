@@ -7,33 +7,37 @@
 
 %div{ :id => "x#{dataset.id}x", :class => "data-set#{hideable}", |
       :'data-pred' => pred, :'data-succ' => succ } |
-  %a{ :href => data_node_url(dataset) }
+  - if dataset.status == 'missing'
     %div{ :class => "data-set-header #{dataset.status}#{hidden}", |
           :style => "margin-left: #{level * 8}pt" } |
       &nbsp;
-      %dfn= (dataset.data_type || "").underscore.humanize.titleize
-      == (#{h(dataset.last_suffix)})
+      %dfn= dataset.identifier
       &nbsp;
-      - if dataset.images.empty?
-        &mdash;
-      - else
-        = image_tag("grains-tiny.png", :alt => "")
-      &nbsp;
-      = format_time(dataset.date, :mode => :terse)
-      - if dataset.filename
-        &nbsp; &bull;
-      .data-set-popup
-        - pic = dataset.images.first
-        - if pic
-          - thumbnail = pic.thumbnail(80,80) || pic
-          %img{ :src => nested_url_for([dataset, thumbnail]), :alt => "", |
-                :width => 80, :height => 80 } |
-        .blurb
-          = dataset.suffix
-          - if dataset.status == 'missing'
-            %em (unresolved)
-            %br
-          - else
+      %em (unresolved)
+  - else
+    %a{ :href => data_node_url(dataset) }
+      %div{ :class => "data-set-header #{dataset.status}#{hidden}", |
+            :style => "margin-left: #{level * 8}pt" } |
+        &nbsp;
+        %dfn= (dataset.data_type || "").underscore.humanize.titleize
+        == (#{h(dataset.last_suffix)})
+        &nbsp;
+        - if dataset.images.empty?
+          &mdash;
+        - else
+          = image_tag("grains-tiny.png", :alt => "")
+        &nbsp;
+        = format_time(dataset.date, :mode => :terse)
+        - if dataset.filename
+          &nbsp; &bull;
+        .data-set-popup
+          - pic = dataset.images.first
+          - if pic
+            - thumbnail = pic.thumbnail(80,80) || pic
+            %img{ :src => nested_url_for([dataset, thumbnail]), :alt => "", |
+                  :width => 80, :height => 80 } |
+          .blurb
+            = dataset.suffix
             - if dataset.status == 'error'
               %em (rejected)
             %br
@@ -49,4 +53,4 @@
             %dfn Operator:
             = dataset.producer.run_by || '&mdash;'.html_safe
             %br
-      .clear
+        .clear
