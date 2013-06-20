@@ -30,19 +30,23 @@
                 :width => 80, :height => 80 } |
         .blurb
           = dataset.suffix
-          - if dataset.status == 'error'
-            %em (rejected)
-          %br
-          %dfn Sample:
-          = dataset.sample.name
-          %br
-          %dfn Process:
-          = (dataset.producer.data_type || "").underscore.humanize
-          %br
-          %dfn Time:
-          = format_time(dataset.date, :mode => :sortable, :zone => true)
-          %br
-          %dfn Operator:
-          = dataset.producer.run_by || '&mdash;'.html_safe
-          %br
+          - if dataset.status == 'missing'
+            %em (unresolved)
+            %br
+          - else
+            - if dataset.status == 'error'
+              %em (rejected)
+            %br
+            %dfn Sample:
+            = dataset.sample.name
+            %br
+            %dfn Process:
+            = (dataset.producer.data_type || "").underscore.humanize
+            %br
+            %dfn Time:
+            = format_time(dataset.date, :mode => :sortable, :zone => true)
+            %br
+            %dfn Operator:
+            = dataset.producer.run_by || '&mdash;'.html_safe
+            %br
       .clear
