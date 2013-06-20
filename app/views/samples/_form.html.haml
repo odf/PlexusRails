@@ -1,7 +1,8 @@
 - project_id = @sample.project.id
 
 = simple_form_for @sample do |form|
-  %i (Nothing to edit here at the moment.)
+  - if create
+    = form.input :name
   %br
   %input{ :type => 'hidden', :name => 'project_id', :value => "#{project_id}" }
   %br
