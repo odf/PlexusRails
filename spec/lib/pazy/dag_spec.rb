@@ -315,7 +315,7 @@ describe "A DAG" do
       @dag.articulation_points.should include(6)
     end
 
-    it "should have the bottlenecks 2, 4, 5, 6, 8" do
+    it "should have the bottlenecks 4, 5, 6, 9" do
       @dag.bottlenecks.should include(4)
       @dag.bottlenecks.should include(5)
       @dag.bottlenecks.should include(6)
@@ -372,6 +372,30 @@ describe "A DAG" do
       @dag.bottlenecks.should include(0)
       @dag.bottlenecks.should include(5)
       @dag.bottlenecks.should include(6)
+    end
+  end
+
+  context "with a fourth set of interesting bottlenecks" do
+    before :all do
+      @dag = Pazy::DAG.new + [ [1, 2], [1, 3], [1, 5], [2, 5], [3, 5], [4, 5] ]
+    end
+
+    specify { @dag.should have(5).vertices }
+    specify { @dag.should have(2).sources }
+    specify { @dag.should have(1).sinks }
+    specify { @dag.should have(2).internal_vertices }
+    specify { @dag.should have(6).edges }
+    specify { @dag.should have(1).components }
+    specify { @dag.should have(1).articulation_points }
+    specify { @dag.should have(1).bottlenecks }
+    specify { @dag.should be_connected }
+
+    it "should have the articulation point 5" do
+      @dag.articulation_points.should include(5)
+    end
+
+    it "should have the bottlenecks 5" do
+      @dag.bottlenecks.should include(5)
     end
   end
 end
