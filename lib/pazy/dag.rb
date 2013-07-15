@@ -223,7 +223,7 @@ class Pazy::DAG
 
     vertices.select do |v|
       rooted.pred(v).include?(dfs.parent(v)) and
-        succ(v).all? { |w| dfs.parent(w) != v or dfs.low(w) >= dfs.index(v) }
+        succ(v).all? { |w| dfs.low(w) >= dfs.index(v) }
     end
   end
 end
