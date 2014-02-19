@@ -6,7 +6,7 @@
 
 # -- Install Node.js
 
-NODE_VERSION=v0.10.5
+NODE_VERSION=v0.10.26
 NODE_ARCH="x86" && [ `arch` = "x86_64" ] && NODE_ARCH="x64"
 NODE_DIR=node-${NODE_VERSION}-linux-${NODE_ARCH}
 

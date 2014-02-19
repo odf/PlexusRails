@@ -11,5 +11,5 @@
 /data
 .rvmrc
 .sass-cache
-.vagrant
+.vagrant*
 Vagrantfile
